@@ -1,0 +1,641 @@
+<mxfile host="65bd71144e">
+    <diagram id="NdLsOJ0xQt-UWAwKSfTU" name="基本">
+        <mxGraphModel dx="3974" dy="2806" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="6" value="ログインボタン" style="edgeStyle=none;html=1;" parent="1" source="4" target="5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="ログイン画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="-350" y="591" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="マイページボタンをクリック" style="edgeStyle=none;html=1;" parent="1" source="5" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="ワード検索" style="edgeStyle=none;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="5" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="ホーム画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="430" y="591" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="レポート管理画面へリンク" style="edgeStyle=none;html=1;" parent="1" source="7" target="12" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="登録内容変更リンク" style="edgeStyle=none;html=1;" parent="1" source="7" target="14" edge="1">
+                    <mxGeometry x="-0.1739" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="17" value="" style="edgeStyle=none;html=1;" parent="1" source="7" target="16" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="自分が評価したユーザー一覧" style="edgeStyle=none;html=1;" parent="1" source="7" target="16" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="自分を評価したユーザー一覧リンク" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" parent="1" target="20" edge="1" source="7">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="350" y="-480" as="targetPoint"/>
+                        <mxPoint x="430" y="-340" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="39" value="ユーザー管理画面へリンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0;entryY=0.5;entryDx=0;entryDy=0;jumpStyle=arc;" edge="1" parent="1" source="7" target="65">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="965" y="-820" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="41" value="グループ管理画面へリンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="7" target="40">
+                    <mxGeometry x="0.1325" y="-7" relative="1" as="geometry">
+                        <mxPoint x="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="72" value="閲覧履歴確認連句" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="7" target="71">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="マイページ画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="430" y="-420" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="133" value="ユーザー詳細画面へリンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="9">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="946" y="511" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="9" value="レポート検索結果画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="821" y="591" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-156" value="レポート作成ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="12" target="faCX4Es7nk-wwcQUgH1N-155">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-159" value="レポート更新ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="12" target="faCX4Es7nk-wwcQUgH1N-158">
+                    <mxGeometry x="-0.003" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-163" value="プレビューリンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="12" target="faCX4Es7nk-wwcQUgH1N-162">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-179" value="レポート削除ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="faCX4Es7nk-wwcQUgH1N-178">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-185" value="レポート履歴リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="12" target="faCX4Es7nk-wwcQUgH1N-184">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="レポート管理画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="2894" y="-430" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="登録内容を変更ボタンで本画面に戻る" style="edgeStyle=none;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;jumpStyle=none;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="14" target="7">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="555" y="-740" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="14" value="登録情報設定画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="430" y="-1040" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-189" value="ユーザー名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="16" target="faCX4Es7nk-wwcQUgH1N-188">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="自分が評価したユーザー一覧画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="-130" y="-820" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-187" value="ユーザー名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="20" target="faCX4Es7nk-wwcQUgH1N-186">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="自分を評価したユーザー一覧" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="-130" y="-1040" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="&lt;span style=&quot;font-size: 12px; background-color: rgb(42, 37, 47);&quot;&gt;レポート&lt;/span&gt;詳細リンク" style="edgeStyle=none;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="9" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1291" y="642.7500000000005" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="24" value="検索条件を変更ボタンをクリックすると本画面に戻る" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="9" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="946" y="891" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="43" value="新規グループ作成" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="40" target="42">
+                    <mxGeometry x="-0.5" y="-2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="46" value="グループ名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1580" y="-630.9999999999998" as="sourcePoint"/>
+                        <mxPoint x="1800" y="-630.9999999999998" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="55" value="グループ削除ボタンで本画面に戻る" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1389" y="-510" as="sourcePoint"/>
+                        <mxPoint x="1389" y="-410" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="40" value="グループ管理画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1330" y="-670" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="グループ作成画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1330" y="-910" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="グループ作成ボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="40" target="42">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1370" y="-590" as="sourcePoint"/>
+                        <mxPoint x="1420" y="-640" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="48" value="グループ更新ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1800" y="-562" as="sourcePoint"/>
+                        <mxPoint x="1580" y="-562" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="45" value="グループ編集画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1800" y="-670" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="グループ停止ボタンで本画面に戻る" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1">
+                    <mxGeometry x="0.6" relative="1" as="geometry">
+                        <mxPoint x="1520" y="-510" as="sourcePoint"/>
+                        <mxPoint x="1520" y="-410" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="62" value="新規ユーザー作成" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="65" target="66">
+                    <mxGeometry x="-0.5" y="-2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="63" value="ユーザー名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1109.9999999999995" y="-1190.9999999999998" as="sourcePoint"/>
+                        <mxPoint x="1330" y="-1190.9999999999998" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="64" value="ユーザー削除ボタンで本画面に戻る" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="919" y="-1070" as="sourcePoint"/>
+                        <mxPoint x="919" y="-970" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="65" value="ユーザー管理画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="-1230" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="66" value="ユーザー作成画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="-1470" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="67" value="ユーザー作成ボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="65" target="66">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="900" y="-1150" as="sourcePoint"/>
+                        <mxPoint x="950" y="-1200" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="68" value="ユーザー更新ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1330" y="-1122" as="sourcePoint"/>
+                        <mxPoint x="1109.9999999999995" y="-1122" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="69" value="ユーザー編集画面&lt;br&gt;（グループ付与もできる）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1330" y="-1230" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="70" value="ユーザー停止ボタンで本画面に戻る" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1">
+                    <mxGeometry x="0.6" relative="1" as="geometry">
+                        <mxPoint x="1049.9999999999995" y="-1070" as="sourcePoint"/>
+                        <mxPoint x="1049.9999999999995" y="-970" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="74" value="ユーザー閲覧履歴一覧リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="71" target="73">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="78" value="レポート閲覧履歴一覧リング" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="71" target="77">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="82" value="グループ閲覧履歴一覧リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="71" target="83">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-1262" y="-180" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="88" value="評価履歴リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="71" target="104">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-1767.2666666666669" y="-859.9999999999995" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="71" value="閲覧履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1387" y="-420" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="76" value="ユーザー名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="73" target="faCX4Es7nk-wwcQUgH1N-190">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-1262" y="-740" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="73" value="ユーザー閲覧履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1387" y="-660" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="80" value="レポート名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=1.001;entryY=0.434;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="77" target="faCX4Es7nk-wwcQUgH1N-194">
+                    <mxGeometry x="0.1455" y="-20" relative="1" as="geometry">
+                        <mxPoint x="-1920" y="-340" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="77" value="レポート閲覧履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1840" y="-420" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="83" value="グループ閲覧履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1387" y="-180" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="85" value="グループ名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="faCX4Es7nk-wwcQUgH1N-192">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-1262.71" y="-20" as="sourcePoint"/>
+                        <mxPoint x="-1262.71" y="60" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="100" value="ユーザー評価履歴一覧リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="104" target="106">
+                    <mxGeometry x="0.2501" relative="1" as="geometry">
+                        <mxPoint x="-2227.4999999999995" y="-1170" as="sourcePoint"/>
+                        <mxPoint x="-2228" y="-1250" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="101" value="レポート評価履歴一覧リング" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="104" target="108">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="102" value="グループ評価履歴一覧リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="104" target="109">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2151.9999999999995" y="-930" as="targetPoint"/>
+                        <mxPoint x="-2150" y="-1000" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="113" value="レポート補足評価補足履歴一覧リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="104" target="112">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="104" value="評価履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-2277" y="-1170" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="105" value="ユーザー名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="106" target="faCX4Es7nk-wwcQUgH1N-198">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2151.9999999999995" y="-1489.9999999999995" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="117" value="任意のユーザー評価リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2027.0000000000005" y="-1329" as="sourcePoint"/>
+                        <mxPoint x="-1760" y="-1329" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="106" value="ユーザー評価履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-2277" y="-1410" width="247" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="107" value="レポート名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="108" target="faCX4Es7nk-wwcQUgH1N-197">
+                    <mxGeometry y="-30" relative="1" as="geometry">
+                        <mxPoint x="-2870" y="-1090" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-207" value="レポート評価更新ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="108" target="faCX4Es7nk-wwcQUgH1N-206">
+                    <mxGeometry x="-0.25" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="108" value="レポート評価履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-2730" y="-1170" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="109" value="グループ評価履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-2277" y="-930" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="110" value="グループ名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="faCX4Es7nk-wwcQUgH1N-195">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2152.71" y="-770" as="sourcePoint"/>
+                        <mxPoint x="-2152.71" y="-690" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="121" value="レポート名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=-0.006;entryY=0.452;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="faCX4Es7nk-wwcQUgH1N-205">
+                    <mxGeometry x="0.0555" y="-40" relative="1" as="geometry">
+                        <mxPoint x="-1509" y="-1090" as="sourcePoint"/>
+                        <mxPoint x="-1330" y="-1090" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="-1350" y="-1090"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="112" value="レポート補足評価履歴画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1760" y="-1170" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="119" value="ユーザー評価確定ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="116" target="106">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-1839.9999999999995" y="-1301.4242424242423" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="116" value="ユーザー評価更新画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1760" y="-1410" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="123" value="評価履歴へ戻るリンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="108" target="104">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-2440" y="-990" as="sourcePoint"/>
+                        <mxPoint x="-2280" y="-1050" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="124" value="評価履歴へ戻るリンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="106">
+                    <mxGeometry x="0.25" width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-2160" y="-1100" as="sourcePoint"/>
+                        <mxPoint x="-2092" y="-1170" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="125" value="評価履歴へ戻るリンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="109" target="104">
+                    <mxGeometry x="-0.25" width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-2220" y="-980" as="sourcePoint"/>
+                        <mxPoint x="-2170" y="-1030" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="126" value="閲覧履歴へ戻るリンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="83" target="71">
+                    <mxGeometry x="-0.25" y="1" width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-1300" y="-240" as="sourcePoint"/>
+                        <mxPoint x="-1250" y="-290" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="127" value="閲覧履歴へ戻るリンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0.75;entryY=0;entryDx=0;entryDy=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="73" target="71">
+                    <mxGeometry x="0.25" width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-1260" y="-350" as="sourcePoint"/>
+                        <mxPoint x="-1210" y="-400" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="128" value="閲覧履歴へ戻るリンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="77">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-1470" y="-350" as="sourcePoint"/>
+                        <mxPoint x="-1390" y="-300" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="129" value="レポート検索結果へ戻るボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" target="9">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1291" y="746.2500000000005" as="sourcePoint"/>
+                        <mxPoint x="1151" y="761" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="130" value="レポートタグ検索" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0;entryY=0.75;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="5" target="9">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="810" y="821" as="sourcePoint"/>
+                        <mxPoint x="860" y="771" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="131" value="おすすめなどからレポート名リンクをクリック" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="970" y="681" as="sourcePoint"/>
+                        <mxPoint x="1416" y="591.0000000000005" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="618" y="451"/>
+                            <mxPoint x="1416" y="451"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-133" value="ユーザー詳細画面へリンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" target="faCX4Es7nk-wwcQUgH1N-140">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1539.9999999999995" y="629" as="sourcePoint"/>
+                        <mxPoint x="1720" y="629" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-134" value="レポート評価ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-136" target="faCX4Es7nk-wwcQUgH1N-211">
+                    <mxGeometry x="0.4629" y="-18" relative="1" as="geometry">
+                        <mxPoint x="1478" y="910" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-135" value="レポート補足追加リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" target="faCX4Es7nk-wwcQUgH1N-152" source="faCX4Es7nk-wwcQUgH1N-136">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1339.9999999999995" y="590" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-167" value="" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-136" target="faCX4Es7nk-wwcQUgH1N-166">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-136" value="レポート詳細画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1290" y="591" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-137" value="ユーザー評価ボタンをクリックすると本画面へ戻る" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-140">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1895" y="501" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-138" value="レポート名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-140" target="faCX4Es7nk-wwcQUgH1N-149">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-139" value="グループ名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-140" target="faCX4Es7nk-wwcQUgH1N-150">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-140" value="ユーザー詳細画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1770" y="241" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-141" value="レポートへ戻るリンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-140" target="faCX4Es7nk-wwcQUgH1N-136">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1780" y="871" as="sourcePoint"/>
+                        <mxPoint x="1830" y="821" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-142" value="グループ詳細画面へリンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1.01;exitY=0.634;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-136" target="faCX4Es7nk-wwcQUgH1N-146">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1590" y="938.9999999999995" as="sourcePoint"/>
+                        <mxPoint x="1770" y="939" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-143" value="グループ評価ボタンをクリックすると本画面へ戻る" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-146">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1895" y="821" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-144" value="レポート名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-146" target="faCX4Es7nk-wwcQUgH1N-148">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-145" value="yユーザー名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-146" target="faCX4Es7nk-wwcQUgH1N-151">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-146" value="グループ詳細画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1770" y="901" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-147" value="レポートへ戻るリンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=1.006;entryY=0.87;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryPerimeter=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-146" target="faCX4Es7nk-wwcQUgH1N-136">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1830" y="1181" as="sourcePoint"/>
+                        <mxPoint x="1591.000000000001" y="1021" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-148" value="レポート詳細画面&lt;br&gt;（詳細は他で説明）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2180" y="901" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-149" value="レポート詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2180" y="241" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-150" value="グループ詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1770" y="-26" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-151" value="ユーザー詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1770" y="1141" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-152" value="レポート補足作成画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="870" y="1030" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-153" value="レポート補足作成ボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=1;exitY=0.75;exitDx=0;exitDy=0;jumpStyle=none;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-152" target="faCX4Es7nk-wwcQUgH1N-136">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1070" y="430" as="sourcePoint"/>
+                        <mxPoint x="1279.9999999999995" y="650" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-155" value="レポート作成画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2894" y="-670" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-157" value="レポート作成完了ボタン&lt;br&gt;レポート下書きボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-155" target="12">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="3170" y="-330" as="sourcePoint"/>
+                        <mxPoint x="3220" y="-380" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-158" value="レポート更新画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="3380" y="-430" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-160" value="レポート更新ボタン&lt;br&gt;レポート下書きボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-158" target="faCX4Es7nk-wwcQUgH1N-162">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="3170" y="-460" as="sourcePoint"/>
+                        <mxPoint x="3220" y="-510" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="3500" y="-820"/>
+                            <mxPoint x="3030" y="-820"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-162" value="レポート詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2400" y="-664" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-203" value="ユーザー名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-166" target="faCX4Es7nk-wwcQUgH1N-200">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-166" value="レポート評価者一覧" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2540" y="591" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-168" value="レポート補足取消ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-171">
+                    <mxGeometry x="-0.25" relative="1" as="geometry">
+                        <mxPoint x="3081.5" y="-1440" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-169" value="レポート補足更新ボタン" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-171" target="faCX4Es7nk-wwcQUgH1N-174">
+                    <mxGeometry x="-0.003" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-170" value="レポート名リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-171" target="faCX4Es7nk-wwcQUgH1N-176">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-182" value="レポート補足履歴リンク" style="edgeStyle=none;shape=connector;rounded=1;html=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;endArrow=classic;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-171" target="faCX4Es7nk-wwcQUgH1N-181">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="3020" y="-1170"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-171" value="レポート補足管理画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2894" y="-1360" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-174" value="レポート更新画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="3380" y="-1360" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-175" value="レポート補足更新ボタン&lt;br&gt;レポート補足下書きボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-174" target="faCX4Es7nk-wwcQUgH1N-176">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="3170" y="-1390" as="sourcePoint"/>
+                        <mxPoint x="3220" y="-1440" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="3500" y="-1750"/>
+                            <mxPoint x="2525" y="-1750"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-176" value="レポート詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2400" y="-1594" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-177" value="レポート補足管理画面へリンク" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="7" target="faCX4Es7nk-wwcQUgH1N-171">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="690" y="-330.50730519480567" as="sourcePoint"/>
+                        <mxPoint x="2904" y="-339.49269480519524" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1950" y="-400"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-178" value="レポート削除確認画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2894" y="-190" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-180" value="レポート削除ボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=0.701;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-178">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="3100" y="-190" as="sourcePoint"/>
+                        <mxPoint x="3070" y="-270" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-181" value="レポート補足閲覧履歴画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2894" y="-1120" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-184" value="レポート閲覧履歴画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="3380" y="-200" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-186" value="ユーザー詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-550" y="-1040" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-188" value="ユーザー詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-560" y="-820" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-190" value="ユーザー詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1387" y="-910" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-192" value="グループ詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1387" y="70" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-194" value="レポート詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-2230" y="-410" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-195" value="グループ詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-2277" y="-690" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-197" value="レポート詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-3130" y="-1169" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-198" value="ユーザー詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-2278.5" y="-1660" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-200" value="ユーザー詳細画面&lt;br&gt;（詳細は他を参照）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="2942" y="591" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-205" value="レポート詳細画面&lt;br&gt;（詳細は他で説明）" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-1320" y="-1160" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-206" value="レポート評価更新画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="-2730" y="-1410" width="250" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-208" value="レポート評価更新確定ボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-206" target="108">
+                    <mxGeometry x="-0.5" width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-2570" y="-1210" as="sourcePoint"/>
+                        <mxPoint x="-2520" y="-1260" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-210" value="閲覧履歴リンク" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="104" target="71">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-1710" y="-690" as="sourcePoint"/>
+                        <mxPoint x="-1660" y="-740" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-211" value="レポート評価作成画面" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="1290" y="1090" width="250" height="207" as="geometry"/>
+                </mxCell>
+                <mxCell id="faCX4Es7nk-wwcQUgH1N-212" value="レポート評価確定ボタン&lt;br&gt;レポート評価下書きボタン" style="endArrow=classic;html=1;rounded=1;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="faCX4Es7nk-wwcQUgH1N-211" target="faCX4Es7nk-wwcQUgH1N-136">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1520" y="960" as="sourcePoint"/>
+                        <mxPoint x="1570" y="910" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
