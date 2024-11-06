@@ -19,7 +19,6 @@ RUN poetry config virtualenvs.create false && \
 
 COPY . .
 
+RUN poetry install --no-interaction
 
-
-# RUN poetry config virtualenvs.create false && \
-#     poetry install --no-interaction --no-root
+CMD ["python", "backend/manage.py", "runserver", "0.0.0.0:8000"]

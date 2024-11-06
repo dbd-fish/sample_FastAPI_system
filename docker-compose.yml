@@ -23,21 +23,21 @@ services:
     ports:
       - 8000:8000
     tty: true
-    # ② Windowsのbackendフォルダに既存のプロジェクトが存在する場合に使用するコマンド
-    # command: ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+    depends_on:
+      - db
 
 
-  # db:
-  #   image: postgres:13
-  #   container_name: postgres_db
-  #   environment:
-  #     POSTGRES_DB: あなたのデータベース名
-  #     POSTGRES_USER: あなたのユーザー名
-  #     POSTGRES_PASSWORD: あなたのパスワード
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: sample_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
 volumes:
   postgres_data:
