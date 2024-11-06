@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # frontend:
+  #   image: node:14
+  #   container_name: react_frontend
+  #   working_dir: /app
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - "3000:3000"
+  #   command: ["npm", "start"]
+  #   depends_on:
+  #     - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    ports:
+      - 8000:8000
+    tty: true
+    # ② Windowsのbackendフォルダに既存のプロジェクトが存在する場合に使用するコマンド
+    # command: ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+
+  # db:
+  #   image: postgres:13
+  #   container_name: postgres_db
+  #   environment:
+  #     POSTGRES_DB: あなたのデータベース名
+  #     POSTGRES_USER: あなたのユーザー名
+  #     POSTGRES_PASSWORD: あなたのパスワード
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+volumes:
+  postgres_data:
+
+
