@@ -165,7 +165,7 @@ CREATE TABLE group_evaluation_history (
 ) COMMENT='グループ評価履歴';
 
 -- レポート補足履歴
--- TODO: 1レポート補足に対する履歴が別テーブルで必要
+-- TODO: 1レポート補足に対する履歴が別テーブルで必要。画面遷移図にも
 CREATE TABLE report_comment_history (
     history_id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'レポート補足履歴ID',
     report_supplement INT NOT NULL COMMENT 'レポート補足ID',
