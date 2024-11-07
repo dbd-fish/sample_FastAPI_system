@@ -14,11 +14,12 @@ services:
   #     - backend
 
   backend:
+    container_name: sample_backend_container
     build:
-      context: ./backend
+      context: ./sample_backend_container
       dockerfile: Dockerfile
     volumes:
-      - ./backend:/app
+      - ./sample_backend_container:/app
     working_dir: /app
     ports:
       - 8000:8000
