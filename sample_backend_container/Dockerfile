@@ -23,13 +23,6 @@ RUN poetry install --no-interaction
 ENV PATH="/root/.local/bin:${PATH}"
 
 # Djangoプロジェクトをを作成済みの場合は下記コマンドを実行する。初回作成時などでDjnagoプロジェクトが存在しない場合はコメントアウト
-CMD ["python", "django_backend/manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "django_backend/manage.py", "runserver", "0.0.0.0:8000"]
 
 
-# poetryでDjangoプロジェクトを作成するコマンド
-# $ poetry run django-admin startproject {APP名} {プロジェクト名}
-# $ poetry run django-admin startproject sample_app django_backend
-
-# poetryでDjangoプロジェクトを起動するコマンド
-# $ python {プロジェクト名}/manage.py runserver
-# $ python django_backend/manage.py runserver
