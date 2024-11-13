@@ -1,10 +1,6 @@
 # app/models/__init__.py
 
 # 各モデルをインポート
-from .sample_model import SampleModel
-from .sample_model2 import SampleModel2
-from .sample_model3 import SampleModel3
-
 from .user import User
 from .user_profile import UserProfile
 from .user_ip_address import UserIPAddress
@@ -32,11 +28,6 @@ from .group_search_history import GroupSearchHistory
 
 # Alembicや他のスクリプトがapp.modelsをインポートするだけで全モデルを認識できるようにする
 __all__ = [
-    "SampleModel",
-    "SampleModel2",
-    "SampleModel3",
-
-
     "user", 
     "user_profile", 
     "user_ip_address", 
