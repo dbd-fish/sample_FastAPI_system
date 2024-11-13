@@ -22,6 +22,7 @@ CREATE TABLE user_profile (
     profile_image_url VARCHAR(255) COMMENT 'プロフィール画像URL',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    deleted_at TIMESTAMP NULL COMMENT '削除日時'
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 ) COMMENT='ユーザープロフィール';
 
@@ -56,6 +57,7 @@ CREATE TABLE group_profile (
     profile_image_url VARCHAR(255) COMMENT 'グループプロフィール画像URL',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    deleted_at TIMESTAMP NULL COMMENT '削除日時'
     FOREIGN KEY (group_id) REFERENCES user_group(group_id) ON DELETE CASCADE
 ) COMMENT='グループプロフィール';
 
@@ -132,6 +134,7 @@ CREATE TABLE user_evaluation_history (
     comment TEXT COMMENT '評価コメント',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    deleted_at TIMESTAMP NULL COMMENT '削除日時'
     FOREIGN KEY (user_id) REFERENCES user(user_id),
     FOREIGN KEY (target_user_id) REFERENCES user(user_id)
 ) COMMENT='ユーザー評価履歴';
@@ -146,6 +149,7 @@ CREATE TABLE report_evaluation_history (
     comment TEXT COMMENT '評価コメント',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    deleted_at TIMESTAMP NULL COMMENT '削除日時'
     FOREIGN KEY (user_id) REFERENCES user(user_id),
     FOREIGN KEY (report_id) REFERENCES report(report_id)
 ) COMMENT='レポート評価履歴';
@@ -160,6 +164,7 @@ CREATE TABLE group_evaluation_history (
     comment TEXT COMMENT '評価コメント',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    deleted_at TIMESTAMP NULL COMMENT '削除日時'
     FOREIGN KEY (evaluator_id) REFERENCES user(user_id),
     FOREIGN KEY (group_id) REFERENCES user_group(group_id)
 ) COMMENT='グループ評価履歴';
