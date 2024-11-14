@@ -17,7 +17,10 @@ class ReportViewHistory(Base):
     
     # 閲覧日時 - レポートが閲覧された日時
     view_date = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="閲覧日時")
-    
+
+    # 作成日時
+    created_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="作成日時")
+   
     # 更新日時
     updated_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP", comment="更新日時")
     

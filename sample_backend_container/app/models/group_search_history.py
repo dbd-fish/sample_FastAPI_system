@@ -18,6 +18,9 @@ class GroupSearchHistory(Base):
     # 検索日時 - 検索が行われた日時
     search_date = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="検索日時")
 
+    # 作成日時
+    created_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="作成日時")
+
     # 更新日時 - レコードが最後に更新された日時
     updated_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP", comment="更新日時")
 
