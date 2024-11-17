@@ -36,6 +36,7 @@ services:
       POSTGRES_DB: sample_db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
+      TZ: Asia/Tokyo
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
