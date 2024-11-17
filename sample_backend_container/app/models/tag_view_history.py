@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, CHAR, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, CHAR, TIMESTAMP, ForeignKey, func
 from app.database import Base
+from sqlalchemy.dialects.postgresql import UUID
 
 # TagViewHistoryモデル: タグ閲覧履歴テーブル
 class TagViewHistory(Base):
@@ -9,19 +10,19 @@ class TagViewHistory(Base):
     history_id = Column(Integer, primary_key=True, autoincrement=True, comment="履歴ID")
     
     # ユーザーID (UUID) - userテーブルのuser_idを参照する外部キー
-    user_id = Column(CHAR(36), ForeignKey("user.user_id"), nullable=False, comment="ユーザーID (UUID)")
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.user_id"), nullable=False, comment="ユーザーID (UUID)")
     
     # タグID - report_tagテーブルのtag_idを参照する外部キー
     tag_id = Column(Integer, ForeignKey("report_tag.tag_id"), nullable=False, comment="タグID")
     
     # 閲覧日時 - タグが閲覧された日時
-    view_date = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="閲覧日時")
+    view_date = Column(TIMESTAMP, server_default=func.now(), comment="閲覧日時")
     
     # 作成日時
-    created_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="作成日時")
+    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
 
     # 更新日時
-    updated_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP", comment="更新日時")
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
     
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")

@@ -1,8 +1,7 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
+from sqlalchemy import create_engine, pool
+from sqlalchemy.engine import Engine
 from alembic import context
 
 from app.database import Base  # Baseをインポート
@@ -27,6 +26,21 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
+
+def get_sync_engine() -> Engine:
+    """
+    Create a synchronous engine for Alembic to run migrations.
+
+    This function ensures that Alembic uses a synchronous engine
+    even if the main application uses an asynchronous engine.
+
+    Returns:
+        Engine: A synchronous SQLAlchemy Engine.
+    """
+    # Use the synchronous version of the DATABASE_URL
+    url = config.get_main_option("sqlalchemy.url").replace("asyncpg", "psycopg2")
+    return create_engine(url, poolclass=pool.NullPool)
 
 
 def run_migrations_offline() -> None:
@@ -60,11 +74,8 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    # Use the synchronous engine specifically for Alembic migrations
+    connectable = get_sync_engine()
 
     with connectable.connect() as connection:
         context.configure(

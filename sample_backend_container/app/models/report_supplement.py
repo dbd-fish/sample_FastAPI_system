@@ -1,6 +1,7 @@
 
-from sqlalchemy import Column, Integer, CHAR, Text, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, CHAR, Text, TIMESTAMP, ForeignKey, func
 from app.database import Base
+from sqlalchemy.dialects.postgresql import UUID
 
 # ReportSupplementモデル: レポート補足テーブル
 class ReportSupplement(Base):
@@ -10,10 +11,10 @@ class ReportSupplement(Base):
     report_supplement = Column(Integer, primary_key=True, autoincrement=True, comment="レポート補足ID")
     
     # レポートID (UUID) - reportテーブルのreport_idを参照する外部キー
-    report_id = Column(CHAR(36), ForeignKey("report.report_id"), nullable=False, comment="レポートID (UUID)")
+    report_id = Column(UUID(as_uuid=True), ForeignKey("report.report_id"), nullable=False, comment="レポートID (UUID)")
     
     # ユーザーID (UUID) - userテーブルのuser_idを参照する外部キー
-    user_id = Column(CHAR(36), ForeignKey("user.user_id"), nullable=False, comment="ユーザーID (UUID)")
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.user_id"), nullable=False, comment="ユーザーID (UUID)")
     
     # レポート補足内容 - レポートに関する追加の説明やコメント
     content = Column(Text, comment="レポート補足内容")
@@ -28,10 +29,10 @@ class ReportSupplement(Base):
     supplement_url = Column(Text, comment="レポート補足根拠")
     
     # 作成日時
-    created_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="作成日時")
+    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
     
     # 更新日時
-    updated_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP", comment="更新日時")
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
     
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")

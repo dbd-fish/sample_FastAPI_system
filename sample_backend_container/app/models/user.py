@@ -1,12 +1,14 @@
-from sqlalchemy import Column, CHAR, String, SmallInteger, TIMESTAMP, Date
+from sqlalchemy import Column, CHAR, String, SmallInteger, TIMESTAMP, Date, func
 from app.database import Base
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 # Userモデル: ユーザー管理テーブル
 class User(Base):
     __tablename__ = "user"
     
     # ユーザーID (UUID) - プライマリキー
-    user_id = Column(CHAR(36), primary_key=True, comment="ユーザーID (UUID)")
+    user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, comment="ユーザーID (UUID)")
     
     # ユーザー名 - 50文字以内
     username = Column(String(50), nullable=False, comment="ユーザー名")
@@ -32,10 +34,10 @@ class User(Base):
     user_status = Column(SmallInteger, nullable=False, comment="アカウント状態 (1: active, 2: suspended)")
     
     # 作成日時
-    created_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="作成日時")
+    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
     
     # 更新日時 - 更新時に自動で変更
-    updated_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP", comment="更新日時")
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
     
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")

@@ -1,6 +1,7 @@
 
-from sqlalchemy import Column, Integer, CHAR, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, CHAR, TIMESTAMP, ForeignKey, func
 from app.database import Base
+from sqlalchemy.dialects.postgresql import UUID
 
 # UserViewHistoryモデル: ユーザー閲覧履歴テーブル
 class UserViewHistory(Base):
@@ -10,19 +11,19 @@ class UserViewHistory(Base):
     history_id = Column(Integer, primary_key=True, autoincrement=True, comment="履歴ID")
 
     # 閲覧者ID (UUID) - userテーブルのuser_idを参照する外部キー
-    viewer_id = Column(CHAR(36), ForeignKey("user.user_id"), nullable=False, comment="閲覧者ID (UUID)")
+    viewer_user_id = Column(UUID(as_uuid=True), ForeignKey("user.user_id"), nullable=False, comment="閲覧者ID (UUID)")
 
     # 閲覧対象ユーザーID (UUID) - userテーブルのuser_idを参照する外部キー
-    viewed_user_id = Column(CHAR(36), ForeignKey("user.user_id"), nullable=False, comment="閲覧対象ユーザーID (UUID)")
+    viewed_user_id = Column(UUID(as_uuid=True), ForeignKey("user.user_id"), nullable=False, comment="閲覧対象ユーザーID (UUID)")
 
     # 作成日時
-    created_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="作成日時")
+    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
 
     # 閲覧日時 - ユーザーが閲覧された日時
-    view_date = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="閲覧日時")
+    view_date = Column(TIMESTAMP, server_default=func.now(), comment="閲覧日時")
 
-    # 更新日時 - レコードが最後に更新された日時
-    updated_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP", comment="更新日時")
+    # 更新日時
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
 
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")

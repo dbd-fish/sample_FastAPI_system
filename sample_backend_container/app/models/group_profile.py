@@ -1,7 +1,7 @@
 
-from sqlalchemy import Column, Integer, CHAR, String, Text, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, CHAR, String, Text, TIMESTAMP, ForeignKey, func
 from app.database import Base
-
+from sqlalchemy.dialects.postgresql import UUID
 # GroupProfileモデル: グループプロフィールテーブル
 class GroupProfile(Base):
     __tablename__ = "group_profile"
@@ -10,7 +10,7 @@ class GroupProfile(Base):
     profile_id = Column(Integer, primary_key=True, autoincrement=True, comment="プロフィールID")
     
     # グループID (UUID) - user_groupテーブルのgroup_idを参照する外部キー
-    group_id = Column(CHAR(36), ForeignKey("user_group.group_id", ondelete="CASCADE"), nullable=False, comment="グループID (UUID)")
+    group_id = Column(UUID(as_uuid=True), ForeignKey("user_group.group_id", ondelete="CASCADE"), nullable=False, comment="グループID (UUID)")
     
     # グループ表示名
     display_name = Column(String(100), comment="グループ表示名")
@@ -22,10 +22,10 @@ class GroupProfile(Base):
     profile_image_url = Column(String(255), comment="グループプロフィール画像URL")
     
     # 作成日時
-    created_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="作成日時")
+    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
     
     # 更新日時
-    updated_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP", comment="更新日時")
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
 
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")

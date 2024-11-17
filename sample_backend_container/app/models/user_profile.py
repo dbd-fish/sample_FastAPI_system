@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, CHAR, String, Text, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, CHAR, String, Text, TIMESTAMP, ForeignKey, func
 from app.database import Base
+from sqlalchemy.dialects.postgresql import UUID
 
 # UserProfileモデル: ユーザープロフィールテーブル
 class UserProfile(Base):
@@ -9,7 +10,7 @@ class UserProfile(Base):
     profile_id = Column(Integer, primary_key=True, autoincrement=True, comment="プロフィールID")
     
     # ユーザーID (UUID) - userテーブルのuser_idを参照する外部キー
-    user_id = Column(CHAR(36), ForeignKey("user.user_id", ondelete="CASCADE"), nullable=False, comment="ユーザーID (UUID)")
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.user_id", ondelete="CASCADE"), nullable=False, comment="ユーザーID (UUID)")
     
     # 表示名 - プロフィール画面に表示される名前
     display_name = Column(String(100), comment="表示名")
@@ -21,10 +22,10 @@ class UserProfile(Base):
     profile_image_url = Column(String(255), comment="プロフィール画像URL")
     
     # 作成日時
-    created_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", comment="作成日時")
+    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
     
     # 更新日時
-    updated_at = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP", comment="更新日時")
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
 
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")
