@@ -1,8 +1,12 @@
 
-from sqlalchemy import Column, CHAR, String, Text, SmallInteger, TIMESTAMP, ForeignKey, func
+from sqlalchemy import Column, CHAR, String, Text, SmallInteger, TIMESTAMP, ForeignKey
+from app.common.common import datetime_now
 from app.database import Base
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
+
 
 # Reportモデル: レポート管理テーブル
 class Report(Base):
@@ -27,10 +31,10 @@ class Report(Base):
     visibility = Column(SmallInteger, default=3, nullable=False, comment="公開設定 (1: public, 2: group, 3: private)")
     
     # 作成日時
-    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
+    created_at = Column(TIMESTAMP, default=datetime_now(), comment="作成日時")
     
     # 更新日時
-    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
+    updated_at = Column(TIMESTAMP,  default=datetime_now(), onupdate=datetime_now(), comment="更新日時")
     
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")

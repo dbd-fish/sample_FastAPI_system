@@ -1,3 +1,10 @@
+# seed_data.py
+# このスクリプトは開発用のデータ投入用スクリプトです。
+# 初期データをデータベースに挿入して動作確認することが目的です。
+# 実行コマンド: 
+# export PYTHONPATH=/app
+# poetry run python app/seeder/seed_data.py
+
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.future import select
 from datetime import datetime
@@ -5,6 +12,9 @@ from pathlib import Path
 import configparser
 import sys
 import asyncio
+from app.config.config import TestData
+from app.common.common import datetime_now
+
 
 # プロジェクトのルートディレクトリをモジュール検索パスに追加
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
@@ -26,10 +36,10 @@ async def seed_data():
     async with AsyncSessionLocal() as session:
         try:
             # 固定値のUUIDやIDを定義
-            user1_id = "123e4567-e89b-12d3-a456-426614174000"
-            user2_id = "123e4567-e89b-12d3-a456-426614174001"
-            group_id = "223e4567-e89b-12d3-a456-426614174002"
-            report_id = "323e4567-e89b-12d3-a456-426614174003"
+            user1_id = TestData.TEST_USER_ID_1
+            user2_id = TestData.TEST_USER_ID_2
+            group_id = TestData.TEST_GROUP_ID
+            report_id = TestData.TEST_REPORT_ID
             tag_id = 1
 
             # 1. Userテーブル
@@ -46,8 +56,8 @@ async def seed_data():
                         contact_number="123456789",
                         user_role=1,
                         user_status=1,
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -66,8 +76,8 @@ async def seed_data():
                         contact_number="987654321",
                         user_role=2,
                         user_status=1,
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -85,8 +95,8 @@ async def seed_data():
                         display_name="Test User",
                         profile_text="This is a test user profile.",
                         profile_image_url="http://example.com/image.png",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -101,8 +111,8 @@ async def seed_data():
                         ip_id=1,
                         user_id=user1_id,
                         ip_address="192.168.0.1",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -116,8 +126,8 @@ async def seed_data():
                     app.models.UserGroup(
                         group_id=group_id,
                         group_name="Sample Group",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -134,8 +144,8 @@ async def seed_data():
                         display_name="Sample Group Display",
                         profile_text="This is a sample group profile.",
                         profile_image_url="http://example.com/group_image.png",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -152,8 +162,8 @@ async def seed_data():
                     app.models.UserGroupMembership(
                         user_id=user1_id,
                         group_id=group_id,
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -171,8 +181,8 @@ async def seed_data():
                         content="This is a sample report.",
                         format=1,  # markdown
                         visibility=3,  # private
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -186,8 +196,8 @@ async def seed_data():
                     app.models.ReportTag(
                         tag_id=tag_id,
                         tag_name="Sample Tag",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -201,8 +211,8 @@ async def seed_data():
                     app.models.ReportTagLink(
                         report_id=report_id,
                         tag_id=tag_id,
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -222,8 +232,8 @@ async def seed_data():
                         start_report=0,
                         end_report=10,
                         supplement_url="http://example.com/supplement",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
                 await session.commit()
@@ -240,8 +250,8 @@ async def seed_data():
                         target_user_id=user2_id,
                         score=5,
                         comment="Great user!",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -258,8 +268,8 @@ async def seed_data():
                         report_id=report_id,
                         score=4,
                         comment="Great report!",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -276,8 +286,8 @@ async def seed_data():
                         group_id=group_id,
                         score=85,
                         comment="Good performance",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -295,8 +305,8 @@ async def seed_data():
                         report_id=report_id,
                         content="This is a comment",
                         report_supplement_action=1,  # created
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -310,9 +320,9 @@ async def seed_data():
                     app.models.TagViewHistory(
                         user_id=user1_id,
                         tag_id=tag_id,
-                        view_date=datetime.now(),
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        view_date=datetime_now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -326,9 +336,9 @@ async def seed_data():
                     app.models.ReportViewHistory(
                         user_id=user1_id,
                         report_id=report_id,
-                        view_date=datetime.now(),
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        view_date=datetime_now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -342,9 +352,9 @@ async def seed_data():
                     app.models.UserViewHistory(
                         viewer_user_id=user1_id,
                         viewed_user_id=user2_id,
-                        view_date=datetime.now(),
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        view_date=datetime_now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -358,9 +368,9 @@ async def seed_data():
                     app.models.UserSearchHistory(
                         user_id=user1_id,
                         search_term="Sample search",
-                        search_date=datetime.now(),
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        search_date=datetime_now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -374,9 +384,9 @@ async def seed_data():
                     app.models.GroupSearchHistory(
                         user_id=user1_id,
                         search_term="Sample group search",
-                        search_date=datetime.now(),
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        search_date=datetime_now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()
@@ -393,8 +403,8 @@ async def seed_data():
                         group_id=group_id,
                         score=4,
                         comment="Excellent group",
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
+                        created_at=datetime_now(),
+                        updated_at=datetime_now(),
                     )
                 )
             await session.commit()

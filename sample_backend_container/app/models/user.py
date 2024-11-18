@@ -1,5 +1,8 @@
-from sqlalchemy import Column, CHAR, String, SmallInteger, TIMESTAMP, Date, func
+from sqlalchemy import Column, CHAR, String, SmallInteger, TIMESTAMP, Date
+from app.common.common import datetime_now
 from app.database import Base
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -34,10 +37,10 @@ class User(Base):
     user_status = Column(SmallInteger, nullable=False, comment="アカウント状態 (1: active, 2: suspended)")
     
     # 作成日時
-    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
+    created_at = Column(TIMESTAMP, default=datetime_now(), comment="作成日時")
     
     # 更新日時 - 更新時に自動で変更
-    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
+    updated_at = Column(TIMESTAMP,  default=datetime_now(), onupdate=datetime_now(), comment="更新日時")
     
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")

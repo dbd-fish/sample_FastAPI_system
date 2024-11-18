@@ -1,6 +1,9 @@
 
-from sqlalchemy import Column, Integer, CHAR, TIMESTAMP, ForeignKey, func
+from sqlalchemy import Column, Integer, CHAR, TIMESTAMP, ForeignKey
+from app.common.common import datetime_now
 from app.database import Base
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from sqlalchemy.dialects.postgresql import UUID
 
 # UserViewHistoryモデル: ユーザー閲覧履歴テーブル
@@ -17,13 +20,13 @@ class UserViewHistory(Base):
     viewed_user_id = Column(UUID(as_uuid=True), ForeignKey("user.user_id"), nullable=False, comment="閲覧対象ユーザーID (UUID)")
 
     # 作成日時
-    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
+    created_at = Column(TIMESTAMP, default=datetime_now(), comment="作成日時")
 
     # 閲覧日時 - ユーザーが閲覧された日時
-    view_date = Column(TIMESTAMP, server_default=func.now(), comment="閲覧日時")
+    view_date = Column(TIMESTAMP,  comment="閲覧日時")
 
     # 更新日時
-    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
+    updated_at = Column(TIMESTAMP,  default=datetime_now(), onupdate=datetime_now(), comment="更新日時")
 
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")

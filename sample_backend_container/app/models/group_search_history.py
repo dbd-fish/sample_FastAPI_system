@@ -1,6 +1,9 @@
 
-from sqlalchemy import Column, Integer, CHAR, String, TIMESTAMP, ForeignKey, func
+from sqlalchemy import Column, Integer, CHAR, String, TIMESTAMP, ForeignKey
+from app.common.common import datetime_now
 from app.database import Base
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from sqlalchemy.dialects.postgresql import UUID
 # GroupSearchHistoryモデル: グループ検索履歴テーブル
 class GroupSearchHistory(Base):
@@ -16,13 +19,13 @@ class GroupSearchHistory(Base):
     search_term = Column(String(100), comment="検索キーワード")
 
     # 検索日時 - 検索が行われた日時
-    search_date = Column(TIMESTAMP, server_default=func.now(), comment="検索日時")
+    search_date = Column(TIMESTAMP,  comment="検索日時")
 
     # 作成日時
-    created_at = Column(TIMESTAMP, server_default=func.now(), comment="作成日時")
+    created_at = Column(TIMESTAMP, default=datetime_now(), comment="作成日時")
 
     # 更新日時
-    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), comment="更新日時")
+    updated_at = Column(TIMESTAMP,  default=datetime_now(), onupdate=datetime_now(), comment="更新日時")
 
     # 削除日時
     deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")
