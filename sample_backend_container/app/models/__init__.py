@@ -22,7 +22,6 @@ from .user_view_history import UserViewHistory
 from .user_search_history import UserSearchHistory
 from .group_search_history import GroupSearchHistory
 
-
 # 他のモデルがある場合も同様に追加
 # from .other_model import OtherModel
 

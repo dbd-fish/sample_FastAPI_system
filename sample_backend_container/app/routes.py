@@ -1,6 +1,11 @@
 from fastapi import APIRouter
-from app.controller.sample_controller import sample_endpoint
+from app.controller.report_controller import router as report_router
+from app.controller.auth_controller import router as auth_router
 
 router = APIRouter()
 
-router.get("/hello")(sample_endpoint)
+# レポート用のルーター定義  
+router.include_router(report_router, prefix="")
+
+# 認証用のルーター
+router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
