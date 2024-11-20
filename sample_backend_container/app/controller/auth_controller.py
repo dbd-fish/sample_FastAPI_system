@@ -13,24 +13,48 @@ router = APIRouter()
 @router.get("/me", response_model=UserResponse)
 async def get_me(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
     """
-    ログインユーザー情報取得エンドポイント
+    現在ログインしているユーザーの情報を取得するエンドポイント。
+
+    Args:
+        token (str): OAuth2トークン。
+        db (AsyncSession): 非同期データベースセッション。
+
+    Returns:
+        UserResponse: ログイン中のユーザー情報。
     """
+    # 現在のユーザーを取得
     user = await get_current_user(token, db)
     return user
 
 @router.post("/register", response_model=dict)
 async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     """
-    新規ユーザー登録エンドポイント
+    新しいユーザーを登録するエンドポイント。
+
+    Args:
+        user (UserCreate): 新規ユーザーの情報（メール、ユーザー名、パスワード）。
+        db (AsyncSession): 非同期データベースセッション。
+
+    Returns:
+        dict: 登録成功メッセージと新規ユーザーID。
     """
+    # ユーザー作成ロジックを呼び出し
     new_user = await create_user(user.email, user.username, user.password, db)
     return {"msg": "User created successfully", "user_id": new_user.user_id}
 
 @router.post("/login", response_model=dict)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     """
-    ログインエンドポイント
+    ログイン処理を行うエンドポイント。
+
+    Args:
+        form_data (OAuth2PasswordRequestForm): ユーザー名とパスワード。
+        db (AsyncSession): 非同期データベースセッション。
+
+    Returns:
+        dict: アクセストークンとトークンタイプ。
     """
+    # ユーザー認証
     user = await authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
@@ -38,22 +62,36 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    # アクセストークンを生成
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
-@router.post("/logout")
 
+@router.post("/logout")
 async def logout(token: str = Depends(oauth2_scheme)):
     """
-    ログアウト処理
-    - クライアント側でトークンを削除するだけのシンプルな実装
+    ログアウト処理を行うエンドポイント。
+
+    Args:
+        token (str): OAuth2トークン。
+
+    Returns:
+        dict: ログアウト成功メッセージ。
     """
-    # クライアントに対してログアウト成功を通知
+    # クライアント側でトークンを削除する
     return {"msg": "Logged out successfully"}
 
 @router.post("/reset-password", response_model=dict)
 async def reset_password_endpoint(data: PasswordReset, db: AsyncSession = Depends(get_db)):
     """
-    パスワードリセットエンドポイント
+    パスワードリセット処理を行うエンドポイント。
+
+    Args:
+        data (PasswordReset): パスワードリセットの情報（メールと新しいパスワード）。
+        db (AsyncSession): 非同期データベースセッション。
+
+    Returns:
+        dict: パスワードリセット成功メッセージ。
     """
+    # パスワードリセットロジックを呼び出し
     await reset_password(data.email, data.new_password, db)
     return {"msg": "Password reset successful"}

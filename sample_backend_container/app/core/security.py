@@ -8,80 +8,102 @@ from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 # 環境変数に適切に置き換える
-SECRET_KEY = "your_secret_key_here"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = "your_secret_key_here"  # JWTの署名に使用する秘密鍵
+ALGORITHM = "HS256"  # JWTの暗号化アルゴリズム
+ACCESS_TOKEN_EXPIRE_MINUTES = 30  # アクセストークンの有効期限（分単位）
 
-# パスワード暗号化
+# パスワード暗号化設定
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# トークンエンドポイントを指定
+# トークンのエンドポイント（FastAPIのOAuth2PasswordBearerを使用）
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
-
-# パスワードのハッシュ化
 def hash_password(password: str) -> str:
     """
     パスワードをハッシュ化する。
 
-    :param password: プレーンパスワード
-    :return: ハッシュ化されたパスワード
+    Args:
+        password (str): プレーンパスワード。
+
+    Returns:
+        str: ハッシュ化されたパスワード。
     """
     return pwd_context.hash(password)
 
-# パスワードの検証
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
-    プレーンパスワードとハッシュ化されたパスワードを検証する。
+    プレーンパスワードとハッシュ化されたパスワードを比較して検証する。
 
-    :param plain_password: プレーンパスワード
-    :param hashed_password: ハッシュ化されたパスワード
-    :return: 検証結果（True: 一致, False: 不一致）
+    Args:
+        plain_password (str): プレーンパスワード。
+        hashed_password (str): ハッシュ化されたパスワード。
+
+    Returns:
+        bool: 検証結果（True: 一致, False: 不一致）。
     """
     return pwd_context.verify(plain_password, hashed_password)
 
-# アクセストークンの作成
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     """
     アクセストークンを作成する。
 
-    :param data: トークンに含めるデータ
-    :param expires_delta: トークンの有効期限
-    :return: 作成されたJWTアクセストークン
+    Args:
+        data (dict): トークンに含めるデータ（例: {"sub": ユーザー識別子}）。
+        expires_delta (timedelta, optional): トークンの有効期限（デフォルトは30分）。
+
+    Returns:
+        str: 作成されたJWTアクセストークン。
     """
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire})  # 有効期限をペイロードに追加
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-# アクセストークンのデコード
 def decode_access_token(token: str) -> dict:
     """
-    アクセストークンをデコードする。
+    アクセストークンをデコードしてペイロードを取得する。
 
-    :param token: デコードするJWTアクセストークン
-    :return: デコードされたペイロード情報
-    :raises HTTPException: トークンが無効な場合に例外を発生
+    Args:
+        token (str): デコード対象のJWTアクセストークン。
+
+    Returns:
+        dict: デコードされたペイロード情報。
+
+    Raises:
+        HTTPException: トークンが無効または不正な場合。
     """
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])  # トークンをデコード
         return payload
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
-# ユーザー認証
 async def authenticate_user(email: str, password: str, db: AsyncSession) -> User:
     """
-    ユーザー認証を行う。
+    メールアドレスとパスワードを使用してユーザー認証を行う。
 
-    :param email: ユーザーのメールアドレス
-    :param password: プレーンパスワード
-    :param db: データベースセッション
-    :return: 認証に成功したユーザー
+    Args:
+        email (str): ユーザーのメールアドレス。
+        password (str): プレーンパスワード。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        User: 認証に成功したユーザーオブジェクト。
+
+    Raises:
+        HTTPException: 認証に失敗した場合。
     """
-    query = select(User).where(User.email == email)
+    query = select(User).where(User.email == email)  # メールアドレスでユーザーを検索
     result = await db.execute(query)
-    user = result.scalars().first()
-    if not user or not verify_password(password, user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+    user = result.scalars().first()  # 検索結果を取得
+    if not user or not verify_password(password, user.password_hash):  # パスワードを検証
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return user

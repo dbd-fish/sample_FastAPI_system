@@ -12,10 +12,17 @@ async def create_report(report_data: RequestReport, db: AsyncSession) -> Respons
     """
     新しいレポートを作成するサービス関数。
 
-    :param report_data: 作成するレポートのデータ
-    :param db: データベースセッション
-    :return: 作成されたレポート (Pydanticスキーマ)
+    Args:
+        report_data (RequestReport): 作成するレポートのデータ。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        ResponseReport: 作成されたレポートデータ (Pydanticスキーマ)。
+
+    Raises:
+        HTTPException: データベースエラーが発生した場合。
     """
+    # 新しいレポートのインスタンスを作成
     new_report = Report(
         user_id=TestData.TEST_USER_ID_1,
         title=report_data.title,
@@ -24,45 +31,60 @@ async def create_report(report_data: RequestReport, db: AsyncSession) -> Respons
         visibility=report_data.visibility,
     )
     try:
-        db.add(new_report)
-        await db.commit()
-        await db.refresh(new_report)
-        return ResponseReport.model_validate(new_report)
+        db.add(new_report)  # レポートをデータベースに追加
+        await db.commit()  # コミットして保存
+        await db.refresh(new_report)  # 更新されたデータを取得
+        return ResponseReport.model_validate(new_report)  # Pydanticモデルに変換して返却
     except SQLAlchemyError as e:
-        await db.rollback()
+        await db.rollback()  # エラー発生時にロールバック
         raise HTTPException(status_code=500, detail=str(e))
 
 async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSession) -> ResponseReport:
     """
     レポートを更新するサービス関数。
 
-    :param report_id: 更新対象のレポートID
-    :param updated_data: 更新するデータ
-    :param db: データベースセッション
-    :return: 更新されたレポート (Pydanticスキーマ)
+    Args:
+        report_id (str): 更新対象のレポートID。
+        updated_data (RequestReport): 更新データ。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        ResponseReport: 更新されたレポートデータ (Pydanticスキーマ)。
+
+    Raises:
+        HTTPException: レポートが見つからない場合、またはデータベースエラーが発生した場合。
     """
+    # 指定されたIDのレポートを取得
     report = await db.get(Report, UUID(report_id))
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
 
+    # 更新データを適用
     for key, value in updated_data.model_dump(exclude_unset=True).items():
         setattr(report, key, value)
     try:
-        await db.commit()
-        await db.refresh(report)
-        return ResponseReport.model_validate(report)
+        await db.commit()  # コミットして保存
+        await db.refresh(report)  # 更新されたデータを取得
+        return ResponseReport.model_validate(report)  # Pydanticモデルに変換して返却
     except SQLAlchemyError as e:
-        await db.rollback()
+        await db.rollback()  # エラー発生時にロールバック
         raise HTTPException(status_code=500, detail=str(e))
 
 async def delete_report(report_id: str, db: AsyncSession) -> dict:
     """
     レポートを論理削除するサービス関数。
 
-    :param report_id: 削除対象のレポートID
-    :param db: データベースセッション
-    :return: 削除成功メッセージ
+    Args:
+        report_id (str): 削除対象のレポートID。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        dict: 削除成功メッセージ。
+
+    Raises:
+        HTTPException: レポートが見つからない場合、またはデータベースエラーが発生した場合。
     """
+    # 論理削除対象のレポートを取得
     stmt = select(Report).where(Report.report_id == UUID(report_id), Report.deleted_at.is_(None))
     result = await db.execute(stmt)
     report = result.scalar_one_or_none()
@@ -70,24 +92,31 @@ async def delete_report(report_id: str, db: AsyncSession) -> dict:
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
 
-    # 論理削除: deleted_at を現在時刻に設定
+    # 論理削除: deleted_at フィールドを現在時刻に設定
     report.deleted_at = datetime_now()
     try:
-        await db.commit()
+        await db.commit()  # コミットして保存
         return {"message": "Report deleted successfully"}
     except SQLAlchemyError as e:
-        await db.rollback()
+        await db.rollback()  # エラー発生時にロールバック
         raise HTTPException(status_code=500, detail=str(e))
 
 async def get_report_by_id_service(report_id: str, db: AsyncSession) -> ResponseReport:
     """
     指定されたIDのレポートを取得するサービス関数。
 
-    :param report_id: 取得対象のレポートID
-    :param db: データベースセッション
-    :return: レポートオブジェクト (Pydanticスキーマ)
+    Args:
+        report_id (str): 取得対象のレポートID。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        ResponseReport: レポートデータ (Pydanticスキーマ)。
+
+    Raises:
+        HTTPException: レポートが見つからない場合。
     """
+    # 指定されたIDのレポートを取得
     report = await db.get(Report, UUID(report_id))
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    return ResponseReport.model_validate(report)
+    return ResponseReport.model_validate(report)  # Pydanticモデルに変換して返却

@@ -1,8 +1,14 @@
 from pydantic import BaseModel
 
 class Token(BaseModel):
-    access_token: str
-    token_type: str
+    """
+    トークン情報を表すモデル。
+    """
+    access_token: str  # アクセストークンの文字列
+    token_type: str  # トークンの種類（通常は "bearer"）
 
 class TokenData(BaseModel):
-    email: str | None = None
+    """
+    トークンに含まれるデータを表すモデル。
+    """
+    email: str | None = None  # トークンに関連付けられたメールアドレス（オプション）
