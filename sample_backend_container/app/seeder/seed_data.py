@@ -12,8 +12,10 @@ from pathlib import Path
 import configparser
 import sys
 import asyncio
-from app.config.config import TestData
+from app.core.config import TestData
 from app.common.common import datetime_now
+from passlib.context import CryptContext
+from sqlalchemy.sql import text
 
 
 # プロジェクトのルートディレクトリをモジュール検索パスに追加
@@ -30,6 +32,56 @@ DATABASE_URL = config.get("alembic", "sqlalchemy.url")
 # 非同期エンジンとセッションの作成
 engine = create_async_engine(DATABASE_URL, echo=True)
 AsyncSessionLocal = async_sessionmaker(bind=engine, autoflush=False, autocommit=False)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+async def clear_data():
+    """
+    データベース内の全データをクリアします。
+    外部キー制約を無効化して削除後、元に戻します。
+    """
+    async with AsyncSessionLocal() as session:
+        try:
+            # 外部キー制約を無効化
+            await session.execute(text("SET session_replication_role = 'replica';"))
+            
+            # 削除対象のテーブルリスト
+            tables_to_clear = [
+                "user_view_history",
+                "report_view_history",
+                "tag_view_history",
+                "report_comment_history",
+                "group_evaluation_history",
+                "user_search_history",
+                "group_search_history",
+                "group_evaluation",
+                "report_evaluation_history",
+                "user_evaluation_history",
+                "report_supplement",
+                "report_tag_link",
+                "report_tag",
+                "report",
+                "user_group_membership",
+                "group_profile",
+                "user_group",
+                "user_ip_address",
+                "user_profile",
+                '"user"'  # 修正: userテーブルを二重引用符で囲む
+            ]
+
+            # 各テーブルのデータを削除
+            for table in tables_to_clear:
+                print(f"Clearing table: {table}")
+                await session.execute(text(f"TRUNCATE TABLE {table} CASCADE;"))
+
+            # 外部キー制約を元に戻す
+            await session.execute(text("SET session_replication_role = 'origin';"))
+            await session.commit()
+            print("Database cleared successfully.")
+
+        except Exception as e:
+            await session.rollback()
+            print(f"An error occurred while clearing data: {e}")
+        finally:
+            await session.close()
 
 
 async def seed_data():
@@ -52,7 +104,7 @@ async def seed_data():
                         user_id=user1_id,
                         username="testuser",
                         email="testuser@example.com",
-                        password_hash="hashed_password",
+                        password_hash=pwd_context.hash("password"),
                         contact_number="123456789",
                         user_role=1,
                         user_status=1,
@@ -72,7 +124,7 @@ async def seed_data():
                         user_id=user2_id,
                         username="targetuser",
                         email="targetuser@example.com",
-                        password_hash="hashed_password",
+                        password_hash=pwd_context.hash("password"),
                         contact_number="987654321",
                         user_role=2,
                         user_status=1,
@@ -419,5 +471,15 @@ async def seed_data():
 
 
 if __name__ == "__main__":
-    asyncio.run(seed_data())
+    import argparse
 
+    parser = argparse.ArgumentParser(description="Seed or clear database.")
+    parser.add_argument("--clear", action="store_true", help="Clear all database data")
+    args = parser.parse_args()
+
+    if args.clear:
+        print("Clearing database...")
+        asyncio.run(clear_data())
+    else:
+        print("Seeding database...")
+        asyncio.run(seed_data())

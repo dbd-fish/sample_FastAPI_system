@@ -5,6 +5,7 @@ from app.models.user import User
 from app.database import AsyncSession
 from sqlalchemy.future import select
 from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 
 # 環境変数に適切に置き換える
 SECRET_KEY = "your_secret_key_here"
@@ -13,6 +14,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # パスワード暗号化
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# トークンエンドポイントを指定
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 
 # パスワードのハッシュ化
 def hash_password(password: str) -> str:

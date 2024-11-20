@@ -8,4 +8,4 @@ router = APIRouter()
 router.include_router(report_router, prefix="")
 
 # 認証用のルーター
-router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+router.include_router(auth_router, prefix="/auth", tags=["auth"])
