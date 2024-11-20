@@ -7,6 +7,10 @@ from app.schema.report import RequestReport, ResponseReport
 from uuid import UUID
 from app.core.config import TestData
 from app.common.common import datetime_now
+import structlog
+
+# ログ設定
+logger = structlog.get_logger()
 
 async def create_report(report_data: RequestReport, db: AsyncSession) -> ResponseReport:
     """
@@ -22,7 +26,7 @@ async def create_report(report_data: RequestReport, db: AsyncSession) -> Respons
     Raises:
         HTTPException: データベースエラーが発生した場合。
     """
-    # 新しいレポートのインスタンスを作成
+    logger.info("create_report - start", report_data=report_data)
     new_report = Report(
         user_id=TestData.TEST_USER_ID_1,
         title=report_data.title,
@@ -31,13 +35,17 @@ async def create_report(report_data: RequestReport, db: AsyncSession) -> Respons
         visibility=report_data.visibility,
     )
     try:
-        db.add(new_report)  # レポートをデータベースに追加
-        await db.commit()  # コミットして保存
-        await db.refresh(new_report)  # 更新されたデータを取得
-        return ResponseReport.model_validate(new_report)  # Pydanticモデルに変換して返却
+        db.add(new_report)
+        await db.commit()
+        await db.refresh(new_report)
+        logger.info("create_report - success", report_id=new_report.report_id)
+        return ResponseReport.model_validate(new_report)
     except SQLAlchemyError as e:
-        await db.rollback()  # エラー発生時にロールバック
+        await db.rollback()
+        logger.error("create_report - error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        logger.info("create_report - end")
 
 async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSession) -> ResponseReport:
     """
@@ -54,21 +62,25 @@ async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSe
     Raises:
         HTTPException: レポートが見つからない場合、またはデータベースエラーが発生した場合。
     """
-    # 指定されたIDのレポートを取得
+    logger.info("update_report - start", report_id=report_id, updated_data=updated_data)
     report = await db.get(Report, UUID(report_id))
     if not report:
+        logger.warning("update_report - report not found", report_id=report_id)
         raise HTTPException(status_code=404, detail="Report not found")
 
-    # 更新データを適用
     for key, value in updated_data.model_dump(exclude_unset=True).items():
         setattr(report, key, value)
     try:
-        await db.commit()  # コミットして保存
-        await db.refresh(report)  # 更新されたデータを取得
-        return ResponseReport.model_validate(report)  # Pydanticモデルに変換して返却
+        await db.commit()
+        await db.refresh(report)
+        logger.info("update_report - success", report_id=report.report_id)
+        return ResponseReport.model_validate(report)
     except SQLAlchemyError as e:
-        await db.rollback()  # エラー発生時にロールバック
+        await db.rollback()
+        logger.error("update_report - error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        logger.info("update_report - end")
 
 async def delete_report(report_id: str, db: AsyncSession) -> dict:
     """
@@ -84,22 +96,26 @@ async def delete_report(report_id: str, db: AsyncSession) -> dict:
     Raises:
         HTTPException: レポートが見つからない場合、またはデータベースエラーが発生した場合。
     """
-    # 論理削除対象のレポートを取得
+    logger.info("delete_report - start", report_id=report_id)
     stmt = select(Report).where(Report.report_id == UUID(report_id), Report.deleted_at.is_(None))
     result = await db.execute(stmt)
     report = result.scalar_one_or_none()
 
     if not report:
+        logger.warning("delete_report - report not found", report_id=report_id)
         raise HTTPException(status_code=404, detail="Report not found")
 
-    # 論理削除: deleted_at フィールドを現在時刻に設定
     report.deleted_at = datetime_now()
     try:
-        await db.commit()  # コミットして保存
+        await db.commit()
+        logger.info("delete_report - success", report_id=report.report_id)
         return {"message": "Report deleted successfully"}
     except SQLAlchemyError as e:
-        await db.rollback()  # エラー発生時にロールバック
+        await db.rollback()
+        logger.error("delete_report - error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        logger.info("delete_report - end")
 
 async def get_report_by_id_service(report_id: str, db: AsyncSession) -> ResponseReport:
     """
@@ -115,8 +131,11 @@ async def get_report_by_id_service(report_id: str, db: AsyncSession) -> Response
     Raises:
         HTTPException: レポートが見つからない場合。
     """
-    # 指定されたIDのレポートを取得
+    logger.info("get_report_by_id_service - start", report_id=report_id)
     report = await db.get(Report, UUID(report_id))
     if not report:
+        logger.warning("get_report_by_id_service - report not found", report_id=report_id)
         raise HTTPException(status_code=404, detail="Report not found")
-    return ResponseReport.model_validate(report)  # Pydanticモデルに変換して返却
+    logger.info("get_report_by_id_service - success", report_id=report.report_id)
+    logger.info("get_report_by_id_service - end")
+    return ResponseReport.model_validate(report)

@@ -4,9 +4,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_db
 from app.services.auth_service import authenticate_user, create_access_token, create_user, reset_password, get_current_user
 from app.schema.user import UserCreate, PasswordReset, UserResponse
-from app.core.config import settings
-from fastapi.security import OAuth2PasswordBearer
 from app.core.security import oauth2_scheme
+import structlog
+
+# ログの設定
+logger = structlog.get_logger()
 
 router = APIRouter()
 
@@ -22,9 +24,16 @@ async def get_me(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends
     Returns:
         UserResponse: ログイン中のユーザー情報。
     """
-    # 現在のユーザーを取得
-    user = await get_current_user(token, db)
-    return user
+    logger.info("get_me - start", token=token)
+    try:
+        user = await get_current_user(token, db)  # 現在のユーザーを取得
+        logger.info("get_me - success", user_id=user.user_id)
+        return user
+    except Exception as e:
+        logger.error("get_me - error", error=str(e))
+        raise e
+    finally:
+        logger.info("get_me - end")
 
 @router.post("/register", response_model=dict)
 async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
@@ -38,9 +47,16 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     Returns:
         dict: 登録成功メッセージと新規ユーザーID。
     """
-    # ユーザー作成ロジックを呼び出し
-    new_user = await create_user(user.email, user.username, user.password, db)
-    return {"msg": "User created successfully", "user_id": new_user.user_id}
+    logger.info("register_user - start", email=user.email, username=user.username)
+    try:
+        new_user = await create_user(user.email, user.username, user.password, db)
+        logger.info("register_user - success", user_id=new_user.user_id)
+        return {"msg": "User created successfully", "user_id": new_user.user_id}
+    except Exception as e:
+        logger.error("register_user - error", error=str(e))
+        raise e
+    finally:
+        logger.info("register_user - end")
 
 @router.post("/login", response_model=dict)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
@@ -54,17 +70,24 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     Returns:
         dict: アクセストークンとトークンタイプ。
     """
-    # ユーザー認証
-    user = await authenticate_user(form_data.username, form_data.password, db)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    # アクセストークンを生成
-    access_token = create_access_token(data={"sub": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    logger.info("login - start", username=form_data.username)
+    try:
+        user = await authenticate_user(form_data.username, form_data.password, db)
+        if not user:
+            logger.warning("login - authentication failed", username=form_data.username)
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        access_token = create_access_token(data={"sub": user.email})  # アクセストークンを生成
+        logger.info("login - success", user_id=user.user_id)
+        return {"access_token": access_token, "token_type": "bearer"}
+    except Exception as e:
+        logger.error("login - error", error=str(e))
+        raise e
+    finally:
+        logger.info("login - end")
 
 @router.post("/logout")
 async def logout(token: str = Depends(oauth2_scheme)):
@@ -77,8 +100,16 @@ async def logout(token: str = Depends(oauth2_scheme)):
     Returns:
         dict: ログアウト成功メッセージ。
     """
-    # クライアント側でトークンを削除する
-    return {"msg": "Logged out successfully"}
+    logger.info("logout - start", token=token)
+    try:
+        # クライアント側でトークンを削除するシンプルな処理
+        logger.info("logout - success")
+        return {"msg": "Logged out successfully"}
+    except Exception as e:
+        logger.error("logout - error", error=str(e))
+        raise e
+    finally:
+        logger.info("logout - end")
 
 @router.post("/reset-password", response_model=dict)
 async def reset_password_endpoint(data: PasswordReset, db: AsyncSession = Depends(get_db)):
@@ -92,6 +123,13 @@ async def reset_password_endpoint(data: PasswordReset, db: AsyncSession = Depend
     Returns:
         dict: パスワードリセット成功メッセージ。
     """
-    # パスワードリセットロジックを呼び出し
-    await reset_password(data.email, data.new_password, db)
-    return {"msg": "Password reset successful"}
+    logger.info("reset_password - start", email=data.email)
+    try:
+        await reset_password(data.email, data.new_password, db)
+        logger.info("reset_password - success", email=data.email)
+        return {"msg": "Password reset successful"}
+    except Exception as e:
+        logger.error("reset_password - error", error=str(e))
+        raise e
+    finally:
+        logger.info("reset_password - end")
