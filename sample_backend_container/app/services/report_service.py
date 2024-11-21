@@ -132,10 +132,31 @@ async def get_report_by_id_service(report_id: str, db: AsyncSession) -> Response
         HTTPException: レポートが見つからない場合。
     """
     logger.info("get_report_by_id_service - start", report_id=report_id)
-    report = await db.get(Report, UUID(report_id))
-    if not report:
-        logger.warning("get_report_by_id_service - report not found", report_id=report_id)
-        raise HTTPException(status_code=404, detail="Report not found")
-    logger.info("get_report_by_id_service - success", report_id=report.report_id)
-    logger.info("get_report_by_id_service - end")
-    return ResponseReport.model_validate(report)
+
+    try:
+        report = await db.get(Report, UUID(report_id))  # UUID型に変換して取得
+        if not report:
+            logger.warning(
+                "get_report_by_id_service - report not found",
+                report_id=report_id,
+            )
+            raise HTTPException(status_code=404, detail="Report not found")
+
+        logger.info(
+            "get_report_by_id_service - success",
+            report_id=report_id,
+            title=report.title,
+        )
+
+        return ResponseReport.model_validate(report)
+
+    except Exception as e:
+        logger.error(
+            "get_report_by_id_service - error",
+            report_id=report_id,
+            error=str(e),
+        )
+        raise e
+
+    finally:
+        logger.info("get_report_by_id_service - end", report_id=report_id)

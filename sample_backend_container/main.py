@@ -1,20 +1,10 @@
-import sys
 from fastapi import FastAPI
+from starlette.middleware.base import BaseHTTPMiddleware
 from app.database import database
 from app.routes import router
+from app.core.log_config import logger, structlog
 from contextlib import asynccontextmanager
-import logging
-import structlog
-import logging
-from logging.handlers import TimedRotatingFileHandler
-import structlog
-import os
-from datetime import datetime
-
-from app.core.log_config import logger
-
-
-
+from fastapi import Request
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -32,10 +22,23 @@ async def lifespan(app: FastAPI):
 # FastAPIアプリケーションインスタンスを作成し、lifespanを設定
 app = FastAPI(lifespan=lifespan)
 
+# IPアドレスをログに追加するミドルウェア
+class AddUserIPMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        user_ip = request.client.host
+        structlog.contextvars.bind_contextvars(user_ip=user_ip)
+        logger.info("User IP in Middleware", user_ip=user_ip)
+        try:
+            response = await call_next(request)
+        finally:
+            structlog.contextvars.clear_contextvars()
+        return response
+
+# ミドルウェアの追加
+app.add_middleware(AddUserIPMiddleware)
+
 # インポートしたルーターをアプリケーションに追加
 app.include_router(router)
-
-
 
 # このスクリプトが直接実行された場合、Uvicornサーバーを起動
 if __name__ == "__main__":
