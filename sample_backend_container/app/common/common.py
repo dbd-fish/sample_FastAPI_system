@@ -12,5 +12,4 @@ def datetime_now():
     """
     日本時間（Asia/Tokyo）の現在時刻を取得する。
     """
-    print(datetime.now(ZoneInfo("Asia/Tokyo")).replace(microsecond=0))
     return datetime.now(ZoneInfo("Asia/Tokyo")).replace(tzinfo=None, microsecond=0)
