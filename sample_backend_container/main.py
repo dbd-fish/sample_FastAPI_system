@@ -5,6 +5,13 @@ from app.routes import router
 from app.core.log_config import logger, structlog
 from contextlib import asynccontextmanager
 from fastapi import Request
+from app.middleware import AddUserIPMiddleware
+import os
+import time  
+
+# システムのローカルタイムゾーンをJSTに設定
+os.environ['TZ'] = 'Asia/Tokyo'
+time.tzset()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,18 +28,6 @@ async def lifespan(app: FastAPI):
 
 # FastAPIアプリケーションインスタンスを作成し、lifespanを設定
 app = FastAPI(lifespan=lifespan)
-
-# IPアドレスをログに追加するミドルウェア
-class AddUserIPMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        user_ip = request.client.host
-        structlog.contextvars.bind_contextvars(user_ip=user_ip)
-        logger.info("User IP in Middleware", user_ip=user_ip)
-        try:
-            response = await call_next(request)
-        finally:
-            structlog.contextvars.clear_contextvars()
-        return response
 
 # ミドルウェアの追加
 app.add_middleware(AddUserIPMiddleware)
