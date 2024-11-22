@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.user import User
 from app.schema.user import UserCreate, UserResponse
-from app.core.config import settings
+from app.config.setting import setting
 from fastapi import Depends
 from typing import Annotated
 from app.core.security import oauth2_scheme
@@ -23,7 +23,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: As
     """
     logger.info("get_current_user - start", token=token)
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(token, setting.SECRET_KEY, algorithms=[setting.ALGORITHM])
         email: str = payload.get("sub")
         if email is None:
             logger.warning("get_current_user - token missing 'sub'", token=token)
@@ -90,9 +90,9 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     """
     logger.info("create_access_token - start")
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=setting.ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, setting.SECRET_KEY, algorithm=setting.ALGORITHM)
     logger.info("create_access_token - end", expire=expire)
     return encoded_jwt
 

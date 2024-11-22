@@ -12,7 +12,7 @@ from pathlib import Path
 import configparser
 import sys
 import asyncio
-from app.core.config import TestData
+from config.test_data import TestData
 from app.common.common import datetime_now
 from passlib.context import CryptContext
 from sqlalchemy.sql import text

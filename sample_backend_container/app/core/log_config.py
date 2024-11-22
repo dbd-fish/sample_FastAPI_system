@@ -4,55 +4,134 @@ import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from structlog.processors import CallsiteParameter
+from app.config.setting import setting
 
-# ログディレクトリ作成
-log_dir = "logs"
-os.makedirs(log_dir, exist_ok=True)
 
-# 現在の日付を取得してログファイル名を生成
-def get_log_file_name():
+def create_log_directory(directory: str) -> None:
+    """
+    指定されたログディレクトリを作成します。
+
+    Args:
+        directory (str): 作成するログディレクトリのパス。
+    """
+    os.makedirs(directory, exist_ok=True)
+
+
+def get_log_file_path(directory: str, filename_template: str = "app_{date}.log") -> str:
+    """
+    現在の日付を基にログファイルのパスを生成します。
+
+    Args:
+        directory (str): ログファイルを保存するディレクトリ。
+        filename_template (str): ログファイル名のテンプレート。
+
+    Returns:
+        str: 生成されたログファイルのフルパス。
+    """
     current_date = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d")
-    return os.path.join(log_dir, f"app_{current_date}.log")
+    return os.path.join(directory, filename_template.format(date=current_date))
 
-log_file_path = get_log_file_name()
 
-# 日本時間対応のカスタムフォーマッタ
-class JSTFormatter(logging.Formatter):
-    def formatTime(self, record, datefmt=None):
-        dt = datetime.fromtimestamp(record.created, ZoneInfo("Asia/Tokyo"))
-        if datefmt:
-            return dt.strftime(datefmt)
-        return dt.isoformat()
+def configure_logging() -> structlog.BoundLogger:
+    """
+    ログ設定を行います。ファイルハンドラーやカスタムフォーマッタの設定、
+    structlog用のプロセッサを含みます。
 
-file_handler = logging.FileHandler(log_file_path, encoding="utf-8")
-file_handler.setLevel(logging.INFO)
-formatter = JSTFormatter("[%(asctime)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-file_handler.setFormatter(formatter)
+    Returns:
+        structlog.BoundLogger: 設定済みのstructlogロガーインスタンス。
+    """
+    # アプリケーションログの設定
+    create_log_directory(setting.APP_LOG_DIRECTORY)
+    app_log_file_path = get_log_file_path(setting.APP_LOG_DIRECTORY)
 
-logging.basicConfig(
-    handlers=[file_handler],
-    level=logging.INFO,
-)
+    # 日本時間対応のカスタムフォーマッタ
+    class JSTFormatter(logging.Formatter):
+        """
+        日本時間（JST）でタイムスタンプをフォーマットするカスタムフォーマッタ。
+        """
+        def formatTime(self, record, datefmt=None):
+            """
+            ログレコードのタイムスタンプをJSTでフォーマットします。
 
-structlog.configure(
-    processors=[
-        structlog.contextvars.merge_contextvars,
-        structlog.processors.TimeStamper(fmt="iso", utc=False),
-        structlog.processors.add_log_level,
-        structlog.stdlib.add_logger_name,
-        structlog.processors.format_exc_info,
-        structlog.processors.CallsiteParameterAdder(
-            [
-                CallsiteParameter.PATHNAME,
-                CallsiteParameter.MODULE,
-                CallsiteParameter.FUNC_NAME,
-                CallsiteParameter.LINENO,
-            ]
-        ),
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True),
-    ],
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    cache_logger_on_first_use=True,
-)
-# structlogのロガー作成
-logger = structlog.get_logger()
+            Args:
+                record (logging.LogRecord): ログレコード。
+                datefmt (Optional[str]): 日付フォーマット文字列。
+
+            Returns:
+                str: フォーマットされたタイムスタンプ。
+            """
+            dt = datetime.fromtimestamp(record.created, ZoneInfo("Asia/Tokyo"))
+            if datefmt:
+                return dt.strftime(datefmt)
+            return dt.isoformat()
+
+    # アプリケーションログのファイルハンドラ設定
+    app_file_handler = logging.FileHandler(app_log_file_path, encoding="utf-8")
+    app_file_handler.setLevel(logging.INFO)
+    app_formatter = JSTFormatter("[%(asctime)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+    app_file_handler.setFormatter(app_formatter)
+
+    # アプリケーション用のロガー設定
+    app_logger = logging.getLogger("app")
+    app_logger.setLevel(logging.INFO)
+    app_logger.addHandler(app_file_handler)
+
+    # SQLAlchemyログの設定
+    configure_sqlalchemy_logging()
+
+    # structlogの設定
+    structlog.configure(
+        processors=[
+            structlog.contextvars.merge_contextvars,
+            structlog.processors.TimeStamper(fmt="iso", utc=False),
+            structlog.processors.add_log_level,
+            structlog.stdlib.add_logger_name,
+            structlog.processors.format_exc_info,
+            structlog.processors.CallsiteParameterAdder(
+                [
+                    CallsiteParameter.PATHNAME,
+                    CallsiteParameter.MODULE,
+                    CallsiteParameter.FUNC_NAME,
+                    CallsiteParameter.LINENO,
+                ]
+            ),
+            structlog.processors.JSONRenderer(indent=4, sort_keys=True),
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        cache_logger_on_first_use=True,
+    )
+
+    # 設定済みのロガーを返却
+    return structlog.get_logger()
+
+
+def configure_sqlalchemy_logging() -> None:
+    """
+    SQLAlchemyのログ設定を行います。
+    """
+    # SQLAlchemyログ用ディレクトリ作成
+    create_log_directory(setting.SQL_LOG_DIRECTORY)
+
+    # SQLAlchemy用ログファイルパス
+    sqlalchemy_log_file_path = get_log_file_path(setting.SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
+
+    # SQLAlchemy専用ロガーを設定
+    sqlalchemy_logger = logging.getLogger("sqlalchemy.engine")
+    sqlalchemy_logger.setLevel(logging.INFO)
+
+    # SQLAlchemy用のファイルハンドラ
+    sqlalchemy_file_handler = logging.FileHandler(sqlalchemy_log_file_path, encoding="utf-8")
+    sqlalchemy_formatter = logging.Formatter(
+        "[%(asctime)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+    )
+    sqlalchemy_file_handler.setFormatter(sqlalchemy_formatter)
+
+    # ハンドラをロガーに追加
+    sqlalchemy_logger.addHandler(sqlalchemy_file_handler)
+
+    # アプリケーションログから除外
+    sqlalchemy_logger.propagate = False
+
+
+# ロガー作成
+logger = configure_logging()

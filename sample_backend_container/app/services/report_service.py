@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from app.models.report import Report
 from app.schema.report import RequestReport, ResponseReport
 from uuid import UUID
-from app.core.config import TestData
+from app.config.test_data import TestData
 from app.common.common import datetime_now
 import structlog
 
