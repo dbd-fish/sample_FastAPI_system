@@ -82,20 +82,20 @@ def configure_logging() -> structlog.BoundLogger:
     # structlogの設定
     structlog.configure(
         processors=[
-            structlog.contextvars.merge_contextvars,
-            structlog.processors.TimeStamper(fmt="iso", utc=False),
-            structlog.processors.add_log_level,
-            structlog.stdlib.add_logger_name,
-            structlog.processors.format_exc_info,
-            structlog.processors.CallsiteParameterAdder(
+            structlog.contextvars.merge_contextvars,  # リクエストスコープでの変数をログに統合
+            structlog.processors.TimeStamper(fmt="iso", utc=False),  # ISOフォーマットのタイムスタンプを追加
+            structlog.processors.add_log_level,  # ログレベルを追加
+            structlog.stdlib.add_logger_name,  # ロガー名を追加
+            structlog.processors.format_exc_info,  # 例外情報をフォーマット
+            structlog.processors.CallsiteParameterAdder(  # ログ発生箇所の情報を追加
                 [
-                    CallsiteParameter.PATHNAME,
-                    CallsiteParameter.MODULE,
-                    CallsiteParameter.FUNC_NAME,
-                    CallsiteParameter.LINENO,
+                    CallsiteParameter.PATHNAME,  # ファイルのパス
+                    CallsiteParameter.MODULE,  # モジュール名
+                    CallsiteParameter.FUNC_NAME,  # 関数名
+                    CallsiteParameter.LINENO,  # 行番号
                 ]
             ),
-            structlog.processors.JSONRenderer(indent=4, sort_keys=True),
+            structlog.processors.JSONRenderer(indent=4, sort_keys=True),  # JSON形式で出力
         ],
         logger_factory=structlog.stdlib.LoggerFactory(),
         cache_logger_on_first_use=True,

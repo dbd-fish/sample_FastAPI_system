@@ -7,14 +7,16 @@ from sqlalchemy.future import select
 from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 import structlog
+from zoneinfo import ZoneInfo
+from app.config.setting import setting
 
 # ログの設定
 logger = structlog.get_logger()
 
 # 環境変数に適切に置き換える
-SECRET_KEY = "your_secret_key_here"  # JWTの署名に使用する秘密鍵
-ALGORITHM = "HS256"  # JWTの暗号化アルゴリズム
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # アクセストークンの有効期限（分単位）
+SECRET_KEY = setting.SECRET_KEY  # JWTの署名に使用する秘密鍵
+ALGORITHM = setting.ALGORITHM  # JWTの暗号化アルゴリズム
+ACCESS_TOKEN_EXPIRE_MINUTES = setting.ACCESS_TOKEN_EXPIRE_MINUTES  # アクセストークンの有効期限（分単位）
 
 # パスワード暗号化設定
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -136,3 +138,34 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> User
     logger.info("authenticate_user - success", user_id=user.user_id)
     logger.info("authenticate_user - end")
     return user
+
+
+async def reset_password(email: str, new_password: str, db: AsyncSession):
+    """
+    パスワードをリセットする
+    """
+    logger.info("reset_password - start", email=email)
+    query = select(User).where(User.email == email)
+    result = await db.execute(query)
+    user = result.scalars().first()
+
+    if not user:
+        logger.warning("reset_password - user not found", email=email)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    user.password_hash = get_password_hash(new_password)
+    user.updated_at = datetime.now(ZoneInfo("Asia/Tokyo"))
+    try:
+        await db.commit()
+        await db.refresh(user)
+        logger.info("reset_password - success", user_id=user.user_id)
+        return user
+    except Exception as e:
+        logger.error("reset_password - error", error=str(e))
+        await db.rollback()
+        raise e
+    finally:
+        logger.info("reset_password - end")

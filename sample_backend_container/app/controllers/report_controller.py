@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
-from app.schema.report import RequestReport, ResponseReport
-from app.schema.user import UserResponse
+from app.schemas.report import RequestReport, ResponseReport
+from app.schemas.user import UserResponse
 from app.services.report_service import create_report, update_report, delete_report, get_report_by_id_service
 from app.models.user import User  # 現在ログイン中のユーザーを表すモデル
 from app.core.security import oauth2_scheme
