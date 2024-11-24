@@ -34,7 +34,7 @@ async def create_report_endpoint(
     """
     logger.info("create_report_endpoint - start", user_id=current_user.user_id, report_title=report.title)
     try:
-        endpoint_result = await create_report(report, db)  # レポート作成ロジックを呼び出し
+        endpoint_result = await create_report(report,current_user, db)  # レポート作成ロジックを呼び出し
         logger.info("create_report_endpoint - success", report_id=endpoint_result.report_id)
         return endpoint_result
     except Exception as e:

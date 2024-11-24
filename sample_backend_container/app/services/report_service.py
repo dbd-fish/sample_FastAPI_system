@@ -1,3 +1,4 @@
+from app.schemas.user import UserResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 from uuid import UUID
@@ -12,14 +13,14 @@ from sqlalchemy.exc import SQLAlchemyError
 logger = structlog.get_logger()
 
 
-async def create_report(report_data: RequestReport, db: AsyncSession) -> ResponseReport:
+async def create_report(report_data: RequestReport, current_user: UserResponse ,db: AsyncSession) -> ResponseReport:
     """
     新しいレポートを作成するサービス関数。
     """
     logger.info("create_report - start", report_data=report_data)
 
     new_report = Report(
-        user_id=TestData.TEST_USER_ID_1,
+        user_id=current_user.user_id,
         title=report_data.title,
         content=report_data.content,
         format=report_data.format,
