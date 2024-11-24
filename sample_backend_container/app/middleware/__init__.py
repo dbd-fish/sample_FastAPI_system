@@ -1,3 +1,7 @@
-from .middleware import AddUserIPMiddleware
+from .middleware import AddUserIPMiddleware, ErrorHandlerMiddleware
 
-__all__ = ["AddUserIPMiddleware"]
+__all__ = [
+    "AddUserIPMiddleware"
+    "ErrorHandlerMiddleware"
+
+]
