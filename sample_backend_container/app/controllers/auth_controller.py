@@ -27,7 +27,7 @@ async def get_me(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends
     """
     logger.info("get_me - start", token=token)
     try:
-        user = await get_current_user(token, db)  # 現在のユーザーを取得
+        user = await get_current_user(db, token) 
         logger.info("get_me - success", user_id=user.user_id)
         return user
     except Exception as e:

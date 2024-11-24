@@ -7,17 +7,19 @@ from app.services.report_service import create_report, update_report, delete_rep
 from app.models.user import User  # 現在ログイン中のユーザーを表すモデル
 from app.core.security import oauth2_scheme
 import structlog
+from app.services.auth_service import get_current_user
 
 # ロガーの設定
 logger = structlog.get_logger()
 
 router = APIRouter()
 
+
 @router.post("/reports", response_model=ResponseReport)
 async def create_report_endpoint(
     report: RequestReport,
+    current_user: UserResponse = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-    current_user: UserResponse = Depends(oauth2_scheme),
 ):
     """
     新しいレポートを作成するエンドポイント。
@@ -42,12 +44,13 @@ async def create_report_endpoint(
         logger.info("create_report_endpoint - end")
 
 
+
 @router.put("/reports/{report_id}", response_model=ResponseReport)
 async def update_report_endpoint(
     report_id: str,
     updated_report: RequestReport,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(oauth2_scheme),
+    current_user: User = Depends(get_current_user),
 ):
     """
     既存のレポートを更新するエンドポイント。
@@ -77,7 +80,7 @@ async def update_report_endpoint(
 async def delete_report_endpoint(
     report_id: str,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(oauth2_scheme),
+    current_user: User = Depends(get_current_user),
 ):
     """
     指定されたレポートを削除するエンドポイント。

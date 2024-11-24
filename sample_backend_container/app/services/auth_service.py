@@ -9,12 +9,14 @@ from jose import jwt, JWTError
 from pydantic import ValidationError
 from typing import Annotated
 import structlog
+from app.database import get_db
 
 logger = structlog.get_logger()
 
 
+# TODO: なぜこれでいけるのかしらべる。1リクエスト内に複数のDepends(get_db)が存在する場合、FastAPIが再利用してくれる？？
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)], db: AsyncSession
+    db: AsyncSession = Depends(get_db), token: str = Depends(oauth2_scheme)
 ) -> UserResponse:
     """
     トークンから現在のユーザーを取得します。
