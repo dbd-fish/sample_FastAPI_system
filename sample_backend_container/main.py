@@ -5,7 +5,7 @@ from app.routes import router
 from app.core.log_config import logger, structlog
 from contextlib import asynccontextmanager
 from fastapi import Request
-from app.middleware import AddUserIPMiddleware
+from app.middleware import AddUserIPMiddleware, ErrorHandlerMiddleware
 import os
 import time  
 
@@ -31,6 +31,7 @@ app = FastAPI(lifespan=lifespan)
 
 # ミドルウェアの追加
 app.add_middleware(AddUserIPMiddleware)
+app.add_middleware(ErrorHandlerMiddleware)
 
 # インポートしたルーターをアプリケーションに追加
 app.include_router(router)
