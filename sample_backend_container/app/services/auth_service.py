@@ -61,6 +61,8 @@ async def get_current_user(
             user_id=user.user_id,
             email=user.email,
             username=user.username,
+            user_role=user.user_role,
+            user_status=user.user_status,
         )
 
     except JWTError as e:
