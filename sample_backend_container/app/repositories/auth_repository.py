@@ -20,7 +20,11 @@ class UserRepository:
         Returns:
             User | None: 該当するユーザーが存在すれば返却、それ以外はNone。
         """
-        query = select(User).where(User.email == email)
+        query = select(User).where(
+            User.email == email,          
+            User.user_status == User.STATUS_ACTIVE,        
+            User.deleted_at.is_(None)     
+        )
         result = await db.execute(query)
         return result.scalars().first()
 

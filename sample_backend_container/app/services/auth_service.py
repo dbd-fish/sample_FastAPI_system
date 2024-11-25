@@ -119,8 +119,8 @@ async def create_user(
         email=email,
         username=username,
         password_hash=hashed_password,
-        user_role=1,
-        user_status=1,
+        user_role=User.ROLE_FREE,
+        user_status=User.STATUS_ACTIVE,
     )
 
     try:

@@ -138,7 +138,7 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> User
     logger.info("authenticate_user - start", email=email)
     query = select(User).where(
         User.email == email,          
-        User.user_status == 1,        
+        User.user_status == User.STATUS_ACTIVE,        
         User.deleted_at.is_(None)     
     )
     result = await db.execute(query)
@@ -150,7 +150,7 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> User
             detail="Invalid email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if not verify_password(password, user.password_hash):  # パスワードを検証
+    if not verify_password(password, user.password_hash):
         logger.info("authenticate_user - incorrect password", email=email)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -168,7 +168,7 @@ async def reset_password(email: str, new_password: str, db: AsyncSession):
     logger.info("reset_password - start", email=email)
     query = select(User).where(
         User.email == email,          
-        User.user_status == 1,        
+        User.user_status == User.STATUS_ACTIVE,        
         User.deleted_at.is_(None)     
     )
     result = await db.execute(query)
