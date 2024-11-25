@@ -1,8 +1,6 @@
-from sqlalchemy import Column, Integer, CHAR, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, TIMESTAMP, ForeignKey
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-from zoneinfo import ZoneInfo
 from sqlalchemy.dialects.postgresql import UUID
 
 # TagViewHistoryモデル: タグ閲覧履歴テーブル

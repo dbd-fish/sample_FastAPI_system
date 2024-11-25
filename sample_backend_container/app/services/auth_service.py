@@ -7,7 +7,6 @@ from app.config.setting import setting
 from app.core.security import oauth2_scheme, hash_password
 from jose import jwt, JWTError
 from pydantic import ValidationError
-from typing import Annotated
 import structlog
 from app.database import get_db
 

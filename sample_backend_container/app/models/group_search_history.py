@@ -1,10 +1,10 @@
 
-from sqlalchemy import Column, Integer, CHAR, String, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, String, TIMESTAMP, ForeignKey
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-from zoneinfo import ZoneInfo
 from sqlalchemy.dialects.postgresql import UUID
+
+
 # GroupSearchHistoryモデル: グループ検索履歴テーブル
 class GroupSearchHistory(Base):
     __tablename__ = "group_search_history"

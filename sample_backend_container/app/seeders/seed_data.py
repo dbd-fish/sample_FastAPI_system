@@ -6,7 +6,6 @@
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.future import select
-from datetime import datetime
 from pathlib import Path
 import configparser
 import sys

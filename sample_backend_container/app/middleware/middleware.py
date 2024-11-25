@@ -3,8 +3,6 @@ from fastapi import Request, HTTPException
 from starlette.responses import JSONResponse
 from app.core.log_config import logger, structlog
 
-# ロガーの設定
-logger = structlog.get_logger()
 
 class AddUserIPMiddleware(BaseHTTPMiddleware):
     """

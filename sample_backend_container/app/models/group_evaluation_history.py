@@ -1,8 +1,6 @@
-from sqlalchemy import Column, Integer, CHAR, Text, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, Text, TIMESTAMP, ForeignKey
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-from zoneinfo import ZoneInfo
 from sqlalchemy.dialects.postgresql import UUID
 
 # GroupEvaluationHistoryモデル: グループ評価履歴テーブル

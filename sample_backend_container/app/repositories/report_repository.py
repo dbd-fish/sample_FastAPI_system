@@ -1,6 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.exc import SQLAlchemyError
 from uuid import UUID
 from app.models.report import Report
 from app.common.common import datetime_now

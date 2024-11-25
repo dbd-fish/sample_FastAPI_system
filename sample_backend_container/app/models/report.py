@@ -1,8 +1,6 @@
-from sqlalchemy import Column, CHAR, String, Text, SmallInteger, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, String, Text, SmallInteger, TIMESTAMP, ForeignKey
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-from zoneinfo import ZoneInfo
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 

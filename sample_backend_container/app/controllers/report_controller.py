@@ -1,11 +1,10 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.schemas.report import RequestReport, ResponseReport
 from app.schemas.user import UserResponse
 from app.services.report_service import create_report, update_report, delete_report, get_report_by_id_service
 from app.models.user import User  # 現在ログイン中のユーザーを表すモデル
-from app.core.security import oauth2_scheme
 import structlog
 from app.services.auth_service import get_current_user
 

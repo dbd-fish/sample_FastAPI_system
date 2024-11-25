@@ -1,8 +1,6 @@
-from sqlalchemy import Column, CHAR, String, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, String, TIMESTAMP, ForeignKey
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-from zoneinfo import ZoneInfo
 from sqlalchemy.dialects.postgresql import UUID
 
 # UserGroupモデル: ユーザーグループ管理テーブル

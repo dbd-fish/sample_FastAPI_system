@@ -5,7 +5,6 @@ from sqlalchemy.engine import Engine
 from alembic import context
 
 from app.database import Base  # Baseをインポート
-import app.models  # __init__.pyで設定した全てのモデルを自動インポート
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

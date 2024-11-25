@@ -1,10 +1,8 @@
 from fastapi import FastAPI
-from starlette.middleware.base import BaseHTTPMiddleware
 from app.database import database
 from app.routes import router
-from app.core.log_config import logger, structlog
+from app.core.log_config import logger
 from contextlib import asynccontextmanager
-from fastapi import Request
 from app.middleware import AddUserIPMiddleware, ErrorHandlerMiddleware
 import os
 import time  

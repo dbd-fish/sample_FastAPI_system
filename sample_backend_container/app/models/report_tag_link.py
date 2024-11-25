@@ -1,9 +1,7 @@
 
-from sqlalchemy import Column, CHAR, Integer, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, TIMESTAMP, ForeignKey
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-from zoneinfo import ZoneInfo
 from sqlalchemy.dialects.postgresql import UUID
 
 # ReportTagLinkモデル: レポートとタグの関連テーブル

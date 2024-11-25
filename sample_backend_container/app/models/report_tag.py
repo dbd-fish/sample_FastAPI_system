@@ -1,8 +1,6 @@
 from sqlalchemy import Column, Integer, String, TIMESTAMP
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 # ReportTagモデル: タグ管理テーブル
 class ReportTag(Base):

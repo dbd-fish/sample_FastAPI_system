@@ -1,8 +1,6 @@
-from sqlalchemy import Column, CHAR, String, SmallInteger, TIMESTAMP, Date
+from sqlalchemy import Column, String, SmallInteger, TIMESTAMP, Date
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-from zoneinfo import ZoneInfo
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
