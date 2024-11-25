@@ -90,7 +90,7 @@ def configure_logging() -> structlog.BoundLogger:
             structlog.processors.CallsiteParameterAdder(  # ログ発生箇所の情報を追加
                 [
                     CallsiteParameter.PATHNAME,  # ファイルのパス
-                    CallsiteParameter.MODULE,  # モジュール名
+                    # CallsiteParameter.MODULE,  # モジュール名
                     CallsiteParameter.FUNC_NAME,  # 関数名
                     CallsiteParameter.LINENO,  # 行番号
                 ]
