@@ -1,9 +1,8 @@
 # seed_data.py
-# このスクリプトは開発用のデータ投入用スクリプトです。
-# 初期データをデータベースに挿入して動作確認することが目的です。
+# 動作確認用の初期データを投入する。実行コマンドの引数は必要に応じて精査する。
 # 実行コマンド: 
 # export PYTHONPATH=/app
-# poetry run python app/seeder/seed_data.py
+# poetry run python app/seeders/seed_data.py
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.future import select
@@ -12,7 +11,7 @@ from pathlib import Path
 import configparser
 import sys
 import asyncio
-from config.test_data import TestData
+from app.config.test_data import TestData
 from app.common.common import datetime_now
 from passlib.context import CryptContext
 from sqlalchemy.sql import text
@@ -475,11 +474,21 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Seed or clear database.")
     parser.add_argument("--clear", action="store_true", help="Clear all database data")
+    parser.add_argument("--seed", action="store_true", help="Seed the database with initial data")
     args = parser.parse_args()
 
-    if args.clear:
-        print("Clearing database...")
-        asyncio.run(clear_data())
-    else:
-        print("Seeding database...")
-        asyncio.run(seed_data())
+    async def main():
+        if args.clear:
+            print("Clearing database...")
+            await clear_data()
+        elif args.seed:
+            print("Seeding database...")
+            await seed_data()
+        else:
+            # 引数なしの場合、両方を実行
+            print("No arguments provided. Clearing and seeding database...")
+            await clear_data()
+            await seed_data()
+
+    # asyncio.run() を一度だけ使用
+    asyncio.run(main())

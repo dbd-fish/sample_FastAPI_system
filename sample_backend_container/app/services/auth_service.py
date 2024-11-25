@@ -14,7 +14,6 @@ from app.database import get_db
 logger = structlog.get_logger()
 
 
-# TODO: なぜこれでいけるのかしらべる。1リクエスト内に複数のDepends(get_db)が存在する場合、FastAPIが再利用してくれる？？
 async def get_current_user(
     db: AsyncSession = Depends(get_db), token: str = Depends(oauth2_scheme)
 ) -> UserResponse:
@@ -66,14 +65,20 @@ async def get_current_user(
         )
 
     except JWTError as e:
-        logger.error("get_current_user - jwt decode error", error=str(e))
+        logger.info("get_current_user - jwt decode error", error=str(e))
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
             headers={"WWW-Authenticate": "Bearer"},
         )
     except ValidationError as e:
-        logger.error("get_current_user - validation error", errors=e.errors())
+        logger.info("get_current_user - validation error", errors=e.errors())
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="User validation failed",
+        )
+    except Exception as e:
+        logger.info("get_current_user - error", errors=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="User validation failed",

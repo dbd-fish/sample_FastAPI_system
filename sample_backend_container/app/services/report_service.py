@@ -5,17 +5,25 @@ from uuid import UUID
 from app.models.report import Report
 from app.repositories.report_repository import ReportRepository
 from app.schemas.report import RequestReport, ResponseReport
-from app.config.test_data import TestData
 import structlog
 from sqlalchemy.exc import SQLAlchemyError
 
-
 logger = structlog.get_logger()
 
-
-async def create_report(report_data: RequestReport, current_user: UserResponse ,db: AsyncSession) -> ResponseReport:
+async def create_report(report_data: RequestReport, current_user: UserResponse, db: AsyncSession) -> ResponseReport:
     """
     新しいレポートを作成するサービス関数。
+
+    Args:
+        report_data (RequestReport): 作成するレポートのデータ。
+        current_user (UserResponse): 現在ログインしているユーザー情報。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        ResponseReport: 作成されたレポートのレスポンスモデル。
+
+    Raises:
+        HTTPException: データベースエラーまたはその他のエラーが発生した場合。
     """
     logger.info("create_report - start", report_data=report_data)
 
@@ -32,15 +40,28 @@ async def create_report(report_data: RequestReport, current_user: UserResponse ,
         logger.info("create_report - success", report_id=saved_report.report_id)
         return ResponseReport.model_validate(saved_report)
     except SQLAlchemyError as e:
-        logger.error("create_report - error", error=str(e))
+        logger.error("create_report - SQLAlchemyError", error=str(e))
         raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        logger.error("create_report - General error", error=str(e))
+        raise HTTPException(status_code=500, detail="Unexpected error occurred")
     finally:
         logger.info("create_report - end")
-
 
 async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSession) -> ResponseReport:
     """
     レポートを更新するサービス関数。
+
+    Args:
+        report_id (str): 更新するレポートのID。
+        updated_data (RequestReport): 更新内容を含むデータ。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        ResponseReport: 更新されたレポートのレスポンスモデル。
+
+    Raises:
+        HTTPException: レポートが見つからない場合、またはデータベースエラーが発生した場合。
     """
     logger.info("update_report - start", report_id=report_id, updated_data=updated_data)
 
@@ -57,15 +78,27 @@ async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSe
         logger.info("update_report - success", report_id=updated_report.report_id)
         return ResponseReport.model_validate(updated_report)
     except SQLAlchemyError as e:
-        logger.error("update_report - error", error=str(e))
+        logger.error("update_report - SQLAlchemyError", error=str(e))
         raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        logger.error("update_report - General error", error=str(e))
+        raise HTTPException(status_code=500, detail="Unexpected error occurred")
     finally:
         logger.info("update_report - end")
-
 
 async def delete_report(report_id: str, db: AsyncSession) -> dict:
     """
     レポートを論理削除するサービス関数。
+
+    Args:
+        report_id (str): 削除対象のレポートのID。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        dict: 削除成功のメッセージ。
+
+    Raises:
+        HTTPException: レポートが見つからない場合、またはデータベースエラーが発生した場合。
     """
     logger.info("delete_report - start", report_id=report_id)
 
@@ -79,15 +112,27 @@ async def delete_report(report_id: str, db: AsyncSession) -> dict:
         logger.info("delete_report - success", report_id=report.report_id)
         return {"message": "Report deleted successfully"}
     except SQLAlchemyError as e:
-        logger.error("delete_report - error", error=str(e))
+        logger.error("delete_report - SQLAlchemyError", error=str(e))
         raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        logger.error("delete_report - General error", error=str(e))
+        raise HTTPException(status_code=500, detail="Unexpected error occurred")
     finally:
         logger.info("delete_report - end")
-
 
 async def get_report_by_id_service(report_id: str, db: AsyncSession) -> ResponseReport:
     """
     指定されたIDのレポートを取得するサービス関数。
+
+    Args:
+        report_id (str): 取得対象のレポートのID。
+        db (AsyncSession): データベースセッション。
+
+    Returns:
+        ResponseReport: 取得したレポートのレスポンスモデル。
+
+    Raises:
+        HTTPException: レポートが見つからない場合、またはその他のエラーが発生した場合。
     """
     logger.info("get_report_by_id_service - start", report_id=report_id)
 
@@ -96,5 +141,11 @@ async def get_report_by_id_service(report_id: str, db: AsyncSession) -> Response
         logger.warning("get_report_by_id_service - not found", report_id=report_id)
         raise HTTPException(status_code=404, detail="Report not found")
 
-    logger.info("get_report_by_id_service - success", report_id=report.report_id)
-    return ResponseReport.model_validate(report)
+    try:
+        logger.info("get_report_by_id_service - success", report_id=report.report_id)
+        return ResponseReport.model_validate(report)
+    except Exception as e:
+        logger.error("get_report_by_id_service - General error", error=str(e))
+        raise HTTPException(status_code=500, detail="Unexpected error occurred")
+    finally:
+        logger.info("get_report_by_id_service - end")

@@ -34,7 +34,7 @@ async def create_report_endpoint(
     """
     logger.info("create_report_endpoint - start", user_id=current_user.user_id, report_title=report.title)
     try:
-        endpoint_result = await create_report(report,current_user, db)  # レポート作成ロジックを呼び出し
+        endpoint_result = await create_report(report,current_user, db) 
         logger.info("create_report_endpoint - success", report_id=endpoint_result.report_id)
         return endpoint_result
     except Exception as e:
@@ -66,7 +66,7 @@ async def update_report_endpoint(
     """
     logger.info("update_report_endpoint - start", user_id=current_user.user_id, report_id=report_id)
     try:
-        endpoint_result = await update_report(report_id, updated_report, db)  # レポート更新ロジックを呼び出し
+        endpoint_result = await update_report(report_id, updated_report, db) 
         logger.info("update_report_endpoint - success", report_id=endpoint_result.report_id)
         return endpoint_result
     except Exception as e:
@@ -122,7 +122,7 @@ async def get_report_by_id(
     """
     logger.info("get_report_by_id - start", report_id=report_id)
     try:
-        endpoint_result = await get_report_by_id_service(report_id, db)  # レポート取得ロジックを呼び出し
+        endpoint_result = await get_report_by_id_service(report_id, db)
         logger.info("get_report_by_id - success", report_id=report_id)
         return endpoint_result
     except Exception as e:

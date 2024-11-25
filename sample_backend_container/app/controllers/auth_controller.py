@@ -75,7 +75,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     try:
         user = await authenticate_user(form_data.username, form_data.password, db)
         if not user:
-            logger.warning("login - authentication failed", username=form_data.username)
+            logger.info("login - authentication failed", username=form_data.username)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
