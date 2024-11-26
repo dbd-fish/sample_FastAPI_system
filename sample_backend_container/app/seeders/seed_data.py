@@ -14,10 +14,10 @@ from app.config.test_data import TestData
 from app.common.common import datetime_now
 from passlib.context import CryptContext
 from sqlalchemy.sql import text
-
+from app.database import Base
 
 # プロジェクトのルートディレクトリをモジュール検索パスに追加
-sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+# sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 import app.models  # すべてのモデルをインポート
 
 # alembic.iniファイルを読み込む
@@ -33,54 +33,17 @@ AsyncSessionLocal = async_sessionmaker(bind=engine, autoflush=False, autocommit=
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 async def clear_data():
     """
-    データベース内の全データをクリアします。
-    外部キー制約を無効化して削除後、元に戻します。
+    データベースをクリアします。すべてのテーブルを削除し、再作成します。
     """
-    async with AsyncSessionLocal() as session:
+    async with engine.begin() as conn:
         try:
-            # 外部キー制約を無効化
-            await session.execute(text("SET session_replication_role = 'replica';"))
-            
-            # 削除対象のテーブルリスト
-            tables_to_clear = [
-                "user_view_history",
-                "report_view_history",
-                "tag_view_history",
-                "report_comment_history",
-                "group_evaluation_history",
-                "user_search_history",
-                "group_search_history",
-                "group_evaluation",
-                "report_evaluation_history",
-                "user_evaluation_history",
-                "report_supplement",
-                "report_tag_link",
-                "report_tag",
-                "report",
-                "user_group_membership",
-                "group_profile",
-                "user_group",
-                "user_ip_address",
-                "user_profile",
-                '"user"'  # 修正: userテーブルを二重引用符で囲む
-            ]
-
-            # 各テーブルのデータを削除
-            for table in tables_to_clear:
-                print(f"Clearing table: {table}")
-                await session.execute(text(f"TRUNCATE TABLE {table} CASCADE;"))
-
-            # 外部キー制約を元に戻す
-            await session.execute(text("SET session_replication_role = 'origin';"))
-            await session.commit()
-            print("Database cleared successfully.")
-
+            print("すべてのテーブルを削除中...")
+            await conn.run_sync(Base.metadata.drop_all)  # すべてのテーブルを削除
+            print("すべてのテーブルを作成中...")
+            await conn.run_sync(Base.metadata.create_all)  # すべてのテーブルを再作成
+            print("データベースのクリアが完了しました。")
         except Exception as e:
-            await session.rollback()
-            print(f"An error occurred while clearing data: {e}")
-        finally:
-            await session.close()
-
+            print(f"データベースクリア中にエラーが発生しました: {e}")
 
 async def seed_data():
     async with AsyncSessionLocal() as session:
