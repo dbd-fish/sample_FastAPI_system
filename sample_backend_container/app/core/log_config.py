@@ -32,17 +32,32 @@ def get_log_file_path(directory: str, filename_template: str = "app_{date}.log")
     return os.path.join(directory, filename_template.format(date=current_date))
 
 
-def configure_logging() -> structlog.BoundLogger:
+def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
     """
     ログ設定を行います。ファイルハンドラーやカスタムフォーマッタの設定、
     structlog用のプロセッサを含みます。
 
+    Args:
+        test_env (int): テスト環境の指定。
+            0: 本番環境
+            1: 単体テスト環境
+            2: 結合テスト環境
     Returns:
         structlog.BoundLogger: 設定済みのstructlogロガーインスタンス。
     """
     # アプリケーションログの設定
-    create_log_directory(setting.APP_LOG_DIRECTORY)
-    app_log_file_path = get_log_file_path(setting.APP_LOG_DIRECTORY)
+    if test_env==0:
+        # 通常のサーバー起動の場合
+        create_log_directory(setting.APP_LOG_DIRECTORY)
+        app_log_file_path = get_log_file_path(setting.APP_LOG_DIRECTORY)
+    elif test_env==1:
+        # 単体テストの場合
+        create_log_directory(setting.UT_APP_LOG_DIRECTORY)
+        app_log_file_path = get_log_file_path(setting.UT_APP_LOG_DIRECTORY)
+    elif test_env==2:
+        # 結合テストの場合
+        create_log_directory(setting.IT_APP_LOG_DIRECTORY)
+        app_log_file_path = get_log_file_path(setting.IT_APP_LOG_DIRECTORY)
 
     # 日本時間対応のカスタムフォーマッタ
     class JSTFormatter(logging.Formatter):
@@ -73,11 +88,12 @@ def configure_logging() -> structlog.BoundLogger:
 
     # アプリケーション用のロガー設定
     app_logger = logging.getLogger("app")
+    app_logger.handlers = []
     app_logger.setLevel(logging.INFO)
     app_logger.addHandler(app_file_handler)
 
     # SQLAlchemyログの設定
-    configure_sqlalchemy_logging()
+    configure_sqlalchemy_logging(test_env)
 
     # structlogの設定
     structlog.configure(
@@ -105,18 +121,24 @@ def configure_logging() -> structlog.BoundLogger:
     return structlog.get_logger()
 
 
-def configure_sqlalchemy_logging() -> None:
+def configure_sqlalchemy_logging(test_env: int = 0) -> None:
     """
     SQLAlchemyのログ設定を行います。
     """
-    # SQLAlchemyログ用ディレクトリ作成
-    create_log_directory(setting.SQL_LOG_DIRECTORY)
-
-    # SQLAlchemy用ログファイルパス
-    sqlalchemy_log_file_path = get_log_file_path(setting.SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
+    # SQLAlchemyログの設定
+    if test_env==0:
+        create_log_directory(setting.SQL_LOG_DIRECTORY)
+        sqlalchemy_log_file_path = get_log_file_path(setting.SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
+    elif test_env==1:
+        create_log_directory(setting.UT_SQL_LOG_DIRECTORY)
+        sqlalchemy_log_file_path = get_log_file_path(setting.UT_SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
+    elif test_env==2:
+        create_log_directory(setting.IT_SQL_LOG_DIRECTORY)
+        sqlalchemy_log_file_path = get_log_file_path(setting.IT_SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
 
     # SQLAlchemy専用ロガーを設定
     sqlalchemy_logger = logging.getLogger("sqlalchemy.engine")
+    sqlalchemy_logger.handlers = []
     sqlalchemy_logger.setLevel(logging.INFO)
 
     # SQLAlchemy用のファイルハンドラ
