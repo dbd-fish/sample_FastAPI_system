@@ -31,6 +31,7 @@ DATABASE_URL = config.get("alembic", "sqlalchemy.url")
 engine = create_async_engine(DATABASE_URL, echo=True)
 AsyncSessionLocal = async_sessionmaker(bind=engine, autoflush=False, autocommit=False)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 async def clear_data():
     """
     データベースをクリアします。すべてのテーブルを削除し、再作成します。
@@ -46,6 +47,9 @@ async def clear_data():
             print(f"データベースクリア中にエラーが発生しました: {e}")
 
 async def seed_data():
+    """
+    テーブルへデータを挿入します。
+    """
     async with AsyncSessionLocal() as session:
         try:
             # 固定値のUUIDやIDを定義
