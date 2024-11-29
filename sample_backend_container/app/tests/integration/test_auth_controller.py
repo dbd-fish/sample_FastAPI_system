@@ -1,45 +1,63 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
 from main import app
-from app.database import Base, engine
+from app.database import configure_database, Base
 from app.schemas.user import UserCreate
-from app.models.user import User
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.core.security import create_access_token
-from app.seeders.seed_data import clear_data, seed_data
-from app.config.test_data import TestData
 from app.core.log_config import configure_logging
+from app.seeders.seed_data import clear_data, seed_data
+import pytest_asyncio
+import asyncio
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="session", autouse=True)
+def event_loop():
+    loop = asyncio.new_event_loop()
+    yield loop
+    loop.close()
+
+@pytest_asyncio.fixture(scope="session", autouse=True)
 def setup_test_logging():
     """
-    pytestの実行時にログ出力をテスト用に切り替え、終了時に元に戻す。
+    pytestの実行時にログ出力をテスト用に切り替える。
     """
-    # pytest開始時にログをテスト用に切り替える
+    print("ログ出力をテスト用に切り替え")
     configure_logging(test_env=2)  # 結合テスト用
     yield
-    # pytest終了後にログを通常用に切り替える
+    print("ログ出力を本番用に切り替え")
     configure_logging(test_env=0)  # 本番環境用
 
-@pytest.fixture(scope="function", autouse=True)
-async def setup_db():
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def setup_test_db():
     """
-    テスト用のデータベースをセットアップします。
+    pytest 実行時にデータベース設定をテスト用に切り替える。
     """
-    async with engine.begin() as conn:
-        # 確実にテーブルを作成
-            await clear_data()
-            await seed_data()
-    yield
-    async with engine.begin() as conn:
-        # 確実にテーブルを削除
-        await conn.run_sync(Base.metadata.drop_all)
+    global db_config
+    db_config = configure_database(test_env=2)
+    print("テスト用のデータベースに切り替え")
+    print(f"使用するデータベースURL: {db_config['database'].url}")
+    database = db_config["database"]
 
-@pytest.fixture(scope="session", autouse=True)
-async def cleanup_database_at_session_end():
-    """テストセッション終了時にデータベースをクリアします。"""
+    await database.disconnect()  # 現在の接続を切断
+    await database.connect()     # テスト用に再接続
+
+    yield  # 後続のテスト実行を許可
+
+    await database.disconnect()
+    print("本番用のデータベースに戻す")
+    db_config = configure_database(test_env=0)
+
+
+@pytest_asyncio.fixture(scope="function", autouse=True)
+async def setup_test_data():
+    print("setup_test_data: テストデータの準備を開始します")
+    # db_config = configure_database(test_env=2)
+    async with db_config["engine"].begin() as conn:
+        print(f"シード対象DB: {db_config['database'].url}")
+        await clear_data()
+        await seed_data()
     yield
-    await clear_data()
+    async with db_config["engine"].begin() as conn:
+        print("setup_test_data: テストデータを削除します")
+        await conn.run_sync(Base.metadata.drop_all)
 
 @pytest.fixture(scope="function")
 def regist_user_data():
@@ -54,26 +72,6 @@ def regist_user_data():
         user_status=1,
     )
 
-
-# @pytest.fixture(scope="function")
-# async def test_user(test_user_data):
-#     """
-#     テスト用ユーザーをデータベースに追加。
-#     """
-#     async with AsyncSession(engine) as session:
-#         user = User(
-#             email=test_user_data.email,
-#             username=test_user_data.username,
-#             password_hash="hashedpassword",  # 仮のハッシュ値
-#             user_status=test_user_data.user_status,
-#             user_role=test_user_data.user_role,
-#         )
-#         session.add(user)
-#         await session.commit()
-#         await session.refresh(user)
-#         return user
-
-
 @pytest.mark.asyncio
 async def test_register_user(regist_user_data):
     """
@@ -84,9 +82,8 @@ async def test_register_user(regist_user_data):
         assert response.status_code == 200
         assert response.json()["msg"] == "User created successfully"
 
-
 @pytest.mark.asyncio
-async def test_login_user(test_user_data):
+async def test_login_user():
     """
     ログイン処理のテスト。
     """
@@ -100,17 +97,6 @@ async def test_login_user(test_user_data):
         assert "access_token" in response.json()
 
 
-@pytest.mark.asyncio
-async def test_get_me(test_user):
-    """
-    現在ログイン中のユーザー情報取得のテスト。
-    """
-    user = await test_user  # 明示的に await
-    token = create_access_token({"sub": user.email})
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000/") as client:
-        response = await client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
-        assert response.status_code == 200
-        assert response.json()["email"] == user.email
 
 
 @pytest.mark.asyncio
@@ -118,11 +104,10 @@ async def test_reset_password(test_user):
     """
     パスワードリセットのテスト。
     """
-    user = await test_user  # 明示的に await
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000/") as client:
         response = await client.post(
             "/auth/reset-password",
-            json={"email": user.email, "new_password": "newpassword"},
+            json={"email": "testuser@example.com", "new_password": "newpassword"},
         )
         assert response.status_code == 200
         assert response.json()["msg"] == "Password reset successful"

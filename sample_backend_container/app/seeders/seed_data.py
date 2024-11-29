@@ -4,33 +4,19 @@
 # export PYTHONPATH=/app
 # poetry run python app/seeders/seed_data.py
 
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from sqlalchemy.future import select
-from pathlib import Path
-import configparser
-import sys
 import asyncio
+from app.database import engine, AsyncSessionLocal, Base
+from sqlalchemy.future import select
 from app.config.test_data import TestData
 from app.common.common import datetime_now
 from passlib.context import CryptContext
-from sqlalchemy.sql import text
-from app.database import Base
-
-# プロジェクトのルートディレクトリをモジュール検索パスに追加
-# sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 import app.models  # すべてのモデルをインポート
+import structlog
 
-# alembic.iniファイルを読み込む
-config = configparser.ConfigParser()
-config.read("alembic.ini")
-
-# 非同期エンジン用のDATABASE_URLを取得
-DATABASE_URL = config.get("alembic", "sqlalchemy.url")
-
-# 非同期エンジンとセッションの作成
-engine = create_async_engine(DATABASE_URL, echo=True)
-AsyncSessionLocal = async_sessionmaker(bind=engine, autoflush=False, autocommit=False)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# ログの設定
+logger = structlog.get_logger()
 
 async def clear_data():
     """
@@ -38,13 +24,15 @@ async def clear_data():
     """
     async with engine.begin() as conn:
         try:
+            print("データベースURL:", engine.url)  # 接続先DB確認
             print("すべてのテーブルを削除中...")
-            await conn.run_sync(Base.metadata.drop_all)  # すべてのテーブルを削除
+            await conn.run_sync(Base.metadata.drop_all)  # テーブルを削除
             print("すべてのテーブルを作成中...")
-            await conn.run_sync(Base.metadata.create_all)  # すべてのテーブルを再作成
+            await conn.run_sync(Base.metadata.create_all)  # テーブルを作成
             print("データベースのクリアが完了しました。")
         except Exception as e:
             print(f"データベースクリア中にエラーが発生しました: {e}")
+
 
 async def seed_data():
     """
@@ -456,5 +444,4 @@ if __name__ == "__main__":
             await clear_data()
             await seed_data()
 
-    # asyncio.run() を一度だけ使用
     asyncio.run(main())

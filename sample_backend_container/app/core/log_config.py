@@ -46,11 +46,7 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
         structlog.BoundLogger: 設定済みのstructlogロガーインスタンス。
     """
     # アプリケーションログの設定
-    if test_env==0:
-        # 通常のサーバー起動の場合
-        create_log_directory(setting.APP_LOG_DIRECTORY)
-        app_log_file_path = get_log_file_path(setting.APP_LOG_DIRECTORY)
-    elif test_env==1:
+    if test_env==1:
         # 単体テストの場合
         create_log_directory(setting.UT_APP_LOG_DIRECTORY)
         app_log_file_path = get_log_file_path(setting.UT_APP_LOG_DIRECTORY)
@@ -58,6 +54,10 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
         # 結合テストの場合
         create_log_directory(setting.IT_APP_LOG_DIRECTORY)
         app_log_file_path = get_log_file_path(setting.IT_APP_LOG_DIRECTORY)
+    else:
+        # 通常のサーバー起動の場合　test_env==0
+        create_log_directory(setting.APP_LOG_DIRECTORY)
+        app_log_file_path = get_log_file_path(setting.APP_LOG_DIRECTORY)
 
     # 日本時間対応のカスタムフォーマッタ
     class JSTFormatter(logging.Formatter):
@@ -93,7 +93,13 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
     app_logger.addHandler(app_file_handler)
 
     # SQLAlchemyログの設定
-    configure_sqlalchemy_logging(test_env)
+    sqlalchemy_logger = logging.getLogger('sqlalchemy.engine')
+    if test_env in [1, 2]:
+        # 単体テストまたは結合テスト環境の場合、SQLAlchemyのログを無効化
+        sqlalchemy_logger.setLevel(logging.WARNING)
+    else:
+        # 本番環境の場合、通常のログ設定
+        configure_sqlalchemy_logging(test_env)
 
     # structlogの設定
     structlog.configure(
@@ -144,7 +150,7 @@ def configure_sqlalchemy_logging(test_env: int = 0) -> None:
     # SQLAlchemy用のファイルハンドラ
     sqlalchemy_file_handler = logging.FileHandler(sqlalchemy_log_file_path, encoding="utf-8")
     sqlalchemy_formatter = logging.Formatter(
-        "[%(asctime)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+        "[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
     )
     sqlalchemy_file_handler.setFormatter(sqlalchemy_formatter)
 
