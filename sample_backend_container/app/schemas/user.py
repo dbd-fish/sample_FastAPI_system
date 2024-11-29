@@ -31,7 +31,7 @@ class UserResponse(BaseModel):
     user_role: int = Field(..., description="ユーザー権限 (1: guest, 2: free, 3: regular, 4: admin, 5: owner)")
     user_status: int = Field(..., description="アカウント状態 (1: active, 2: suspended)")
 
-    class Config:
+    class ConfigDict:
         """
         Pydanticモデルの設定クラス。
         """

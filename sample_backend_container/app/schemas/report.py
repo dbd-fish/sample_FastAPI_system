@@ -30,7 +30,7 @@ class ResponseReport(ReportBase):
     updated_at: datetime = Field(..., description="更新日時")
     deleted_at: Optional[datetime] = Field(None, description="削除日時")
 
-    class Config:
+    class ConfigDict:
         """
         SQLAlchemy などの ORM モデルからデータをマッピングできる設定。
         """
