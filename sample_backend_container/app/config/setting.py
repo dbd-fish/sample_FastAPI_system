@@ -27,7 +27,7 @@ class Setting(BaseSettings):
 
 
 
-    class Config:
+    class ConfigDict:
         env_file = ".env"  # .envファイルから環境変数を読み込む設定
 
 setting = Setting()
