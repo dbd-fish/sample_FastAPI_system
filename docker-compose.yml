@@ -39,6 +39,8 @@ services:
       TZ: Asia/Tokyo
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # テスト用のDB構築スクリプト
+      - ./init-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
 
