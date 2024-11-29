@@ -8,6 +8,8 @@ from app.schemas.user import UserCreate, PasswordReset, UserResponse
 from app.core.security import oauth2_scheme
 import structlog
 
+from app.models.user import User
+
 # ログの設定
 logger = structlog.get_logger()
 
@@ -91,17 +93,17 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         logger.info("login - end")
 
 @router.post("/logout")
-async def logout(token: str = Depends(oauth2_scheme)):
+async def logout(current_user: User = Depends(get_current_user),):
     """
     ログアウト処理を行うエンドポイント。
 
     Args:
-        token (str): OAuth2トークン。
+        current_user (User): 現在ログイン中のユーザー。
 
     Returns:
         dict: ログアウト成功メッセージ。
     """
-    logger.info("logout - start", token=token)
+    logger.info("logout - start", current_user=current_user.user_id)
     try:
         # クライアント側でトークンを削除するシンプルな処理
         logger.info("logout - success")
@@ -113,13 +115,14 @@ async def logout(token: str = Depends(oauth2_scheme)):
         logger.info("logout - end")
 
 @router.post("/reset-password", response_model=dict)
-async def reset_password_endpoint(data: PasswordReset, db: AsyncSession = Depends(get_db)):
+async def reset_password_endpoint(data: PasswordReset, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     パスワードリセット処理を行うエンドポイント。
 
     Args:
         data (PasswordReset): パスワードリセットの情報（メールと新しいパスワード）。
         db (AsyncSession): 非同期データベースセッション。
+        current_user (User): 現在ログイン中のユーザー。
 
     Returns:
         dict: パスワードリセット成功メッセージ。
