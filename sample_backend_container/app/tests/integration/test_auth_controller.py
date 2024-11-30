@@ -2,6 +2,8 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Optional
 from app.core.security import verify_password
 from main import app
 from app.database import configure_database, Base
@@ -12,6 +14,7 @@ from app.services.auth_service import get_current_user
 from app.models.user import User
 from passlib.context import CryptContext
 from app.database import engine, AsyncSessionLocal, Base
+from typing import AsyncGenerator
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 def setup_test_logging():
@@ -57,7 +60,7 @@ async def setup_test_data():
         await conn.run_sync(Base.metadata.drop_all)
 
 @pytest_asyncio.fixture(scope="function")
-async def db_session():
+async def db_session() -> AsyncGenerator[AsyncSession, None]:
     """
     テスト用のデータベースセッションを提供するフィクスチャ。
     """
@@ -65,7 +68,7 @@ async def db_session():
         yield session
 
 @pytest_asyncio.fixture(scope="function")
-def regist_user_data():
+def regist_user_data() -> UserCreate:
     """
     テスト用ユーザーデータの準備。
     """
@@ -78,7 +81,7 @@ def regist_user_data():
     )
 
 @pytest_asyncio.fixture(scope="function")
-def authenticated_client():
+def authenticated_client() -> AsyncGenerator[AsyncClient, None]:
     """
     認証済みのクライアントを提供するフィクスチャ。
     """
@@ -95,7 +98,7 @@ def authenticated_client():
     )
 
     # get_current_userのオーバーライド関数を定義
-    async def override_get_current_user():
+    async def override_get_current_user() -> User:
         return mock_user
 
     # 依存関係をオーバーライド
@@ -110,7 +113,7 @@ def authenticated_client():
     app.dependency_overrides.clear()
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_register_user(regist_user_data, db_session):
+async def test_register_user(regist_user_data: UserCreate, db_session: AsyncSession) -> None:
     """
     ユーザー登録のテスト。
     """
@@ -120,16 +123,16 @@ async def test_register_user(regist_user_data, db_session):
         assert response.json()["msg"] == "User created successfully"
 
         # データベース内のユーザーを確認
-        user = await db_session.execute(
+        result = await db_session.execute(
             select(User).where(User.email == regist_user_data.email)
         )
-        user = user.scalars().first()
+        user: Optional[User] = result.scalars().first()
         assert user is not None
         assert user.email == regist_user_data.email
         assert user.username == regist_user_data.username
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_login_user():
+async def test_login_user() -> None:
     """
     ログイン処理のテスト。
     """
@@ -143,7 +146,7 @@ async def test_login_user():
         assert "access_token" in response.json()
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_reset_password(authenticated_client, db_session):
+async def test_reset_password(authenticated_client: AsyncClient, db_session: AsyncSession) -> None:
     """
     パスワードリセットのテスト。
     """
@@ -156,9 +159,9 @@ async def test_reset_password(authenticated_client, db_session):
     assert response.json()["msg"] == "Password reset successful"
 
     # データベース内のユーザーのパスワードを確認
-    user = await db_session.execute(
+    result = await db_session.execute(
         select(User).where(User.email == "testuser@example.com")
     )
-    user = user.scalars().first()
+    user: Optional[User] = result.scalars().first()
     assert user is not None
     assert verify_password(new_password, user.hashed_password)
