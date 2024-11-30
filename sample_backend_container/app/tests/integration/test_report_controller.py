@@ -28,7 +28,7 @@
 #         user = User(
 #             email="testuser@example.com",
 #             username="testuser",
-#             password_hash="hashedpassword",
+#             hashed_password="hashedpassword",
 #             user_status=1
 #         )
 #         session.add(user)

@@ -32,7 +32,7 @@ class User(Base):
     email = Column(String(100), unique=True, nullable=False, comment="メールアドレス")
 
     # パスワードハッシュ
-    password_hash = Column(String(255), nullable=False, comment="パスワード（ハッシュ）")
+    hashed_password = Column(String(255), nullable=False, comment="パスワード（ハッシュ）")
 
     # 連絡先電話番号
     contact_number = Column(String(15), comment="連絡先電話番号")

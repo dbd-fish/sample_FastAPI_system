@@ -150,7 +150,7 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> User
             detail="Invalid email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if not verify_password(password, user.password_hash):
+    if not verify_password(password, user.hashed_password):
         logger.info("authenticate_user - incorrect password", email=email)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -181,8 +181,8 @@ async def reset_password(email: str, new_password: str, db: AsyncSession):
             detail="User not found"
         )
 
-    user.password_hash = hash_password(new_password)
-    user.updated_at = datetime.now(ZoneInfo("Asia/Tokyo"))
+    user.hashed_password = hash_password(new_password)
+
     try:
         await db.commit()
         await db.refresh(user)

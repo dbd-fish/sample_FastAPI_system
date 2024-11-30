@@ -119,7 +119,7 @@ async def create_user(
     new_user = User(
         email=email,
         username=username,
-        password_hash=hashed_password,
+        hashed_password=hashed_password,
         user_role=User.ROLE_FREE,
         user_status=User.STATUS_ACTIVE,
     )
