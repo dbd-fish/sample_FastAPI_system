@@ -1,6 +1,8 @@
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
+from sqlalchemy import select
+from app.core.security import verify_password
 from main import app
 from app.database import configure_database, Base
 from app.schemas.user import UserCreate
@@ -9,6 +11,7 @@ from app.seeders.seed_data import clear_data, seed_data
 from app.services.auth_service import get_current_user
 from app.models.user import User
 from passlib.context import CryptContext
+from app.database import engine, AsyncSessionLocal, Base
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 def setup_test_logging():
@@ -52,6 +55,14 @@ async def setup_test_data():
     async with db_config["engine"].begin() as conn:
         print("setup_test_data: テストデータを削除します")
         await conn.run_sync(Base.metadata.drop_all)
+
+@pytest_asyncio.fixture(scope="function")
+async def db_session():
+    """
+    テスト用のデータベースセッションを提供するフィクスチャ。
+    """
+    async with AsyncSessionLocal() as session:
+        yield session
 
 @pytest_asyncio.fixture(scope="function")
 def regist_user_data():
@@ -99,14 +110,23 @@ def authenticated_client():
     app.dependency_overrides.clear()
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_register_user(regist_user_data):
+async def test_register_user(regist_user_data, db_session):
     """
     ユーザー登録のテスト。
     """
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000/") as client:
-        response = await client.post("/auth/register", json=regist_user_data.model_dump())
+    async with AsyncClient(app=app, base_url="http://localhost:8000") as client:
+        response = await client.post("/auth/register", json=regist_user_data.dict())
         assert response.status_code == 200
         assert response.json()["msg"] == "User created successfully"
+
+        # データベース内のユーザーを確認
+        user = await db_session.execute(
+            select(User).where(User.email == regist_user_data.email)
+        )
+        user = user.scalars().first()
+        assert user is not None
+        assert user.email == regist_user_data.email
+        assert user.username == regist_user_data.username
 
 @pytest.mark.asyncio(loop_scope='session')
 async def test_login_user():
@@ -123,13 +143,22 @@ async def test_login_user():
         assert "access_token" in response.json()
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_reset_password(authenticated_client):
+async def test_reset_password(authenticated_client, db_session):
     """
     パスワードリセットのテスト。
     """
+    new_password = "newpassword"
     response = await authenticated_client.post(
         "/auth/reset-password",
-        json={"email": "testuser@example.com", "new_password": "newpassword"},
+        json={"email": "testuser@example.com", "new_password": new_password},
     )
     assert response.status_code == 200
     assert response.json()["msg"] == "Password reset successful"
+
+    # データベース内のユーザーのパスワードを確認
+    user = await db_session.execute(
+        select(User).where(User.email == "testuser@example.com")
+    )
+    user = user.scalars().first()
+    assert user is not None
+    assert verify_password(new_password, user.hashed_password)
