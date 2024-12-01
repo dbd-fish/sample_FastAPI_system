@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from app.database import database, get_db
 from app.routes import router
@@ -8,7 +8,7 @@ from app.middleware import AddUserIPMiddleware, ErrorHandlerMiddleware
 import os
 import time
 from app.core.request_validation_error import validation_exception_handler
-
+from app.core.http_exception_handler import http_exception_handler
 
 # タイムゾーンをJST（日本標準時）に設定
 os.environ['TZ'] = 'Asia/Tokyo'
@@ -34,6 +34,7 @@ app.add_middleware(ErrorHandlerMiddleware)
 
 # 例外ハンドラの登録
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(HTTPException, http_exception_handler)
 
 # ルーターをアプリケーションに追加
 app.include_router(router)

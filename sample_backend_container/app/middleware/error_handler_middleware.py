@@ -6,31 +6,6 @@ from app.core.log_config import logger, structlog
 import traceback
 from sqlalchemy.exc import SQLAlchemyError
 
-class AddUserIPMiddleware(BaseHTTPMiddleware):
-    """
-    リクエストのIPアドレスを取得し、ログのコンテキストに追加するミドルウェア。
-    """
-
-    async def dispatch(self, request: Request, call_next):
-        """
-        リクエストのIPアドレスを取得し、ログのコンテキストに追加します。
-
-        Args:
-            request (Request): FastAPIのリクエストオブジェクト。
-            call_next (Callable): 次のミドルウェアまたはエンドポイントを呼び出す関数。
-
-        Returns:
-            Response: 処理後のレスポンスオブジェクト。
-        """
-        user_ip = request.client.host  # クライアントのIPアドレスを取得
-        structlog.contextvars.bind_contextvars(user_ip=user_ip)  # ログコンテキストにIPアドレスをバインド
-        logger.info("User IP added to log context", user_ip=user_ip)  # IPアドレスをログに記録
-        try:
-            response = await call_next(request)  # 次の処理を実行
-        finally:
-            structlog.contextvars.clear_contextvars()  # ログコンテキストをクリア
-        return response
-
 class ErrorHandlerMiddleware(BaseHTTPMiddleware):
     """
     リクエスト処理中に発生した例外をキャッチし、適切なレスポンスを返すミドルウェア。
@@ -57,7 +32,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
                 "HTTPException occurred",
                 detail=http_exc.detail,
                 status_code=http_exc.status_code,
-                user_ip=request.client.host,
+                # user_ip=request.client.host,
                 path=request.url.path,
                 method=request.method,
                 stack_trace=error_trace,
@@ -73,7 +48,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             logger.error(
                 "ValidationError occurred",
                 errors=val_exc.errors(),
-                user_ip=request.client.host,
+                # user_ip=request.client.host,
                 path=request.url.path,
                 method=request.method,
                 stack_trace=error_trace,
@@ -88,7 +63,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             logger.error(
                 "SQLAlchemyError occurred",
                 error=str(db_exc),
-                user_ip=request.client.host,
+                # user_ip=request.client.host,
                 path=request.url.path,
                 method=request.method,
                 stack_trace=error_trace,
@@ -103,7 +78,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             logger.error(
                 "Unhandled exception occurred",
                 error=str(exc),
-                user_ip=request.client.host,
+                # user_ip=request.client.host,
                 path=request.url.path,
                 method=request.method,
                 stack_trace=error_trace,
