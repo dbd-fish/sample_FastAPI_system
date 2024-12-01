@@ -81,7 +81,7 @@ def regist_user_data() -> UserCreate:
     )
 
 @pytest_asyncio.fixture(scope="function")
-def authenticated_client() -> AsyncGenerator[AsyncClient, None]:
+async def authenticated_client() -> AsyncGenerator[AsyncClient, None]:
     """
     認証済みのクライアントを提供するフィクスチャ。
     """
@@ -117,8 +117,8 @@ async def test_register_user(regist_user_data: UserCreate, db_session: AsyncSess
     """
     ユーザー登録のテスト。
     """
-    async with AsyncClient(app=app, base_url="http://localhost:8000") as client:
-        response = await client.post("/auth/register", json=regist_user_data.dict())
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000") as client:
+        response = await client.post("/auth/register", json=regist_user_data.model_dump())
         assert response.status_code == 200
         assert response.json()["msg"] == "User created successfully"
 
@@ -130,6 +130,21 @@ async def test_register_user(regist_user_data: UserCreate, db_session: AsyncSess
         assert user is not None
         assert user.email == regist_user_data.email
         assert user.username == regist_user_data.username
+
+@pytest.mark.asyncio(loop_scope='session')
+async def test_register_existing_user(regist_user_data: UserCreate, db_session: AsyncSession) -> None:
+    """
+    既に存在するメールアドレスでユーザー登録を試みた場合のテスト。
+    """
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000") as client:
+        # 最初の登録は成功する
+        response = await client.post("/auth/register", json=regist_user_data.model_dump())
+        assert response.status_code == 200
+
+        # 同じメールアドレスで再登録を試みる
+        response = await client.post("/auth/register", json=regist_user_data.model_dump())
+        assert response.status_code == 400
+        assert "User already exists" in response.json()["detail"]
 
 @pytest.mark.asyncio(loop_scope='session')
 async def test_login_user() -> None:
@@ -144,6 +159,20 @@ async def test_login_user() -> None:
         )
         assert response.status_code == 200
         assert "access_token" in response.json()
+
+@pytest.mark.asyncio(loop_scope='session')
+async def test_login_with_invalid_credentials() -> None:
+    """
+    誤った資格情報でログインを試みた場合のテスト。
+    """
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000/") as client:
+        response = await client.post(
+            "/auth/login",
+            data={"username": "wronguser@example.com", "password": "wrongpassword"},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        assert response.status_code == 401
+        assert "Invalid email or password" in response.json()["detail"]
 
 @pytest.mark.asyncio(loop_scope='session')
 async def test_reset_password(authenticated_client: AsyncClient, db_session: AsyncSession) -> None:
@@ -165,3 +194,15 @@ async def test_reset_password(authenticated_client: AsyncClient, db_session: Asy
     user: Optional[User] = result.scalars().first()
     assert user is not None
     assert verify_password(new_password, user.hashed_password)
+
+@pytest.mark.asyncio(loop_scope='session')
+async def test_reset_password_with_invalid_email(authenticated_client: AsyncClient, db_session: AsyncSession) -> None:
+    """
+    存在しないメールアドレスでパスワードリセットを試みた場合のテスト。
+    """
+    response = await authenticated_client.post(
+        "/auth/reset-password",
+        json={"email": "nonexistent@example.com", "new_password": "newpassword"},
+    )
+    assert response.status_code == 404
+    assert "User not found" in response.json()["detail"]
