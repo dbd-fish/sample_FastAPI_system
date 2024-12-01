@@ -1,3 +1,4 @@
+from jose import JWTError
 from pydantic import ValidationError
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request, HTTPException
@@ -72,6 +73,22 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
                 status_code=500,
                 content={"message": "Database error occurred"},
             )
+
+        except JWTError as jwt_exc:
+            # JWTError が発生した場合の処理
+            error_trace = traceback.format_exc()  # スタックトレースを取得
+            logger.error(
+                "JWTError occurred",
+                error=str(jwt_exc),
+                path=request.url.path,
+                method=request.method,
+                stack_trace=error_trace,
+            )
+            return JSONResponse(
+                status_code=401,
+                content={"message": "Invalid or expired token"},
+            )
+
         except Exception as exc:
             # その他の予期しない例外が発生した場合の処理
             error_trace = traceback.format_exc()  # スタックトレースを取得
