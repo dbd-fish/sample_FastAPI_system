@@ -64,26 +64,6 @@ async def get_current_user(
             user_role=user.user_role,
             user_status=user.user_status,
         )
-
-    except JWTError as e:
-        logger.info("get_current_user - jwt decode error", error=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    except ValidationError as e:
-        logger.info("get_current_user - validation error", errors=e.errors())
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="User validation failed",
-        )
-    except Exception as e:
-        logger.info("get_current_user - error", errors=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="User validation failed",
-        )
     finally:
         logger.info("get_current_user - end")
 
@@ -139,3 +119,42 @@ async def create_user(
         return saved_user
     finally:
         logger.info("create_user - end")
+
+
+async def reset_password(email: str, new_password: str, db: AsyncSession):
+    """
+    パスワードをリセットします。
+
+    Args:
+        email (str): ユーザーのメールアドレス。
+        new_password (str): 新しいプレーンテキストのパスワード。
+        db (AsyncSession): 非同期データベースセッション。
+
+    Returns:
+        User: パスワードが更新されたユーザーオブジェクト。
+
+    Raises:
+        HTTPException: ユーザーが存在しない場合。
+    """
+    logger.info("reset_password - start", email=email)
+    user = await UserRepository.get_user_by_email(db, email)
+
+    if not user:
+        logger.info("reset_password - user not found", email=email)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    hashed_password = hash_password(new_password)
+
+    try:
+        updated_user = await UserRepository.update_user_password(db, user, hashed_password)
+        logger.info("reset_password - success", user_id=updated_user.user_id)
+        return updated_user
+    except Exception as e:
+        logger.error("reset_password - error", error=str(e))
+        await db.rollback()
+        raise e
+    finally:
+        logger.info("reset_password - end")

@@ -42,3 +42,23 @@ class UserRepository:
         await db.commit()
         await db.refresh(user)
         return user
+
+    @staticmethod
+    async def update_user_password(db: AsyncSession, user: User, hashed_password: str) -> User:
+        """
+        ユーザーのパスワードを更新します。
+
+        Args:
+            db (AsyncSession): 非同期データベースセッション。
+            user (User): 更新対象のユーザーオブジェクト。
+            hashed_password (str): ハッシュ化された新しいパスワード。
+
+        Returns:
+            User: 更新されたユーザーオブジェクト。
+        """
+        user.hashed_password = hashed_password
+        await db.commit()
+        await db.refresh(user)
+        return user
+
+

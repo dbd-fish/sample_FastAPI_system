@@ -160,37 +160,3 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> User
     logger.info("authenticate_user - success", user_id=user.user_id)
     logger.info("authenticate_user - end")
     return user
-
-async def reset_password(email: str, new_password: str, db: AsyncSession):
-    """
-    パスワードをリセットする
-    """
-    logger.info("reset_password - start", email=email)
-    query = select(User).where(
-        User.email == email,          
-        User.user_status == User.STATUS_ACTIVE,        
-        User.deleted_at.is_(None)     
-    )
-    result = await db.execute(query)
-    user = result.scalars().first()
-
-    if not user:
-        logger.info("reset_password - user not found", email=email)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
-
-    user.hashed_password = hash_password(new_password)
-
-    try:
-        await db.commit()
-        await db.refresh(user)
-        logger.info("reset_password - success", user_id=user.user_id)
-        return user
-    except Exception as e:
-        logger.error("reset_password - error", error=str(e))
-        await db.rollback()
-        raise e
-    finally:
-        logger.info("reset_password - end")
