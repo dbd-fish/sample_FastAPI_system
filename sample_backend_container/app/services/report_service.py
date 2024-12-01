@@ -27,24 +27,17 @@ async def create_report(report_data: RequestReport, current_user: UserResponse, 
     """
     logger.info("create_report - start", report_data=report_data)
 
-    new_report = Report(
-        user_id=current_user.user_id,
-        title=report_data.title,
-        content=report_data.content,
-        format=report_data.format,
-        visibility=report_data.visibility,
-    )
-
     try:
+        new_report = Report(
+            user_id=current_user.user_id,
+            title=report_data.title,
+            content=report_data.content,
+            format=report_data.format,
+            visibility=report_data.visibility,
+        )
         saved_report = await ReportRepository.create_report(db, new_report)
         logger.info("create_report - success", report_id=saved_report.report_id)
         return ResponseReport.model_validate(saved_report)
-    except SQLAlchemyError as e:
-        logger.error("create_report - SQLAlchemyError", error=str(e))
-        raise HTTPException(status_code=500, detail="Database error")
-    except Exception as e:
-        logger.error("create_report - General error", error=str(e))
-        raise HTTPException(status_code=500, detail="Unexpected error occurred")
     finally:
         logger.info("create_report - end")
 
@@ -77,12 +70,6 @@ async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSe
         updated_report = await ReportRepository.update_report(db, report)
         logger.info("update_report - success", report_id=updated_report.report_id)
         return ResponseReport.model_validate(updated_report)
-    except SQLAlchemyError as e:
-        logger.error("update_report - SQLAlchemyError", error=str(e))
-        raise HTTPException(status_code=500, detail="Database error")
-    except Exception as e:
-        logger.error("update_report - General error", error=str(e))
-        raise HTTPException(status_code=500, detail="Unexpected error occurred")
     finally:
         logger.info("update_report - end")
 
@@ -111,12 +98,6 @@ async def delete_report(report_id: str, db: AsyncSession) -> dict:
         await ReportRepository.delete_report(db, report)
         logger.info("delete_report - success", report_id=report.report_id)
         return {"message": "Report deleted successfully"}
-    except SQLAlchemyError as e:
-        logger.error("delete_report - SQLAlchemyError", error=str(e))
-        raise HTTPException(status_code=500, detail="Database error")
-    except Exception as e:
-        logger.error("delete_report - General error", error=str(e))
-        raise HTTPException(status_code=500, detail="Unexpected error occurred")
     finally:
         logger.info("delete_report - end")
 
@@ -144,8 +125,5 @@ async def get_report_by_id_service(report_id: str, db: AsyncSession) -> Response
     try:
         logger.info("get_report_by_id_service - success", report_id=report.report_id)
         return ResponseReport.model_validate(report)
-    except Exception as e:
-        logger.error("get_report_by_id_service - General error", error=str(e))
-        raise HTTPException(status_code=500, detail="Unexpected error occurred")
     finally:
         logger.info("get_report_by_id_service - end")

@@ -1,86 +1,114 @@
+from pydantic import ValidationError
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request, HTTPException
 from starlette.responses import JSONResponse
 from app.core.log_config import logger, structlog
-
+import traceback
+from sqlalchemy.exc import SQLAlchemyError
 
 class AddUserIPMiddleware(BaseHTTPMiddleware):
     """
-    リクエストのIPアドレスをログに記録するミドルウェア。
-    ユーザーのIPアドレスをリクエストごとに取得し、ログに記録。
+    リクエストのIPアドレスを取得し、ログのコンテキストに追加するミドルウェア。
     """
 
     async def dispatch(self, request: Request, call_next):
         """
-        ミドルウェアのメイン処理。リクエストのIPアドレスをログに記録し、
-        ログのコンテキストにバインドします。
+        リクエストのIPアドレスを取得し、ログのコンテキストに追加します。
 
         Args:
             request (Request): FastAPIのリクエストオブジェクト。
             call_next (Callable): 次のミドルウェアまたはエンドポイントを呼び出す関数。
 
         Returns:
-            Response: リクエストのレスポンスオブジェクト。
+            Response: 処理後のレスポンスオブジェクト。
         """
         user_ip = request.client.host  # クライアントのIPアドレスを取得
         structlog.contextvars.bind_contextvars(user_ip=user_ip)  # ログコンテキストにIPアドレスをバインド
-        logger.info("User IP in Middleware", user_ip=user_ip)  # IPアドレスをログに記録
+        logger.info("User IP added to log context", user_ip=user_ip)  # IPアドレスをログに記録
         try:
-            # 次の処理を実行
-            response = await call_next(request)
+            response = await call_next(request)  # 次の処理を実行
         finally:
-            # リクエストごとのログコンテキストをクリア
-            structlog.contextvars.clear_contextvars()
+            structlog.contextvars.clear_contextvars()  # ログコンテキストをクリア
         return response
-
 
 class ErrorHandlerMiddleware(BaseHTTPMiddleware):
     """
-    エラーハンドリング用ミドルウェア。
-    リクエスト処理中に発生した例外をキャッチし、適切なレスポンスを返します。
+    リクエスト処理中に発生した例外をキャッチし、適切なレスポンスを返すミドルウェア。
     """
 
     async def dispatch(self, request: Request, call_next):
         """
-        ミドルウェアのメイン処理。HTTPExceptionと一般的な例外をキャッチし、
-        適切なログ記録とレスポンスを返します。
+        リクエスト処理中に発生した例外をキャッチし、適切なレスポンスを返します。
 
         Args:
             request (Request): FastAPIのリクエストオブジェクト。
             call_next (Callable): 次のミドルウェアまたはエンドポイントを呼び出す関数。
 
         Returns:
-            Response: エラーレスポンスまたはリクエストのレスポンスオブジェクト。
+            Response: エラーレスポンスまたは処理後のレスポンスオブジェクト。
         """
         try:
-            # 次の処理を実行
-            response = await call_next(request)
+            response = await call_next(request)  # 次の処理を実行
             return response
         except HTTPException as http_exc:
-            # HTTPExceptionをキャッチした場合の処理
+            # HTTPExceptionが発生した場合の処理
+            error_trace = traceback.format_exc()  # スタックトレースを取得
             logger.warning(
-                "HTTPException occurred",  # 警告ログ
-                detail=http_exc.detail,  # エラー詳細
-                status_code=http_exc.status_code,  # HTTPステータスコード
-                user_ip=request.client.host,  # ユーザーのIPアドレス
+                "HTTPException occurred",
+                detail=http_exc.detail,
+                status_code=http_exc.status_code,
+                user_ip=request.client.host,
+                path=request.url.path,
+                method=request.method,
+                stack_trace=error_trace,
             )
-            # HTTPExceptionに基づいてJSONレスポンスを返す
             return JSONResponse(
                 status_code=http_exc.status_code,
-                content={"message": http_exc.detail},  # エラー詳細を返す
+                content={"message": http_exc.detail},
                 headers=http_exc.headers,
             )
-        except Exception as exc:
-            # 予期しない例外をキャッチした場合の処理
+        except ValidationError as val_exc:
+            # ValidationErrorが発生した場合の処理
+            error_trace = traceback.format_exc()  # スタックトレースを取得
             logger.error(
-                "Unhandled exception occurred",  # エラーログ
-                error=str(exc),  # 例外の内容
-                user_ip=request.client.host,  # ユーザーのIPアドレス
-                path=request.url.path,  # リクエストされたURLパス
-                method=request.method,  # リクエストメソッド（GET, POSTなど）
+                "ValidationError occurred",
+                errors=val_exc.errors(),
+                user_ip=request.client.host,
+                path=request.url.path,
+                method=request.method,
+                stack_trace=error_trace,
             )
-            # 一般的な500エラーを返す
+            return JSONResponse(
+                status_code=422,
+                content={"message": "Validation error", "errors": val_exc.errors()},
+            )
+        except SQLAlchemyError as db_exc:
+            # SQLAlchemyErrorが発生した場合の処理
+            error_trace = traceback.format_exc()  # スタックトレースを取得
+            logger.error(
+                "SQLAlchemyError occurred",
+                error=str(db_exc),
+                user_ip=request.client.host,
+                path=request.url.path,
+                method=request.method,
+                stack_trace=error_trace,
+            )
             return JSONResponse(
                 status_code=500,
-                content={"message": "Internal Server Error"},  # エラーメッセージ
+                content={"message": "Database error occurred"},
+            )
+        except Exception as exc:
+            # その他の予期しない例外が発生した場合の処理
+            error_trace = traceback.format_exc()  # スタックトレースを取得
+            logger.error(
+                "Unhandled exception occurred",
+                error=str(exc),
+                user_ip=request.client.host,
+                path=request.url.path,
+                method=request.method,
+                stack_trace=error_trace,
+            )
+            return JSONResponse(
+                status_code=500,
+                content={"message": "Internal Server Error"},
             )

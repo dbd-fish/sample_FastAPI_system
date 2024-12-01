@@ -32,9 +32,6 @@ async def get_me(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends
         user = await get_current_user(db, token) 
         logger.info("get_me - success", user_id=user.user_id)
         return user
-    except Exception as e:
-        logger.error("get_me - error", error=str(e))
-        raise e
     finally:
         logger.info("get_me - end")
 
@@ -55,9 +52,6 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
         new_user = await create_user(user.email, user.username, user.password, db)
         logger.info("register_user - success", user_id=new_user.user_id)
         return {"msg": "User created successfully", "user_id": new_user.user_id}
-    except Exception as e:
-        logger.error("register_user - error", error=str(e))
-        raise e
     finally:
         logger.info("register_user - end")
 
@@ -86,9 +80,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         access_token = create_access_token(data={"sub": user.email})  # アクセストークンを生成
         logger.info("login - success", user_id=user.user_id)
         return {"access_token": access_token, "token_type": "bearer"}
-    except Exception as e:
-        logger.error("login - error", error=str(e))
-        raise e
     finally:
         logger.info("login - end")
 
@@ -108,9 +99,6 @@ async def logout(current_user: User = Depends(get_current_user),):
         # クライアント側でトークンを削除するシンプルな処理
         logger.info("logout - success")
         return {"msg": "Logged out successfully"}
-    except Exception as e:
-        logger.error("logout - error", error=str(e))
-        raise e
     finally:
         logger.info("logout - end")
 
@@ -132,8 +120,5 @@ async def reset_password_endpoint(data: PasswordReset, db: AsyncSession = Depend
         await reset_password(data.email, data.new_password, db)
         logger.info("reset_password - success", email=data.email)
         return {"msg": "Password reset successful"}
-    except Exception as e:
-        logger.error("reset_password - error", error=str(e))
-        raise e
     finally:
         logger.info("reset_password - end")

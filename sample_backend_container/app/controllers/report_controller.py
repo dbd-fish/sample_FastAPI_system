@@ -36,9 +36,6 @@ async def create_report_endpoint(
         endpoint_result = await create_report(report,current_user, db) 
         logger.info("create_report_endpoint - success", report_id=endpoint_result.report_id)
         return endpoint_result
-    except Exception as e:
-        logger.error("create_report_endpoint - error", error=str(e))
-        raise e
     finally:
         logger.info("create_report_endpoint - end")
 
@@ -68,9 +65,6 @@ async def update_report_endpoint(
         endpoint_result = await update_report(report_id, updated_report, db) 
         logger.info("update_report_endpoint - success", report_id=endpoint_result.report_id)
         return endpoint_result
-    except Exception as e:
-        logger.error("update_report_endpoint - error", error=str(e))
-        raise e
     finally:
         logger.info("update_report_endpoint - end")
 
@@ -97,9 +91,6 @@ async def delete_report_endpoint(
         endpoint_result = await delete_report(report_id, db)  # レポート削除ロジックを呼び出し
         logger.info("delete_report_endpoint - success", report_id=report_id)
         return endpoint_result
-    except Exception as e:
-        logger.error("delete_report_endpoint - error", error=str(e))
-        raise e
     finally:
         logger.info("delete_report_endpoint - end")
 
@@ -124,8 +115,5 @@ async def get_report_by_id(
         endpoint_result = await get_report_by_id_service(report_id, db)
         logger.info("get_report_by_id - success", report_id=report_id)
         return endpoint_result
-    except Exception as e:
-        logger.error("get_report_by_id - error", error=str(e))
-        raise e
     finally:
         logger.info("get_report_by_id - end")
