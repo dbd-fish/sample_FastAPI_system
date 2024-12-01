@@ -111,26 +111,31 @@ async def create_user(
         HTTPException: ユーザー作成中に発生したエラー。
     """
     logger.info("create_user - start", email=email, username=username)
-
-    # パスワードをハッシュ化
-    hashed_password = hash_password(password)
-
-    # 新しいユーザーオブジェクトを作成
-    new_user = User(
-        email=email,
-        username=username,
-        hashed_password=hashed_password,
-        user_role=User.ROLE_FREE,
-        user_status=User.STATUS_ACTIVE,
-    )
-
     try:
+        # パスワードをハッシュ化
+        hashed_password = hash_password(password)
+
+        # 新しいユーザーオブジェクトを作成
+        new_user = User(
+            email=email,
+            username=username,
+            hashed_password=hashed_password,
+            user_role=User.ROLE_FREE,
+            user_status=User.STATUS_ACTIVE,
+        )
+    
+        # 既存ユーザーの確認
+        existing_user = await UserRepository.get_user_by_email(db, email)
+        if existing_user:
+            logger.warning("create_user - user already exists", email=email)
+            raise HTTPException(
+                status_code=400,
+                detail="User already exists"
+            )
+        
         # データベースにユーザーを保存
         saved_user = await UserRepository.create_user(db, new_user)
         logger.info("create_user - success", user_id=saved_user.user_id)
         return saved_user
-    except Exception as e:
-        logger.error("create_user - error", error=str(e))
-        raise HTTPException(status_code=500, detail="User creation failed")
     finally:
         logger.info("create_user - end")
