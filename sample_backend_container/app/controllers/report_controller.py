@@ -14,7 +14,7 @@ logger = structlog.get_logger()
 router = APIRouter()
 
 
-@router.post("/reports", response_model=ResponseReport)
+@router.post("", response_model=ResponseReport)
 async def create_report_endpoint(
     report: RequestReport,
     current_user: UserResponse = Depends(get_current_user),
@@ -41,7 +41,7 @@ async def create_report_endpoint(
 
 
 
-@router.put("/reports/{report_id}", response_model=ResponseReport)
+@router.put("/{report_id}", response_model=ResponseReport)
 async def update_report_endpoint(
     report_id: str,
     updated_report: RequestReport,
@@ -69,7 +69,7 @@ async def update_report_endpoint(
         logger.info("update_report_endpoint - end")
 
 
-@router.delete("/reports/{report_id}")
+@router.delete("/{report_id}")
 async def delete_report_endpoint(
     report_id: str,
     db: AsyncSession = Depends(get_db),
@@ -95,7 +95,7 @@ async def delete_report_endpoint(
         logger.info("delete_report_endpoint - end")
 
 
-@router.get("/reports/{report_id}", response_model=ResponseReport)
+@router.get("/{report_id}", response_model=ResponseReport)
 async def get_report_by_id(
     report_id: str,
     db: AsyncSession = Depends(get_db),

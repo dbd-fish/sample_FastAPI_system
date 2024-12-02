@@ -10,13 +10,10 @@ from sqlalchemy.future import select
 from app.config.test_data import TestData
 from app.common.common import datetime_now
 from passlib.context import CryptContext
-import app.models  # すべてのモデルをインポート
-import structlog
+import app.models
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# ログの設定
-logger = structlog.get_logger()
 
 async def clear_data():
     """
@@ -38,6 +35,7 @@ async def seed_data():
     """
     テーブルへデータを挿入します。
     """
+    
     async with AsyncSessionLocal() as session:
         try:
             # 固定値のUUIDやIDを定義
@@ -49,16 +47,16 @@ async def seed_data():
 
             # 1. Userテーブル
             result = await session.execute(
-                select(app.models.User).where(app.models.User.username == "testuser")
+                select(app.models.User).where(app.models.User.username == TestData.TEST_USERNAME_1)
             )
             if not result.scalars().first():
                 session.add(
                     app.models.User(
-                        user_id=user1_id,
-                        username="testuser",
-                        email="testuser@example.com",
-                        hashed_password=pwd_context.hash("password"),
-                        contact_number="123456789",
+                        user_id=TestData.TEST_USER_ID_1,
+                        username=TestData.TEST_USERNAME_1,
+                        email=TestData.TEST_USER_EMAIL_1,
+                        hashed_password=pwd_context.hash(TestData.TEST_USER_PASSWORD),
+                        contact_number=TestData.TEST_USER_CONTACT_1,
                         user_role=1,
                         user_status=1,
                         created_at=datetime_now(),
@@ -69,16 +67,16 @@ async def seed_data():
 
             # 1. Userテーブル (target_user_id 用のデータ追加)
             result = await session.execute(
-                select(app.models.User).where(app.models.User.username == "targetuser")
+                select(app.models.User).where(app.models.User.username == TestData.TEST_USERNAME_2)
             )
             if not result.scalars().first():
                 session.add(
                     app.models.User(
-                        user_id=user2_id,
-                        username="targetuser",
-                        email="targetuser@example.com",
-                        hashed_password=pwd_context.hash("password"),
-                        contact_number="987654321",
+                        user_id=TestData.TEST_USER_ID_2,
+                        username=TestData.TEST_USERNAME_2,
+                        email=TestData.TEST_USER_EMAIL_2,
+                        hashed_password=pwd_context.hash(TestData.TEST_USER_PASSWORD),
+                        contact_number=TestData.TEST_USER_CONTACT_2,
                         user_role=2,
                         user_status=1,
                         created_at=datetime_now(),
@@ -86,7 +84,6 @@ async def seed_data():
                     )
                 )
             await session.commit()
-
 
             # 2. UserProfileテーブル
             result = await session.execute(
@@ -175,15 +172,15 @@ async def seed_data():
 
             # 7. Reportテーブル
             result = await session.execute(
-                select(app.models.Report).where(app.models.Report.title == "Sample Report")
+                select(app.models.Report).where(app.models.Report.title == TestData.TEST_REPORT_TITLE)
             )
             if not result.scalars().first():
                 session.add(
                     app.models.Report(
-                        report_id=report_id,
-                        user_id=user1_id,
-                        title="Sample Report",
-                        content="This is a sample report.",
+                        report_id=TestData.TEST_REPORT_ID,
+                        user_id=TestData.TEST_USER_ID_1,
+                        title=TestData.TEST_REPORT_TITLE,
+                        content=TestData.TEST_REPORT_CONTENT,
                         format=1,  # markdown
                         visibility=3,  # private
                         created_at=datetime_now(),
@@ -194,19 +191,19 @@ async def seed_data():
 
             # 8. ReportTagテーブル
             result = await session.execute(
-                select(app.models.ReportTag).where(app.models.ReportTag.tag_name == "Sample Tag")
+                select(app.models.ReportTag).where(app.models.ReportTag.tag_name == "Sample Tag"
+)
             )
             if not result.scalars().first():
                 session.add(
                     app.models.ReportTag(
-                        tag_id=tag_id,
+                        tag_id=1,
                         tag_name="Sample Tag",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
                     )
                 )
             await session.commit()
-
             # 9. ReportTagLinkテーブル
             result = await session.execute(
                 select(app.models.ReportTagLink).where(app.models.ReportTagLink.report_id == report_id)

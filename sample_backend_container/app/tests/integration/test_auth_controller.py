@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 from app.core.security import verify_password
+from app.config.test_data import TestData
 from main import app
 from app.database import configure_database, Base
 from app.schemas.user import UserCreate
@@ -58,7 +59,7 @@ async def test_login_user() -> None:
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000/") as client:
         response = await client.post(
             "/auth/login",
-            data={"username": "testuser@example.com", "password": "password"},
+            data={"username": TestData.TEST_USER_EMAIL_1, "password": TestData.TEST_USER_PASSWORD},
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
         assert response.status_code == 200
@@ -86,14 +87,14 @@ async def test_reset_password(authenticated_client: AsyncClient, db_session: Asy
     new_password = "newpassword"
     response = await authenticated_client.post(
         "/auth/reset-password",
-        json={"email": "testuser@example.com", "new_password": new_password},
+        json={"email": TestData.TEST_USER_EMAIL_1, "new_password": new_password},
     )
     assert response.status_code == 200
     assert response.json()["msg"] == "Password reset successful"
 
     # データベース内のユーザーのパスワードを確認
     result = await db_session.execute(
-        select(User).where(User.email == "testuser@example.com")
+        select(User).where(User.email == TestData.TEST_USER_EMAIL_1)
     )
     user: Optional[User] = result.scalars().first()
     assert user is not None

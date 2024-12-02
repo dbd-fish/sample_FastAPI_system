@@ -18,7 +18,7 @@ async def test_create_report(authenticated_client: AsyncClient, db_session: Asyn
         "format": Report.FORMAT_MD,
         "visibility": Report.VISIBILITY_PUBLIC
     }
-    response = await authenticated_client.post("/report/reports", json=report_data)
+    response = await authenticated_client.post("/report", json=report_data)
     assert response.status_code == 200
 
 
@@ -59,8 +59,7 @@ async def test_update_report(authenticated_client: AsyncClient, db_session: Asyn
         "title": update_tilte,
         "content": update_content
     }
-    # response = await authenticated_client.put("report/reports/323e4567-e89b-12d3-a456-426614174003", json=updated_data)
-    response = await authenticated_client.put(f"report/reports/{report.report_id}", json=updated_data)
+    response = await authenticated_client.put(f"report/{report.report_id}", json=updated_data)
 
     assert response.status_code == 200
 
@@ -69,7 +68,6 @@ async def test_update_report(authenticated_client: AsyncClient, db_session: Asyn
     assert response_data["content"] == updated_data["content"]
 
     # データベース内のレポートを確認
-    # db_report = await db_session.get(Report, "323e4567-e89b-12d3-a456-426614174003")
     db_report = await db_session.get(Report, report.report_id)
     await db_session.refresh(db_report)
     assert db_report is not None
@@ -93,7 +91,7 @@ async def test_get_report(authenticated_client: AsyncClient, db_session: AsyncSe
     await db_session.commit()
     await db_session.refresh(report)
 
-    response = await authenticated_client.get(f"/report/reports/{report.report_id}")
+    response = await authenticated_client.get(f"/report/{report.report_id}")
     assert response.status_code == 200
 
     response_data = response.json()
@@ -120,7 +118,7 @@ async def test_delete_report(authenticated_client: AsyncClient, db_session: Asyn
     # report = Report(
     #     report_id="323e4567-e89b-12d3-a456-426614174003"
     # )
-    response = await authenticated_client.delete(f"/report/reports/{report.report_id}")
+    response = await authenticated_client.delete(f"/report/{report.report_id}")
     assert response.status_code == 200
     assert response.json() == {"msg": "Report deleted successfully"}
 
@@ -129,4 +127,21 @@ async def test_delete_report(authenticated_client: AsyncClient, db_session: Asyn
     await db_session.refresh(db_report)
     assert db_report is not None  # レコードはまだ存在している
     assert db_report.deleted_at is not None  # 削除日時が設定されている
-    # assert db_report.deleted_at > db_report.created_at  # 論理削除のタイミングを確認
+    assert db_report.deleted_at > db_report.created_at  # 論理削除のタイミングを確認
+
+import asyncio
+import logging
+import pytest
+
+logging.basicConfig(level=logging.INFO)
+
+@pytest.mark.asyncio
+async def test_parallel_tasks_with_logging():
+    async def async_task(task_id):
+        logging.info(f"Start Task {task_id}")
+        await asyncio.sleep(1)
+        logging.info(f"End Task {task_id}")
+        return task_id
+
+    tasks = [async_task(i) for i in range(3)]
+    await asyncio.gather(*tasks)

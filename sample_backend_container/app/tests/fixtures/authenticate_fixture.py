@@ -39,11 +39,11 @@ def login_user_data() -> User:
 
     return User(
         user_id=TestData.TEST_USER_ID_1,
-        email="testuser@example.com",
-        username="testuser",
-        hashed_password=pwd_context.hash("password"),
-        user_role=2,
-        user_status=1,
+        email=TestData.TEST_USER_EMAIL_1,
+        username=TestData.TEST_USERNAME_1,
+        hashed_password=pwd_context.hash(TestData.TEST_USER_PASSWORD),
+        user_role=User.ROLE_FREE,
+        user_status=User.STATUS_ACTIVE,
     )
 
 
@@ -57,11 +57,11 @@ async def authenticated_client() -> AsyncGenerator[AsyncClient, None]:
     # モックユーザーを定義
     mock_user = User(
         user_id=TestData.TEST_USER_ID_1,
-        email="testuser@example.com",
-        username="testuser",
-        hashed_password=pwd_context.hash("password"),  # 実際のハッシュ化されたパスワードを設定
-        user_role=2,
-        user_status=1,
+        email=TestData.TEST_USER_EMAIL_1,
+        username=TestData.TEST_USERNAME_1,
+        hashed_password=pwd_context.hash(TestData.TEST_USER_PASSWORD),
+        user_role=User.ROLE_FREE,
+        user_status=User.STATUS_ACTIVE,
     )
 
     # get_current_userのオーバーライド関数を定義
