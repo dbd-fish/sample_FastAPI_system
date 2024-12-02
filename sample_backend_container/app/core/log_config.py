@@ -14,6 +14,7 @@ def create_log_directory(directory: str) -> None:
     Args:
         directory (str): 作成するログディレクトリのパス。
     """
+    print(f"Creating log directory at: {directory}")
     os.makedirs(directory, exist_ok=True)
 
 
@@ -29,14 +30,15 @@ def get_log_file_path(directory: str, filename_template: str = "app_{date}.log")
         str: 生成されたログファイルのフルパス。
     """
     current_date = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d")
-    return os.path.join(directory, filename_template.format(date=current_date))
+    log_file_path = os.path.join(directory, filename_template.format(date=current_date))
+    print(f"Generated log file path: {log_file_path}")
+    return log_file_path
 
 
 def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
     """
     ログ設定を行います。ファイルハンドラーやカスタムフォーマッタの設定、
     structlog用のプロセッサを含みます。
-
     Args:
         test_env (int): テスト環境の指定。
             0: 本番環境
@@ -45,40 +47,25 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
     Returns:
         structlog.BoundLogger: 設定済みのstructlogロガーインスタンス。
     """
-    # アプリケーションログの設定
-    if test_env==1:
-        # 単体テストの場合
+    print(f"Configuring logging for environment: {test_env}")
+    if test_env == 1:
         create_log_directory(setting.UT_APP_LOG_DIRECTORY)
         app_log_file_path = get_log_file_path(setting.UT_APP_LOG_DIRECTORY)
-    elif test_env==2:
-        # 結合テストの場合
+    elif test_env == 2:
         create_log_directory(setting.IT_APP_LOG_DIRECTORY)
         app_log_file_path = get_log_file_path(setting.IT_APP_LOG_DIRECTORY)
     else:
-        # 通常のサーバー起動の場合　test_env==0
         create_log_directory(setting.APP_LOG_DIRECTORY)
         app_log_file_path = get_log_file_path(setting.APP_LOG_DIRECTORY)
 
-    # 日本時間対応のカスタムフォーマッタ
     class JSTFormatter(logging.Formatter):
         """
         日本時間（JST）でタイムスタンプをフォーマットするカスタムフォーマッタ。
         """
         def formatTime(self, record, datefmt=None):
-            """
-            ログレコードのタイムスタンプをJSTでフォーマットします。
-
-            Args:
-                record (logging.LogRecord): ログレコード。
-                datefmt (Optional[str]): 日付フォーマット文字列。
-
-            Returns:
-                str: フォーマットされたタイムスタンプ。
-            """
             dt = datetime.fromtimestamp(record.created, ZoneInfo("Asia/Tokyo"))
-            if datefmt:
-                return dt.strftime(datefmt)
-            return dt.isoformat()
+            formatted_time = dt.strftime(datefmt) if datefmt else dt.isoformat()
+            return formatted_time
 
     # アプリケーションログのファイルハンドラ設定
     app_file_handler = logging.FileHandler(app_log_file_path, encoding="utf-8")
@@ -86,20 +73,15 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
     app_formatter = JSTFormatter("[%(asctime)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
     app_file_handler.setFormatter(app_formatter)
 
-    # アプリケーション用のロガー設定
+# アプリケーション用のロガー設定
     app_logger = logging.getLogger("app")
     app_logger.handlers = []
     app_logger.setLevel(logging.INFO)
     app_logger.addHandler(app_file_handler)
+    print("App logger configured.")
 
     # SQLAlchemyログの設定
-    sqlalchemy_logger = logging.getLogger('sqlalchemy.engine')
-    if test_env in [1, 2]:
-        # 単体テストまたは結合テスト環境の場合、SQLAlchemyのログを無効化
-        sqlalchemy_logger.setLevel(logging.WARNING)
-    else:
-        # 本番環境の場合、通常のログ設定
-        configure_sqlalchemy_logging(test_env)
+    configure_sqlalchemy_logging(test_env)
 
     # structlogの設定
     structlog.configure(
@@ -122,8 +104,7 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
         logger_factory=structlog.stdlib.LoggerFactory(),
         cache_logger_on_first_use=True,
     )
-
-    # 設定済みのロガーを返却
+    print("Structlog configured.")
     return structlog.get_logger()
 
 
@@ -131,35 +112,44 @@ def configure_sqlalchemy_logging(test_env: int = 0) -> None:
     """
     SQLAlchemyのログ設定を行います。
     """
-    # SQLAlchemyログの設定
-    if test_env==0:
-        create_log_directory(setting.SQL_LOG_DIRECTORY)
-        sqlalchemy_log_file_path = get_log_file_path(setting.SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
-    elif test_env==1:
+    print(f"Configuring SQLAlchemy logging for environment: {test_env}")
+    if test_env == 1:
+        # 単体テストの場合
         create_log_directory(setting.UT_SQL_LOG_DIRECTORY)
         sqlalchemy_log_file_path = get_log_file_path(setting.UT_SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
-    elif test_env==2:
+    elif test_env == 2:
+        # 結合テストの場合
         create_log_directory(setting.IT_SQL_LOG_DIRECTORY)
         sqlalchemy_log_file_path = get_log_file_path(setting.IT_SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
+    else:
+        # 本番環境の場合
+        create_log_directory(setting.SQL_LOG_DIRECTORY)
+        sqlalchemy_log_file_path = get_log_file_path(setting.SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
 
     # SQLAlchemy専用ロガーを設定
-    sqlalchemy_logger = logging.getLogger("sqlalchemy.engine")
-    sqlalchemy_logger.handlers = []
-    sqlalchemy_logger.setLevel(logging.INFO)
+    sqlalchemy_logger = logging.getLogger("sqlalchemy")
+    sqlalchemy_logger.handlers = []  # 既存ハンドラをクリア
+    sqlalchemy_logger.setLevel(logging.WARNING)
 
-    # SQLAlchemy用のファイルハンドラ
     sqlalchemy_file_handler = logging.FileHandler(sqlalchemy_log_file_path, encoding="utf-8")
+    sqlalchemy_file_handler.setLevel(logging.WARNING)  # ハンドラのレベルもWARNINGに設定
     sqlalchemy_formatter = logging.Formatter(
         "[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
     )
     sqlalchemy_file_handler.setFormatter(sqlalchemy_formatter)
 
-    # ハンドラをロガーに追加
     sqlalchemy_logger.addHandler(sqlalchemy_file_handler)
+    sqlalchemy_logger.propagate = False  # 親ロガーへの伝播を防ぐ
 
-    # アプリケーションログから除外
-    sqlalchemy_logger.propagate = False
+    # サブロガーにも同じ設定を適用
+    for sub_logger_name in ["sqlalchemy.engine", "sqlalchemy.pool"]:
+        sub_logger = logging.getLogger(sub_logger_name)
+        sub_logger.handlers = []  # 既存ハンドラをクリア
+        sub_logger.setLevel(logging.WARNING)  # サブロガーのレベルをWARNINGに設定
+        sub_logger.addHandler(sqlalchemy_file_handler)  # ハンドラを追加
+        sub_logger.propagate = False  # 親ロガーへの伝播を防ぐ
 
+    print("SQLAlchemy logging configured.")
 
 # ロガー作成
 logger = configure_logging()
