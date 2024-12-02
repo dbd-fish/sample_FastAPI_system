@@ -11,6 +11,8 @@ from app.config.test_data import TestData
 from app.common.common import datetime_now
 from passlib.context import CryptContext
 import app.models
+import logging
+from sqlalchemy.ext.asyncio import create_async_engine
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -19,7 +21,9 @@ async def clear_data():
     """
     データベースをクリアします。すべてのテーブルを削除し、再作成します。
     """
-    async with engine.begin() as conn:
+    temp_engine = create_async_engine(engine.url, echo=False)  # echo=False で一時エンジンを作成
+    async with temp_engine.begin() as conn:
+
         try:
             print("データベースURL:", engine.url)  # 接続先DB確認
             print("すべてのテーブルを削除中...")
@@ -35,8 +39,11 @@ async def seed_data():
     """
     テーブルへデータを挿入します。
     """
-    
-    async with AsyncSessionLocal() as session:
+
+    # 一時的に echo=False に設定した新しいエンジンを作成
+    temp_engine = create_async_engine(engine.url, echo=False)
+
+    async with AsyncSessionLocal(bind=temp_engine) as session:
         try:
             # 固定値のUUIDやIDを定義
             user1_id = TestData.TEST_USER_ID_1
