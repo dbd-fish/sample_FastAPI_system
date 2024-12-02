@@ -37,7 +37,8 @@ async def create_report(report_data: RequestReport, current_user: UserResponse, 
         )
         saved_report = await ReportRepository.create_report(db, new_report)
         logger.info("create_report - success", report_id=saved_report.report_id)
-        return ResponseReport.model_validate(saved_report)
+        result =  ResponseReport.model_validate(saved_report)
+        return result
     finally:
         logger.info("create_report - end")
 
@@ -97,7 +98,7 @@ async def delete_report(report_id: str, db: AsyncSession) -> dict:
     try:
         await ReportRepository.delete_report(db, report)
         logger.info("delete_report - success", report_id=report.report_id)
-        return {"message": "Report deleted successfully"}
+        return {"msg": "Report deleted successfully"}
     finally:
         logger.info("delete_report - end")
 

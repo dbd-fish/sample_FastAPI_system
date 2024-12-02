@@ -14,16 +14,34 @@ from httpx import AsyncClient, ASGITransport
 from typing import Optional
 from sqlalchemy import select
 from main import app
+from app.config.test_data import TestData
 
 @pytest_asyncio.fixture(scope="function")
 def regist_user_data() -> UserCreate:
     """
-    テスト用ユーザーデータの準備。
+    テスト用の登録ユーザーデータの準備。
     """
     return UserCreate(
         email="registuser@example.com",
         username="registuser",
         password="password",
+        user_role=2,
+        user_status=1,
+    )
+
+@pytest_asyncio.fixture(scope="function")
+def login_user_data() -> User:
+    """
+    テスト用のログイン中ユーザーデータ。
+    NOTE: 本来はJWTトークンからユーザー情報を復元するべきだが、テスト対象の処理が狭めるため、本メソッドからログイン情報を取得する。
+    """
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+    return User(
+        user_id=TestData.TEST_USER_ID_1,
+        email="testuser@example.com",
+        username="testuser",
+        hashed_password=pwd_context.hash("password"),
         user_role=2,
         user_status=1,
     )
@@ -38,7 +56,7 @@ async def authenticated_client() -> AsyncGenerator[AsyncClient, None]:
 
     # モックユーザーを定義
     mock_user = User(
-        user_id=1,
+        user_id=TestData.TEST_USER_ID_1,
         email="testuser@example.com",
         username="testuser",
         hashed_password=pwd_context.hash("password"),  # 実際のハッシュ化されたパスワードを設定

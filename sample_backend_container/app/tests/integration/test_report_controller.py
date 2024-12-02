@@ -1,144 +1,132 @@
-# import pytest
-# from httpx import AsyncClient
-# from main import app
-# from app.core.security import create_access_token
-# from app.models.user import User
-# from app.models.report import Report
-# from app.database import Base, engine
-# from sqlalchemy.ext.asyncio import AsyncSession
-# from app.schemas.report import RequestReport
+import pytest
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.schemas.report import RequestReport, ResponseReport
+from app.models.report import Report
+from app.models.user import User
+from main import app
+from uuid import UUID
 
-# @pytest.fixture(autouse=True)
-# async def setup_db():
-#     """
-#     テスト用のデータベースをセットアップします。
-#     """
-#     async with engine.begin() as conn:
-#         await conn.run_sync(Base.metadata.create_all)
-#     yield
-#     async with engine.begin() as conn:
-#         await conn.run_sync(Base.metadata.drop_all)
+@pytest.mark.asyncio(loop_scope='session')
+async def test_create_report(authenticated_client: AsyncClient, db_session: AsyncSession, login_user_data: User):
+    """
+    レポート作成エンドポイントのテスト。
+    """
+    report_data = {
+        "title": "test_title",
+        "content": "title_content",
+        "format": Report.FORMAT_MD,
+        "visibility": Report.VISIBILITY_PUBLIC
+    }
+    response = await authenticated_client.post("/report/reports", json=report_data)
+    assert response.status_code == 200
 
-# @pytest.fixture
-# async def test_user():
-#     """
-#     テスト用のユーザーをデータベースに追加します。
-#     """
-#     async with AsyncSession(engine) as session:
-#         user = User(
-#             email="testuser@example.com",
-#             username="testuser",
-#             hashed_password="hashedpassword",
-#             user_status=1
-#         )
-#         session.add(user)
-#         await session.commit()
-#         await session.refresh(user)
-#         return user
 
-# @pytest.fixture
-# def access_token(test_user):
-#     """
-#     テスト用のアクセストークンを生成します。
-#     """
-#     return create_access_token({"sub": test_user.email})
+    response_data = response.json()
+    assert response_data["title"] == report_data["title"]
+    assert response_data["content"] == report_data["content"]
+    assert response_data["user_id"] == login_user_data.user_id
 
-# @pytest.mark.anyio
-# async def test_create_report(test_user, access_token):
-#     """
-#     レポート作成のテスト。
-#     """
-#     report_data = {
-#         "title": "Test Report",
-#         "content": "This is a test report.",
-#         "format": 1,
-#         "visibility": 3
-#     }
-#     async with AsyncClient(app=app, base_url="http://testserver") as client:
-#         response = await client.post(
-#             "/reports", json=report_data, headers={"Authorization": f"Bearer {access_token}"}
-#         )
-#         assert response.status_code == 200
-#         assert response.json()["title"] == report_data["title"]
+    # データベース内のレポートを確認
+    db_report = await db_session.get(Report, response_data["report_id"])
+    await db_session.refresh(db_report)
+    assert db_report is not None
+    assert db_report.title == report_data["title"]
+    assert db_report.content == report_data["content"]
+    assert str(db_report.user_id) == login_user_data.user_id
 
-# @pytest.mark.anyio
-# async def test_get_report(test_user, access_token):
-#     """
-#     レポート取得のテスト。
-#     """
-#     async with AsyncSession(engine) as session:
-#         report = Report(
-#             user_id=test_user.user_id,
-#             title="Existing Report",
-#             content="Existing content",
-#             format=1,
-#             visibility=3
-#         )
-#         session.add(report)
-#         await session.commit()
-#         await session.refresh(report)
 
-#     async with AsyncClient(app=app, base_url="http://testserver") as client:
-#         response = await client.get(
-#             f"/reports/{str(report.report_id)}", headers={"Authorization": f"Bearer {access_token}"}
-#         )
-#         assert response.status_code == 200
-#         assert response.json()["title"] == "Existing Report"
+@pytest.mark.asyncio(loop_scope='session')
+async def test_update_report(authenticated_client: AsyncClient, db_session: AsyncSession, login_user_data: User):
+    """
+    レポート更新エンドポイントのテスト。
+    """
+    # まずレポートを作成
+    update_tilte = "Updated title"
+    update_content = "Updated content."
+    report = Report(
+        user_id=login_user_data.user_id,
+        title=update_tilte,
+        content=update_content,
+        format=Report.FORMAT_MD,
+        visibility=Report.VISIBILITY_PUBLIC
+    )
+    db_session.add(report)
+    await db_session.commit()
+    await db_session.refresh(report)
 
-# @pytest.mark.anyio
-# async def test_update_report(test_user, access_token):
-#     """
-#     レポート更新のテスト。
-#     """
-#     async with AsyncSession(engine) as session:
-#         report = Report(
-#             user_id=test_user.user_id,
-#             title="Old Report",
-#             content="Old content",
-#             format=1,
-#             visibility=3
-#         )
-#         session.add(report)
-#         await session.commit()
-#         await session.refresh(report)
+    updated_data = {
+        "title": update_tilte,
+        "content": update_content
+    }
+    # response = await authenticated_client.put("report/reports/323e4567-e89b-12d3-a456-426614174003", json=updated_data)
+    response = await authenticated_client.put(f"report/reports/{report.report_id}", json=updated_data)
 
-#     updated_data = {
-#         "title": "Updated Report",
-#         "content": "Updated content",
-#         "format": 2,
-#         "visibility": 1
-#     }
+    assert response.status_code == 200
 
-#     async with AsyncClient(app=app, base_url="http://testserver") as client:
-#         response = await client.put(
-#             f"/reports/{str(report.report_id)}",
-#             json=updated_data,
-#             headers={"Authorization": f"Bearer {access_token}"}
-#         )
-#         assert response.status_code == 200
-#         assert response.json()["title"] == "Updated Report"
+    response_data = response.json()
+    assert response_data["title"] == updated_data["title"]
+    assert response_data["content"] == updated_data["content"]
 
-# @pytest.mark.anyio
-# async def test_delete_report(test_user, access_token):
-#     """
-#     レポート削除のテスト。
-#     """
-#     async with AsyncSession(engine) as session:
-#         report = Report(
-#             user_id=test_user.user_id,
-#             title="Report to delete",
-#             content="Delete content",
-#             format=1,
-#             visibility=3
-#         )
-#         session.add(report)
-#         await session.commit()
-#         await session.refresh(report)
+    # データベース内のレポートを確認
+    # db_report = await db_session.get(Report, "323e4567-e89b-12d3-a456-426614174003")
+    db_report = await db_session.get(Report, report.report_id)
+    await db_session.refresh(db_report)
+    assert db_report is not None
+    assert db_report.title == updated_data["title"]
+    assert db_report.content == updated_data["content"]
 
-#     async with AsyncClient(app=app, base_url="http://testserver") as client:
-#         response = await client.delete(
-#             f"/reports/{str(report.report_id)}",
-#             headers={"Authorization": f"Bearer {access_token}"}
-#         )
-#         assert response.status_code == 200
-#         assert response.json()["message"] == "Report deleted successfully"
+@pytest.mark.asyncio(loop_scope='session')
+async def test_get_report(authenticated_client: AsyncClient, db_session: AsyncSession, login_user_data: User):
+    """
+    レポート取得エンドポイントのテスト。
+    """
+    # まずレポートを作成
+    report = Report(
+        user_id=login_user_data.user_id,
+        title="report tilte",
+        content="report content",
+        format=Report.FORMAT_MD,
+        visibility=Report.VISIBILITY_PUBLIC
+    )
+    db_session.add(report)
+    await db_session.commit()
+    await db_session.refresh(report)
+
+    response = await authenticated_client.get(f"/report/reports/{report.report_id}")
+    assert response.status_code == 200
+
+    response_data = response.json()
+    assert response_data["title"] == report.title
+    assert response_data["content"] == report.content
+    assert response_data["user_id"] == login_user_data.user_id
+
+@pytest.mark.asyncio(loop_scope='session')
+async def test_delete_report(authenticated_client: AsyncClient, db_session: AsyncSession, login_user_data: User):
+    """
+    レポート削除エンドポイントのテスト。
+    """
+    # まずレポートを作成
+    report = Report(
+        user_id=login_user_data.user_id,
+        title="report tilte",
+        content="report content",
+        format=Report.FORMAT_MD,
+        visibility=Report.VISIBILITY_PUBLIC,
+    )
+    db_session.add(report)
+    await db_session.commit()
+    await db_session.refresh(report)
+    # report = Report(
+    #     report_id="323e4567-e89b-12d3-a456-426614174003"
+    # )
+    response = await authenticated_client.delete(f"/report/reports/{report.report_id}")
+    assert response.status_code == 200
+    assert response.json() == {"msg": "Report deleted successfully"}
+
+    # データベース内のレポートが論理削除されたことを確認
+    db_report = await db_session.get(Report, report.report_id)
+    await db_session.refresh(db_report)
+    assert db_report is not None  # レコードはまだ存在している
+    assert db_report.deleted_at is not None  # 削除日時が設定されている
+    # assert db_report.deleted_at > db_report.created_at  # 論理削除のタイミングを確認
