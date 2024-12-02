@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from uuid import UUID
+from pydantic import ConfigDict
 
 class UserCreate(BaseModel):
     """
@@ -31,8 +32,4 @@ class UserResponse(BaseModel):
     user_role: int = Field(..., description="ユーザー権限 (1: guest, 2: free, 3: regular, 4: admin, 5: owner)")
     user_status: int = Field(..., description="アカウント状態 (1: active, 2: suspended)")
 
-    class ConfigDict:
-        """
-        Pydanticモデルの設定クラス。
-        """
-        from_attributes = True  # モデルの属性からデータを生成可能にする
+    model_config = ConfigDict(from_attributes = True)

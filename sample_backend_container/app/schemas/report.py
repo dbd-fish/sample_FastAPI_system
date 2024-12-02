@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 from uuid import UUID
+from pydantic import ConfigDict
 
 class ReportBase(BaseModel):
     """
@@ -30,8 +31,4 @@ class ResponseReport(ReportBase):
     updated_at: datetime = Field(..., description="更新日時")
     deleted_at: Optional[datetime] = Field(None, description="削除日時")
 
-    class ConfigDict:
-        """
-        SQLAlchemy などの ORM モデルからデータをマッピングできる設定。
-        """
-        from_attributes = True
+    model_config = ConfigDict(from_attributes = True)

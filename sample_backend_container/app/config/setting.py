@@ -26,8 +26,4 @@ class Setting(BaseSettings):
     # alembic.iniに記載
 
 
-
-    class ConfigDict:
-        env_file = ".env"  # .envファイルから環境変数を読み込む設定
-
 setting = Setting()
