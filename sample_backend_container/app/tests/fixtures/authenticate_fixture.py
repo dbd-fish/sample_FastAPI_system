@@ -72,9 +72,8 @@ async def authenticated_client() -> AsyncGenerator[AsyncClient, None]:
     app.dependency_overrides[get_current_user] = override_get_current_user
 
     # 認証済みのクライアントを作成
-    client = AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000/")
-
-    yield client
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000/") as client:
+        yield client
 
     # テスト後にオーバーライドをクリア
     app.dependency_overrides.clear()
