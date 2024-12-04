@@ -4,7 +4,7 @@ from app.models.user import User
 from app.repositories.auth_repository import UserRepository
 from app.schemas.user import UserResponse
 from app.config.setting import setting
-from app.core.security import oauth2_scheme, hash_password
+from app.core.security import oauth2_scheme, hash_password, decode_access_token
 from jose import jwt, JWTError
 from pydantic import ValidationError
 import structlog
@@ -33,12 +33,11 @@ async def get_current_user(
         HTTPException:
             - 401: トークンが無効または`sub`フィールドが存在しない場合。
             - 404: ユーザーが存在しない場合。
-            - 500: バリデーションエラーが発生した場合。
     """
     logger.info("get_current_user - start", token=token)
     try:
         # トークンをデコードしてペイロードを取得
-        payload = jwt.decode(token, setting.SECRET_KEY, algorithms=[setting.ALGORITHM])
+        payload = decode_access_token(token)
         email: str = payload.get("sub")
         if email is None:
             logger.warning("get_current_user - token missing 'sub'", token=token)

@@ -39,9 +39,8 @@ def hash_password(password: str) -> str:
         hashed_password = pwd_context.hash(password)
         logger.info("hash_password - end")
         return hashed_password
-    except Exception as e:
-        logger.error("hash_password - error", error=str(e))
-        raise e
+    finally:
+        logger.info("hash_password - end")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
@@ -54,27 +53,26 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     Returns:
         bool: 検証結果（True: 一致, False: 不一致）。
     """
-    logger.info("verify_password - start")
+    logger.info("verify_password - start", plain_password=plain_password, hashed_password=hashed_password)
     try:
         result = pwd_context.verify(plain_password, hashed_password)
         logger.info("verify_password - end", result=result)
         return result
-    except Exception as e:
-        logger.error("verify_password - error", error=str(e))
-        raise e
+    finally:
+        logger.info("verify_password - end")
 
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     """
     アクセストークンを作成する。
 
     Args:
-        data (dict): トークンに含めるデータ（例: {"sub": ユーザー識別子}）。
+        data (dict): トークンに含めるデータ。
         expires_delta (timedelta, optional): トークンの有効期限（デフォルトは30分）。
 
     Returns:
         str: 作成されたJWTアクセストークン。
     """
-    logger.info("create_access_token - start", data=data)
+    logger.info("create_access_token - start", data=data, expires_delta=expires_delta)
     try:
         to_encode = data.copy()
         expire = datetime.now(ZoneInfo("Asia/Tokyo")) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
@@ -82,9 +80,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         logger.info("create_access_token - end", expire=expire)
         return encoded_jwt
-    except Exception as e:
-        logger.error("create_access_token - error", error=str(e))
-        raise e
+    finally:
+        logger.info("create_access_token - end")
 
 def decode_access_token(token: str) -> dict:
     """
@@ -104,19 +101,6 @@ def decode_access_token(token: str) -> dict:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])  # トークンをデコード
         logger.info("decode_access_token - success", payload=payload)
         return payload
-    except JWTError as e:
-        logger.error("decode_access_token - error", error=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    except Exception as e:
-        logger.error("decode_access_token - error", error=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred"
-        )
     finally:
         logger.info("decode_access_token - end")
 
