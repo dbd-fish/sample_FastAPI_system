@@ -1,3 +1,4 @@
+import traceback
 from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
 import structlog
@@ -16,6 +17,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     Returns:
         JSONResponse: エラーレスポンス。
     """
+    error_trace = traceback.format_exc()  # スタックトレースを取得
     # エラーログの記録
     logger.error(
         "HTTP error occurred",
@@ -25,6 +27,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         client_ip=request.client.host,
         url=request.url.path,
         method=request.method,
+        stack_trace=error_trace,
     )
     
     # JSONレスポンスを返却
