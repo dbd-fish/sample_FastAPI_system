@@ -1,7 +1,19 @@
 {
+    // Pytestを使用するための設定
     "python.testing.pytestArgs": [
-        "app/tests",
+        "app/tests", // テストファイルが存在するディレクトリを指定
     ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.unittestEnabled": false, // unittestは無効化
+    "python.testing.pytestEnabled": true, // pytestを有効化
+    // Pythonファイルに対するVSCodeの設定
+    "[python]": {
+        "editor.formatOnSave": true, // ファイル保存時にフォーマットを適用
+        "editor.codeActionsOnSave": {
+            // Ruffを使用してすべての修正を適用
+            "source.fixAll.ruff": "explicit",
+            // Ruffを使用してインポートを整理
+            "source.organizeImports.ruff": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff" // デフォルトのフォーマッターをRuffに設定
+    }
 }
