@@ -9,6 +9,7 @@ import os
 import time
 from app.core.request_validation_error import validation_exception_handler
 from app.core.http_exception_handler import http_exception_handler
+import asyncio
 
 # タイムゾーンをJST（日本標準時）に設定
 os.environ['TZ'] = 'Asia/Tokyo'
@@ -20,6 +21,11 @@ async def lifespan(app: FastAPI):
     アプリケーションのライフサイクル管理を行うコンテキストマネージャ。
     """
     logger.info("Application startup - connecting to database.")
+
+    # 明示的にイベントループを設定（最新バージョンでも安全）
+    # loop = asyncio.get_running_loop()
+    # asyncio.set_event_loop(loop)
+
     await database.connect()
     yield
     logger.info("Application shutdown - disconnecting from database.")

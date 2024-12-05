@@ -9,12 +9,11 @@ from app.models.user import User
 from passlib.context import CryptContext
 from app.services.auth_service import get_current_user
 from fastapi import FastAPI
-from httpx import AsyncClient, ASGITransport
 from typing import Optional
 from sqlalchemy import select
 from main import app
 
-@pytest_asyncio.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="function", autouse=True)
 def setup_test_logging():
     """
     pytestの実行時にログ出力をテスト用に切り替える。

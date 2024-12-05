@@ -22,26 +22,30 @@ async def setup_test_db():
     各テストごとにデータベースを初期化し、必要なシードデータを挿入します。
     """
     print("テスト環境のセットアップを開始")
-
     # テスト用データベースの設定
     db_config = configure_database(test_env=2)
     print(f"使用するデータベースURL: {db_config['database'].url}")
 
-    # テストデータの準備
-    async with db_config["engine"].begin() as conn:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000") as client:
+        # データベースの初期化 (clear_data API の呼び出し)
         print("テスト用データのクリアを開始")
-        await clear_data()  # データを初期化
+        clear_response = await client.post("/dev/clear_data")
+        print(clear_response)
+        assert clear_response.status_code == 200
+
+        # 必要なデータの挿入 (seed_data API の呼び出し)
         print("テスト用シードデータの挿入を開始")
-        await seed_data()  # 必要なデータを挿入
+        seed_response = await client.post("/dev/seed_data")
+        print(seed_response)
+        assert seed_response.status_code == 200
+
+        print("テスト環境のセットアップを完了")
 
     yield  # テストの実行を許可
-
     # テストデータの後片付け
     async with db_config["engine"].begin() as conn:
         print("テスト後のデータ削除を開始")
         await conn.run_sync(Base.metadata.drop_all)
-
-    print("テスト環境のセットアップを完了")
 
 @pytest_asyncio.fixture(scope="function")
 async def db_session() -> AsyncGenerator[AsyncSession, None]:

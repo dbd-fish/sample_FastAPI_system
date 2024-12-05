@@ -1,8 +1,12 @@
 import configparser
 from databases import Database
+from sqlalchemy import NullPool
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from typing import AsyncGenerator
+from sqlalchemy.pool import StaticPool, QueuePool, AsyncAdaptedQueuePool
+
+from app.config.setting import setting
 
 Base = declarative_base()
 
@@ -39,7 +43,15 @@ def configure_database(test_env: int = 0, echo: bool = True):
     """
     database_url = get_database_url(test_env)
     database = Database(database_url)
-    engine = create_async_engine(database_url, echo=echo)
+
+    # NOTE: AsyncAdaptedQueuePoolではPytest時にイベントループ絡みで失敗するため、開発時はNullPoolにする
+    if setting.DEV_MODE:
+        # 開発時はコネクションプーリングを保持せずに都度接続＆開放するように設定
+        engine = create_async_engine(database_url, echo=False, poolclass=NullPool)
+    else:
+        # 本番環境では非同期でもコネクションプーリングを使いまわすように設定
+        engine = create_async_engine(database_url, echo=False, poolclass=AsyncAdaptedQueuePool)
+
     async_session_local = sessionmaker(
         bind=engine,
         class_=AsyncSession,

@@ -14,7 +14,7 @@ from app.models.user import User
 from datetime import datetime
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_hash_password_not_empty():
     """
     hash_passwordの出力が空でないことを確認。
@@ -30,7 +30,7 @@ async def test_hash_password_not_empty():
     assert hashed_password != hashed_password2
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_verify_password_special_case():
     """
     verify_passwordの特殊ケースをテスト。
@@ -44,7 +44,7 @@ async def test_verify_password_special_case():
     assert not verify_password("wrongpassword", hashed_password), "Mismatched password should not be verified."
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_create_access_token_no_expiry():
     """
     create_access_tokenで有効期限を指定しないケースをテスト。
@@ -56,7 +56,7 @@ async def test_create_access_token_no_expiry():
     assert decoded_data["sub"] == "test_user_id", "Token without expiry should be decodable."
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_create_access_token_expiry():
     """
     create_access_tokenで有効期限を指定するケースをテスト。
@@ -75,7 +75,7 @@ async def test_create_access_token_expiry():
         decode_access_token(token)
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_decode_access_token_missing_field():
     """
     decode_access_tokenでトークンからsubフィールドが欠落しているケースをテスト。
@@ -91,7 +91,7 @@ async def test_decode_access_token_missing_field():
     assert decoded_data["other_field"] == "value"
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_decode_access_token_invalid_token():
     """
     jwtとして不適切なトークンをdecode_access_tokenに渡した場合のテスト。
@@ -109,7 +109,7 @@ async def test_decode_access_token_invalid_token():
         decode_access_token("header.payload")
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_authenticate_user_password_mismatch(db_session: AsyncSession):
     """
     authenticate_userでパスワードが一致しなかった場合のテスト。
@@ -127,13 +127,14 @@ async def test_authenticate_user_password_mismatch(db_session: AsyncSession):
     )
     db_session.add(user)
     await db_session.commit()
+    await db_session.refresh(user)
 
     # 間違ったパスワードを使用して認証
     with pytest.raises(Exception, match="Invalid email or password"):
         await authenticate_user(test_email, "wrongpassword", db_session)
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_authenticate_user_inactive_status(db_session: AsyncSession):
     """
     authenticate_userで非アクティブなユーザーをテスト。
@@ -151,12 +152,13 @@ async def test_authenticate_user_inactive_status(db_session: AsyncSession):
     )
     db_session.add(user)
     await db_session.commit()
+    await db_session.refresh(user)
 
     with pytest.raises(Exception, match="Invalid email or password"):
         await authenticate_user(test_email, test_password, db_session)
 
 
-@pytest.mark.asyncio(loop_scope='session')
+@pytest.mark.asyncio
 async def test_authenticate_user_deleted(db_session: AsyncSession):
     """
     authenticate_userで削除済みのユーザーをテスト。
@@ -175,6 +177,7 @@ async def test_authenticate_user_deleted(db_session: AsyncSession):
     )
     db_session.add(user)
     await db_session.commit()
+    await db_session.refresh(user)
 
     with pytest.raises(Exception, match="Invalid email or password"):
         await authenticate_user(test_email, test_password, db_session)

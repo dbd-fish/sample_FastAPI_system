@@ -15,6 +15,7 @@ from typing import Optional
 from sqlalchemy import select
 from main import app
 from app.config.test_data import TestData
+import asyncio
 
 @pytest_asyncio.fixture(scope="function")
 def regist_user_data() -> UserCreate:
