@@ -21,8 +21,7 @@ async def clear_data():
     """
     データベースをクリアします。すべてのテーブルを削除し、再作成します。
     """
-    temp_engine = create_async_engine(engine.url, echo=False)  # echo=False で一時エンジンを作成
-    async with temp_engine.begin() as conn:
+    async with engine.begin() as conn:
 
         try:
             print("データベースURL:", engine.url)  # 接続先DB確認
@@ -39,11 +38,7 @@ async def seed_data():
     """
     テーブルへデータを挿入します。
     """
-
-    # 一時的に echo=False に設定した新しいエンジンを作成
-    temp_engine = create_async_engine(engine.url, echo=False)
-
-    async with AsyncSessionLocal(bind=temp_engine) as session:
+    async with AsyncSessionLocal(bind=engine) as session:
         try:
             # 固定値のUUIDやIDを定義
             user1_id = TestData.TEST_USER_ID_1
