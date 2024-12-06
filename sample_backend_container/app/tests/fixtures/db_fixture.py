@@ -1,19 +1,12 @@
-import pytest
-import pytest_asyncio
-from app.database import configure_database, Base, engine, AsyncSessionLocal
-from app.core.log_config import configure_logging
-from app.seeders.seed_data import clear_data, seed_data
 from typing import AsyncGenerator
+
+import pytest_asyncio
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.user import UserCreate
-from app.models.user import User
-from passlib.context import CryptContext
-from app.services.auth_service import get_current_user
-from fastapi import FastAPI
-from httpx import AsyncClient, ASGITransport
-from typing import Optional
-from sqlalchemy import select
+
+from app.database import AsyncSessionLocal, Base, configure_database, get_db
 from main import app
+
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
 async def setup_test_db():
@@ -23,7 +16,7 @@ async def setup_test_db():
     """
     print("テスト環境のセットアップを開始")
     # テスト用データベースの設定
-    db_config = configure_database(test_env=2)
+    db_config = configure_database(test_env=1)
     print(f"使用するデータベースURL: {db_config['database'].url}")
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000") as client:

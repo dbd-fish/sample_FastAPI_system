@@ -1,9 +1,11 @@
 import logging
-import structlog
 import os
 from datetime import datetime
-from zoneinfo import ZoneInfo
+
+import structlog
 from structlog.processors import CallsiteParameter
+from zoneinfo import ZoneInfo
+
 from app.config.setting import setting
 
 
@@ -40,20 +42,14 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
     ログ設定を行います。ファイルハンドラーやカスタムフォーマッタの設定、
     structlog用のプロセッサを含みます。
     Args:
-        test_env (int): テスト環境の指定。
-            0: 本番環境
-            1: 単体テスト環境
-            2: 結合テスト環境
+        test_env (int): 環境指定フラグ (0: 本番環境、1: Pytest)。
     Returns:
         structlog.BoundLogger: 設定済みのstructlogロガーインスタンス。
     """
     print(f"Configuring logging for environment: {test_env}")
     if test_env == 1:
-        create_log_directory(setting.UT_APP_LOG_DIRECTORY)
-        app_log_file_path = get_log_file_path(setting.UT_APP_LOG_DIRECTORY)
-    elif test_env == 2:
-        create_log_directory(setting.IT_APP_LOG_DIRECTORY)
-        app_log_file_path = get_log_file_path(setting.IT_APP_LOG_DIRECTORY)
+        create_log_directory(setting.PYTEST_APP_LOG_DIRECTORY)
+        app_log_file_path = get_log_file_path(setting.PYTEST_APP_LOG_DIRECTORY)
     else:
         create_log_directory(setting.APP_LOG_DIRECTORY)
         app_log_file_path = get_log_file_path(setting.APP_LOG_DIRECTORY)
@@ -111,18 +107,14 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
 def configure_sqlalchemy_logging(test_env: int = 0) -> None:
     """
     SQLAlchemyのログ設定を行います。
+    Args:
+        test_env (int): 環境指定フラグ (0: 本番環境、1: Pytest)。
     """
     print(f"Configuring SQLAlchemy logging for environment: {test_env}")
     if test_env == 1:
-        # 単体テストの場合
-        create_log_directory(setting.UT_SQL_LOG_DIRECTORY)
-        sqlalchemy_log_file_path = get_log_file_path(setting.UT_SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
-    elif test_env == 2:
-        # 結合テストの場合
-        create_log_directory(setting.IT_SQL_LOG_DIRECTORY)
-        sqlalchemy_log_file_path = get_log_file_path(setting.IT_SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
+        create_log_directory(setting.PYTEST_SQL_LOG_DIRECTORY)
+        sqlalchemy_log_file_path = get_log_file_path(setting.PYTEST_SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
     else:
-        # 本番環境の場合
         create_log_directory(setting.SQL_LOG_DIRECTORY)
         sqlalchemy_log_file_path = get_log_file_path(setting.SQL_LOG_DIRECTORY, "sqlalchemy_{date}.log")
 

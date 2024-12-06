@@ -34,8 +34,8 @@ services:
     container_name: postgres_db
     environment:
       POSTGRES_DB: sample_db
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: sample_user
+      POSTGRES_PASSWORD: sample_password
       TZ: Asia/Tokyo
     volumes:
       - postgres_data:/var/lib/postgresql/data

@@ -1,15 +1,16 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.exceptions import RequestValidationError
-from app.database import database, get_db
-from app.routes import router
-from app.core.log_config import logger
-from contextlib import asynccontextmanager
-from app.middleware import AddUserIPMiddleware, ErrorHandlerMiddleware
 import os
 import time
-from app.core.request_validation_error import validation_exception_handler
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
+
 from app.core.http_exception_handler import http_exception_handler
-import asyncio
+from app.core.log_config import logger
+from app.core.request_validation_error import validation_exception_handler
+from app.database import database
+from app.middleware import AddUserIPMiddleware, ErrorHandlerMiddleware
+from app.routes import router
 
 # タイムゾーンをJST（日本標準時）に設定
 os.environ['TZ'] = 'Asia/Tokyo'

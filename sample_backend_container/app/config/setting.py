@@ -18,10 +18,9 @@ class Setting(BaseSettings):
     # ログの保存先
     APP_LOG_DIRECTORY: str  = "logs/app"
     SQL_LOG_DIRECTORY: str  = "logs/sql"
-    UT_APP_LOG_DIRECTORY: str  = "logs/UT/app"
-    UT_SQL_LOG_DIRECTORY: str  = "logs/UT/sql"
-    IT_APP_LOG_DIRECTORY: str  = "logs/IT/app"
-    IT_SQL_LOG_DIRECTORY: str  = "logs/IT/sql"
+    PYTEST_APP_LOG_DIRECTORY: str  = "logs/Pytest/app"
+    PYTEST_SQL_LOG_DIRECTORY: str  = "logs/Pytest/sql"
+
 
     # データベース設定
     # alembic.iniに記載
