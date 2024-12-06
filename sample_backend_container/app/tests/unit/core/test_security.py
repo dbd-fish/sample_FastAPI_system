@@ -1,17 +1,17 @@
+from datetime import datetime, timedelta
+
 import pytest
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError
-from datetime import timedelta
+
 from app.core.security import (
-    hash_password,
-    verify_password,
+    authenticate_user,
     create_access_token,
     decode_access_token,
-    authenticate_user,
+    hash_password,
+    verify_password,
 )
+from app.database import get_db
 from app.models.user import User
-from datetime import datetime
 
 
 @pytest.mark.asyncio
@@ -110,7 +110,7 @@ async def test_decode_access_token_invalid_token():
 
 
 @pytest.mark.asyncio
-async def test_authenticate_user_password_mismatch(db_session: AsyncSession):
+async def test_authenticate_user_password_mismatch():
     """
     authenticate_userでパスワードが一致しなかった場合のテスト。
     """
@@ -125,17 +125,18 @@ async def test_authenticate_user_password_mismatch(db_session: AsyncSession):
         user_role=User.ROLE_FREE,
         user_status=User.STATUS_ACTIVE,
     )
-    db_session.add(user)
-    await db_session.commit()
-    await db_session.refresh(user)
+    async for db_session in get_db():
+        db_session.add(user)
+        await db_session.commit()
+        await db_session.refresh(user)
 
-    # 間違ったパスワードを使用して認証
-    with pytest.raises(Exception, match="Invalid email or password"):
-        await authenticate_user(test_email, "wrongpassword", db_session)
+        # 間違ったパスワードを使用して認証
+        with pytest.raises(Exception, match="Invalid email or password"):
+            await authenticate_user(test_email, "wrongpassword", db_session)
 
 
 @pytest.mark.asyncio
-async def test_authenticate_user_inactive_status(db_session: AsyncSession):
+async def test_authenticate_user_inactive_status():
     """
     authenticate_userで非アクティブなユーザーをテスト。
     """
@@ -150,16 +151,17 @@ async def test_authenticate_user_inactive_status(db_session: AsyncSession):
         user_role=User.ROLE_FREE,
         user_status=User.STATUS_SUSPENDED,  # 非アクティブなステータス
     )
-    db_session.add(user)
-    await db_session.commit()
-    await db_session.refresh(user)
+    async for db_session in get_db():
+        db_session.add(user)
+        await db_session.commit()
+        await db_session.refresh(user)
 
-    with pytest.raises(Exception, match="Invalid email or password"):
-        await authenticate_user(test_email, test_password, db_session)
+        with pytest.raises(Exception, match="Invalid email or password"):
+            await authenticate_user(test_email, test_password, db_session)
 
 
 @pytest.mark.asyncio
-async def test_authenticate_user_deleted(db_session: AsyncSession):
+async def test_authenticate_user_deleted():
     """
     authenticate_userで削除済みのユーザーをテスト。
     """
@@ -175,9 +177,10 @@ async def test_authenticate_user_deleted(db_session: AsyncSession):
         user_status=User.STATUS_ACTIVE,
         deleted_at= datetime.strptime("2024-01-01 00:00:00", "%Y-%m-%d %H:%M:%S"),  # 削除されたユーザー
     )
-    db_session.add(user)
-    await db_session.commit()
-    await db_session.refresh(user)
+    async for db_session in get_db():
+        db_session.add(user)
+        await db_session.commit()
+        await db_session.refresh(user)
 
-    with pytest.raises(Exception, match="Invalid email or password"):
-        await authenticate_user(test_email, test_password, db_session)
+        with pytest.raises(Exception, match="Invalid email or password"):
+            await authenticate_user(test_email, test_password, db_session)

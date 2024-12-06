@@ -1,3 +1,4 @@
+
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
@@ -14,11 +15,11 @@ from app.seeders.seed_data import clear_data, seed_data
 from app.services.auth_service import get_current_user
 from app.models.user import User
 from passlib.context import CryptContext
-from app.database import engine, AsyncSessionLocal, Base
+from app.database import engine, AsyncSessionLocal, Base, get_db
 from typing import AsyncGenerator
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_register_user(regist_user_data: UserCreate, db_session: AsyncSession) -> None:
+async def test_register_user(regist_user_data: UserCreate) -> None:
     """
     ユーザー登録のテスト。
     """
@@ -28,16 +29,17 @@ async def test_register_user(regist_user_data: UserCreate, db_session: AsyncSess
         assert response.json()["msg"] == "User created successfully"
 
         # データベース内のユーザーを確認
-        result = await db_session.execute(
-            select(User).where(User.email == regist_user_data.email)
-        )
-        user: Optional[User] = result.scalars().first()
-        assert user is not None
-        assert user.email == regist_user_data.email
-        assert user.username == regist_user_data.username
+        async for db_session in get_db():
+            result = await db_session.execute(
+                select(User).where(User.email == regist_user_data.email)
+            )
+            user: Optional[User] = result.scalars().first()
+            assert user is not None
+            assert user.email == regist_user_data.email
+            assert user.username == regist_user_data.username
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_register_existing_user(regist_user_data: UserCreate, db_session: AsyncSession) -> None:
+async def test_register_existing_user(regist_user_data: UserCreate) -> None:
     """
     既に存在するメールアドレスでユーザー登録を試みた場合のテスト。
     """
@@ -80,7 +82,7 @@ async def test_login_with_invalid_credentials() -> None:
         assert "Invalid email or password" in response.json()["detail"]
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_reset_password(authenticated_client: AsyncClient, db_session: AsyncSession) -> None:
+async def test_reset_password(authenticated_client: AsyncClient) -> None:
     """
     パスワードリセットのテスト。
     """
@@ -93,15 +95,16 @@ async def test_reset_password(authenticated_client: AsyncClient, db_session: Asy
     assert response.json()["msg"] == "Password reset successful"
 
     # データベース内のユーザーのパスワードを確認
-    result = await db_session.execute(
-        select(User).where(User.email == TestData.TEST_USER_EMAIL_1)
-    )
-    user: Optional[User] = result.scalars().first()
-    assert user is not None
-    assert verify_password(new_password, user.hashed_password)
+    async for db_session in get_db():
+        result = await db_session.execute(
+            select(User).where(User.email == TestData.TEST_USER_EMAIL_1)
+        )
+        user: Optional[User] = result.scalars().first()
+        assert user is not None
+        assert verify_password(new_password, user.hashed_password)
 
 @pytest.mark.asyncio(loop_scope='session')
-async def test_reset_password_with_invalid_email(authenticated_client: AsyncClient, db_session: AsyncSession) -> None:
+async def test_reset_password_with_invalid_email(authenticated_client: AsyncClient) -> None:
     """
     存在しないメールアドレスでパスワードリセットを試みた場合のテスト。
     """

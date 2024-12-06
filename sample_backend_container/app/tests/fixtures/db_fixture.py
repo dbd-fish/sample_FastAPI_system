@@ -40,10 +40,9 @@ async def setup_test_db():
         print("テスト後のデータ削除を開始")
         await conn.run_sync(Base.metadata.drop_all)
 
-@pytest_asyncio.fixture(scope="function")
-async def db_session() -> AsyncGenerator[AsyncSession, None]:
-    """
-    テスト用のデータベースセッションを提供するフィクスチャ。
-    """
-    async with AsyncSessionLocal() as session:
-        yield session
+# @pytest_asyncio.fixture(scope="function")
+# async def db_session() -> AsyncGenerator[AsyncSession, None]:
+#     """
+#     テスト用のデータベースセッションを提供するフィクスチャ。
+#     """
+#     return get_db()
