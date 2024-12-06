@@ -3,10 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
 from app.repositories.auth_repository import UserRepository
 from app.schemas.user import UserResponse
-from app.config.setting import setting
 from app.core.security import oauth2_scheme, hash_password, decode_access_token
-from jose import jwt, JWTError
-from pydantic import ValidationError
 import structlog
 from app.database import get_db
 

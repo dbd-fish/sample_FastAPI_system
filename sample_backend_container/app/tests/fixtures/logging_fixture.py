@@ -1,17 +1,5 @@
 import pytest_asyncio
-from app.database import configure_database, Base, engine, AsyncSessionLocal
 from app.core.log_config import configure_logging
-from app.seeders.seed_data import clear_data, seed_data
-from typing import AsyncGenerator
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.user import UserCreate
-from app.models.user import User
-from passlib.context import CryptContext
-from app.services.auth_service import get_current_user
-from fastapi import FastAPI
-from typing import Optional
-from sqlalchemy import select
-from main import app
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
 def setup_test_logging():

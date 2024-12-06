@@ -6,7 +6,6 @@ from app.models.report import Report
 from app.repositories.report_repository import ReportRepository
 from app.schemas.report import RequestReport, ResponseReport
 import structlog
-from sqlalchemy.exc import SQLAlchemyError
 
 logger = structlog.get_logger()
 

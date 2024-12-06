@@ -1,22 +1,14 @@
 
 import pytest
-import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 from app.core.security import verify_password
 from app.config.test_data import TestData
 from main import app
-from app.database import configure_database, Base
 from app.schemas.user import UserCreate
-from app.core.log_config import configure_logging
-from app.seeders.seed_data import clear_data, seed_data
-from app.services.auth_service import get_current_user
 from app.models.user import User
-from passlib.context import CryptContext
-from app.database import engine, AsyncSessionLocal, Base, get_db
-from typing import AsyncGenerator
+from app.database import get_db
 
 @pytest.mark.asyncio(loop_scope='session')
 async def test_register_user(regist_user_data: UserCreate) -> None:

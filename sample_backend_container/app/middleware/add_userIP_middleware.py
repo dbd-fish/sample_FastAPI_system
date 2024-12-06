@@ -1,10 +1,6 @@
-from pydantic import ValidationError
 from starlette.middleware.base import BaseHTTPMiddleware
-from fastapi import Request, HTTPException
-from starlette.responses import JSONResponse
+from fastapi import Request
 from app.core.log_config import logger, structlog
-import traceback
-from sqlalchemy.exc import SQLAlchemyError
 
 class AddUserIPMiddleware(BaseHTTPMiddleware):
     """

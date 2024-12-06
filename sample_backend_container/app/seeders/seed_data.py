@@ -11,8 +11,6 @@ from app.config.test_data import TestData
 from app.common.common import datetime_now
 from passlib.context import CryptContext
 import app.models
-import logging
-from sqlalchemy.ext.asyncio import create_async_engine
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
