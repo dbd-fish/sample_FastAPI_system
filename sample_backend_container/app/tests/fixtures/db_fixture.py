@@ -1,10 +1,8 @@
-from typing import AsyncGenerator
 
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import AsyncSessionLocal, Base, configure_database, get_db
+from app.database import Base, configure_database
 from main import app
 
 
@@ -45,4 +43,6 @@ async def setup_test_db():
 #     """
 #     テスト用のデータベースセッションを提供するフィクスチャ。
 #     """
-#     return get_db()
+#     async for session in get_db():
+#     yield session
+#     await session.close()
