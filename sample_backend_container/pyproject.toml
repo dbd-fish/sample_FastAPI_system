@@ -42,3 +42,31 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 asyncio_mode = "strict"
 asyncio_default_fixture_loop_scope = "session"
+
+[tool.ruff]
+# 適用するルールの選択
+# F: Pyflakesによるエラー検出
+# E: pycodestyleのエラー
+# W: pycodestyleの警告
+# I: isortによるインポート順序の整理
+# B: flake8-bugbearによる潜在的なバグ検出
+# UP: pyupgradeによる最新のPython構文へのアップグレード
+select = ["F", "E", "W", "I", "B", "UP"]
+
+# 除外するルールの指定（必要に応じて）
+ignore = ["B008"]
+
+# 自動修正可能なルールの指定
+fixable = ["F", "E", "W", "I", "B", "UP"]
+
+# 最大行長の設定
+line-length = 200
+
+# インデント幅の設定
+indent-width = 4
+
+# 対象とするPythonのバージョン
+target-version = "py313"
+
+# 除外するパスの指定
+exclude = ["**/migrations/**", "**/__pycache__/**"]
