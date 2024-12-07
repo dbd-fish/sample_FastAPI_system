@@ -55,8 +55,8 @@ def configure_database(test_env: int = 0):
     # NOTE: AsyncSessionを使用する場合はbindをasync withのタイミングにしなとmypyエラーとなる
     async_session_local = sessionmaker(
         class_=AsyncSession,
-        autoflush=False,
-        expire_on_commit=False,
+        autoflush=True,
+        expire_on_commit=True,
     )
 
     return {

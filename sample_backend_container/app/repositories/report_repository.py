@@ -92,7 +92,8 @@ class ReportRepository:
         """
         report.deleted_at = datetime_now()
         await db.commit()
-
+        await db.refresh(report)
+        
     @staticmethod
     async def fetch_report_for_update(db: AsyncSession, report_id: UUID) -> Report | None:
         """
