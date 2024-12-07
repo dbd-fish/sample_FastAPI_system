@@ -1,39 +1,32 @@
-
-from sqlalchemy import Column, Integer, Text, TIMESTAMP, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Text, TIMESTAMP, ForeignKey, Integer
+from sqlalchemy.dialects.postgresql import UUID
 from app.common.common import datetime_now
 from app.database import Base
-from sqlalchemy.dialects.postgresql import UUID
+from datetime import datetime
+import uuid
 
-# ReportSupplementモデル: レポート補足テーブル
+# ReportSupplementモデル: レポート補足情報テーブル
 class ReportSupplement(Base):
     __tablename__ = "report_supplement"
-    
-    # レポート補足ID - プライマリキー、自動インクリメント
-    report_supplement = Column(Integer, primary_key=True, autoincrement=True, comment="レポート補足ID")
-    
+
+    # 補足ID - プライマリキー、自動インクリメント
+    supplement_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="補足ID")
+
     # レポートID (UUID) - reportテーブルのreport_idを参照する外部キー
-    report_id = Column(UUID(as_uuid=True), ForeignKey("report.report_id"), nullable=False, comment="レポートID (UUID)")
-    
+    report_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("report.report_id"), nullable=False, comment="レポートID (UUID)")
+
     # ユーザーID (UUID) - userテーブルのuser_idを参照する外部キー
-    user_id = Column(UUID(as_uuid=True), ForeignKey("user.user_id"), nullable=False, comment="ユーザーID (UUID)")
-    
-    # レポート補足内容 - レポートに関する追加の説明やコメント
-    content = Column(Text, comment="レポート補足内容")
-    
-    # レポート補足開始位置 - 補足内容の開始位置
-    start_report = Column(Integer, comment="レポート補足開始位置")
-    
-    # レポート補足終了位置 - 補足内容の終了位置
-    end_report = Column(Integer, comment="レポート補足終了位置")
-    
-    # レポート補足根拠 - 補足の参照URL
-    supplement_url = Column(Text, comment="レポート補足根拠")
-    
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("user.user_id"), nullable=False, comment="ユーザーID (UUID)")
+
+    # 補足内容 - レポートに関連する追加の説明や情報
+    content: Mapped[str | None] = mapped_column(Text, comment="補足内容")
+
     # 作成日時
-    created_at = Column(TIMESTAMP, default=datetime_now(), comment="作成日時")
-    
+    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime_now(), comment="作成日時")
+
     # 更新日時
-    updated_at = Column(TIMESTAMP,  default=datetime_now(), onupdate=datetime_now(), comment="更新日時")
-    
+    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime_now(), onupdate=datetime_now(), comment="更新日時")
+
     # 削除日時
-    deleted_at = Column(TIMESTAMP, nullable=True, comment="削除日時")
+    deleted_at: Mapped[datetime | None] = mapped_column(TIMESTAMP, nullable=True, comment="削除日時")
