@@ -1,14 +1,17 @@
 from datetime import datetime, timedelta
-from jose import jwt
-from passlib.context import CryptContext
-from app.models.user import User
-from app.database import AsyncSession
-from sqlalchemy.future import select
+from typing import Optional
+
+import structlog
 from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-import structlog
+from jose import jwt
+from passlib.context import CryptContext
+from sqlalchemy.future import select
 from zoneinfo import ZoneInfo
+
 from app.config.setting import setting
+from app.database import AsyncSession
+from app.models.user import User
 
 # ログの設定
 logger = structlog.get_logger()
@@ -61,7 +64,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     finally:
         logger.info("verify_password - end")
 
-def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """
     アクセストークンを作成する。
 

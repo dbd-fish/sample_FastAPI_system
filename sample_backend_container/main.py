@@ -36,12 +36,17 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # ミドルウェアの追加 (ユーザーIP記録とエラーハンドリング)
+# NOTE: ミドルウェアを別ファイルにする場合、@app.middleware()が機能しないっぽい。
+#       そのため、add_middlewareでミドルウェアを登録する方法にする。
 app.add_middleware(AddUserIPMiddleware)
 app.add_middleware(ErrorHandlerMiddleware)
 
 # 例外ハンドラの登録
-app.add_exception_handler(RequestValidationError, validation_exception_handler)
-app.add_exception_handler(HTTPException, http_exception_handler)
+# NOTE: 例外ハンドラを別ファイルにする場合、@app.exception_handler()が機能しないっぽい。
+#       そのため、add_exception_handlerでハンドラを登録する方法にするが、mypyエラーが発生する。
+#       とりあえず、type: ignoreで妥協する。
+app.add_exception_handler(RequestValidationError, validation_exception_handler) # type: ignore
+app.add_exception_handler(HTTPException, http_exception_handler) # type: ignore
 
 # ルーターをアプリケーションに追加
 app.include_router(router)

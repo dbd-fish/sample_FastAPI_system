@@ -1,11 +1,13 @@
-from fastapi import HTTPException, status, Depends
+import structlog
+from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.security import decode_access_token, hash_password, oauth2_scheme
+from app.database import get_db
 from app.models.user import User
 from app.repositories.auth_repository import UserRepository
 from app.schemas.user import UserResponse
-from app.core.security import oauth2_scheme, hash_password, decode_access_token
-import structlog
-from app.database import get_db
+from uuid import UUID
 
 logger = structlog.get_logger()
 
@@ -35,7 +37,7 @@ async def get_current_user(
     try:
         # トークンをデコードしてペイロードを取得
         payload = decode_access_token(token)
-        email: str = payload.get("sub")
+        email: str = payload.get("sub") or ""
         if email is None:
             logger.warning("get_current_user - token missing 'sub'", token=token)
             raise HTTPException(

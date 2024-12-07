@@ -9,7 +9,7 @@ from app.database import engine, AsyncSessionLocal, Base
 from sqlalchemy.future import select
 from app.config.test_data import TestData
 from app.common.common import datetime_now
-from passlib.context import CryptContext
+from passlib.context import CryptContext   # type: ignore
 import app.models
 
 

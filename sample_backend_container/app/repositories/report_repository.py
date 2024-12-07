@@ -1,9 +1,10 @@
+from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from uuid import UUID
-from app.models.report import Report
+
 from app.common.common import datetime_now
-from sqlalchemy.exc import NoResultFound
+from app.models.report import Report
 
 
 class ReportRepository:
@@ -48,7 +49,7 @@ class ReportRepository:
         return result.scalars().first()
 
     @staticmethod
-    async def update_report(db: AsyncSession, report: Report) -> Report | None:
+    async def update_report(db: AsyncSession, report: Report) -> Report:
         """
         指定されたレポートを更新します。
 
@@ -61,25 +62,22 @@ class ReportRepository:
         Returns:
             Report | None: 更新後のレポートオブジェクト、または該当なしの場合はNone。
         """
-        try:
-            stmt = (
-                select(Report)
-                .where(Report.report_id == report.report_id, Report.deleted_at.is_(None))
-            )
-            result = await db.execute(stmt)
-            existing_report = result.scalars().one()
+        stmt = (
+            select(Report)
+            .where(Report.report_id == report.report_id, Report.deleted_at.is_(None))
+        )
+        result = await db.execute(stmt)
+        existing_report = result.scalars().one()
 
-            # 更新内容を適用
-            existing_report.title = report.title
-            existing_report.content = report.content
-            existing_report.format = report.format
-            existing_report.visibility = report.visibility
+        # 更新内容を適用
+        existing_report.title = report.title
+        existing_report.content = report.content
+        existing_report.format = report.format
+        existing_report.visibility = report.visibility
 
-            await db.commit()
-            await db.refresh(existing_report)
-            return existing_report
-        except NoResultFound:
-            return None
+        await db.commit()
+        await db.refresh(existing_report)
+        return existing_report
 
     @staticmethod
     async def delete_report(db: AsyncSession, report: Report) -> None:

@@ -51,9 +51,11 @@ def configure_database(test_env: int = 0):
         # 本番環境では非同期でもコネクションプーリングを使いまわすように設定
         engine = create_async_engine(database_url, echo=False, poolclass=AsyncAdaptedQueuePool)
 
+    # TODO: autoflushとexpire_on_commitについて調査
+    # NOTE: AsyncSessionを使用する場合はbindをasync withのタイミングにしなとmypyエラーとなる
     async_session_local = sessionmaker(
-        bind=engine,
         class_=AsyncSession,
+        autoflush=False,
         expire_on_commit=False,
     )
 
@@ -77,5 +79,5 @@ async def get_db() -> AsyncGenerator:
     Yields:
         AsyncSession: 非同期セッションインスタンス。
     """
-    async with AsyncSessionLocal() as session:
+    async with AsyncSessionLocal(bind=engine) as session:
         yield session

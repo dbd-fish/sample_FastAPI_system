@@ -18,11 +18,12 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         JSONResponse: エラーレスポンス。
     """
     # エラーログの記録
+    user_ip = request.client.host if request.client else "unknown"  # クライアントのIPアドレスを取得
     logger.error(
         "Request validation error occurred",
         errors=exc.errors(),
         body=exc.body,
-        client_ip=request.client.host,
+        user_ip=user_ip,
         url=request.url.path,
         method=request.method,
     )

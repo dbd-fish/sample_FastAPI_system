@@ -2,8 +2,8 @@ from logging.config import fileConfig
 
 from sqlalchemy import create_engine, pool
 from sqlalchemy.engine import Engine
-from alembic import context
 
+from alembic import context
 from app.database import Base  # Baseをインポート
 
 # this is the Alembic Config object, which provides
@@ -38,7 +38,10 @@ def get_sync_engine() -> Engine:
         Engine: A synchronous SQLAlchemy Engine.
     """
     # Use the synchronous version of the DATABASE_URL
-    url = config.get_main_option("sqlalchemy.url").replace("asyncpg", "psycopg2")
+    url = config.get_main_option("sqlalchemy.url")
+    if url is None:
+        raise ValueError("sqlalchemy.url is not set in the configuration.")
+    url = url.replace("asyncpg", "psycopg2")
     return create_engine(url, poolclass=pool.NullPool)
 
 
