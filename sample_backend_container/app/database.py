@@ -1,5 +1,5 @@
 import configparser
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 from databases import Database
 from sqlalchemy import NullPool
@@ -12,32 +12,31 @@ from app.config.setting import setting
 Base = declarative_base()
 
 def get_database_url(test_env: int = 0) -> str:
-    """
-    環境に応じてデータベース接続URLを取得します。
+    """環境に応じてデータベース接続URLを取得します。
 
     Args:
         test_env (int): 環境指定フラグ (0: 本番環境、1: Pytest)。
 
     Returns:
         str: データベース接続URL。
+
     """
     if test_env == 1:
         return "postgresql+asyncpg://sample_user:sample_password@db:5432/pytest_sample_db"
-    else:
-        config = configparser.ConfigParser()
-        config.read("alembic.ini")
-        return config.get("alembic", "sqlalchemy.url")
+    config = configparser.ConfigParser()
+    config.read("alembic.ini")
+    return config.get("alembic", "sqlalchemy.url")
 
 
 def configure_database(test_env: int = 0):
-    """
-    データベース接続とセッションを設定します。
+    """データベース接続とセッションを設定します。
 
     Args:
         test_env (int): 環境指定フラグ (0: 本番、1: Pytest)。
 
     Returns:
         dict: データベース、エンジン、セッション情報を含む辞書。
+
     """
     database_url = get_database_url(test_env)
     database = Database(database_url)
@@ -73,11 +72,11 @@ engine = db_config["engine"]
 AsyncSessionLocal = db_config["sessionmaker"]
 
 async def get_db() -> AsyncGenerator:
-    """
-    非同期データベースセッションを生成するジェネレーター関数。
+    """非同期データベースセッションを生成するジェネレーター関数。
 
     Yields:
         AsyncSession: 非同期セッションインスタンス。
+
     """
     async with AsyncSessionLocal(bind=engine) as session:
         yield session

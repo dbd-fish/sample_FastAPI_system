@@ -1,11 +1,12 @@
-from pydantic import BaseModel, EmailStr, Field
 from uuid import UUID
-from pydantic import ConfigDict
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
 
 class UserCreate(BaseModel):
+    """ユーザー作成時のリクエストデータを表すモデル。
     """
-    ユーザー作成時のリクエストデータを表すモデル。
-    """
+
     email: EmailStr = Field(..., description="ユーザーのメールアドレス")
     username: str = Field(..., max_length=50, description="ユーザー名 (50文字以内)")
     password: str = Field(..., min_length=8, description="ユーザーのパスワード (8文字以上)")
@@ -15,17 +16,17 @@ class UserCreate(BaseModel):
 
 
 class PasswordReset(BaseModel):
+    """パスワードリセット時のリクエストデータを表すモデル。
     """
-    パスワードリセット時のリクエストデータを表すモデル。
-    """
+
     email: EmailStr = Field(..., description="パスワードをリセットする対象のメールアドレス")
     new_password: str = Field(..., min_length=8, description="新しいパスワード (8文字以上)")
 
 
 class UserResponse(BaseModel):
+    """ユーザー情報のレスポンスデータを表すモデル。
     """
-    ユーザー情報のレスポンスデータを表すモデル。
-    """
+
     user_id: UUID = Field(..., description="ユーザーの一意な識別子")
     email: EmailStr = Field(..., description="ユーザーのメールアドレス")
     username: str = Field(..., description="ユーザー名")

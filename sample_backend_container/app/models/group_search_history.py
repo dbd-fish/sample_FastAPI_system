@@ -1,10 +1,13 @@
+import uuid
+from datetime import datetime
+
+from sqlalchemy import TIMESTAMP, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, TIMESTAMP, ForeignKey, Integer
+
 from app.common.common import datetime_now
 from app.database import Base
-from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
-import uuid
+
 
 # GroupSearchHistoryモデル: グループ検索履歴テーブル
 class GroupSearchHistory(Base):

@@ -28,14 +28,14 @@ target_metadata = Base.metadata
 
 
 def get_sync_engine() -> Engine:
-    """
-    Create a synchronous engine for Alembic to run migrations.
+    """Create a synchronous engine for Alembic to run migrations.
 
     This function ensures that Alembic uses a synchronous engine
     even if the main application uses an asynchronous engine.
 
     Returns:
         Engine: A synchronous SQLAlchemy Engine.
+
     """
     # Use the synchronous version of the DATABASE_URL
     url = config.get_main_option("sqlalchemy.url")
@@ -81,7 +81,7 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, target_metadata=target_metadata,
         )
 
         with context.begin_transaction():

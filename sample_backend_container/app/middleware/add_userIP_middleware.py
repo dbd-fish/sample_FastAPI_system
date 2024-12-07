@@ -1,15 +1,15 @@
-from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request
+from starlette.middleware.base import BaseHTTPMiddleware
+
 from app.core.log_config import logger, structlog
 
+
 class AddUserIPMiddleware(BaseHTTPMiddleware):
-    """
-    リクエストのIPアドレスを取得し、ログのコンテキストに追加するミドルウェア。
+    """リクエストのIPアドレスを取得し、ログのコンテキストに追加するミドルウェア。
     """
 
     async def dispatch(self, request: Request, call_next):
-        """
-        リクエストのIPアドレスを取得し、ログのコンテキストに追加します。
+        """リクエストのIPアドレスを取得し、ログのコンテキストに追加します。
 
         Args:
             request (Request): FastAPIのリクエストオブジェクト。
@@ -17,6 +17,7 @@ class AddUserIPMiddleware(BaseHTTPMiddleware):
 
         Returns:
             Response: 処理後のレスポンスオブジェクト。
+
         """
         user_ip = request.client.host if request.client else "unknown"  # クライアントのIPアドレスを取得
         structlog.contextvars.bind_contextvars(user_ip=user_ip)  # ログコンテキストにIPアドレスをバインド

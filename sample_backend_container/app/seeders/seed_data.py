@@ -1,23 +1,23 @@
 # seed_data.py
 # 動作確認用の初期データを投入する。実行コマンドの引数は必要に応じて精査する。
-# 実行コマンド: 
+# 実行コマンド:
 # export PYTHONPATH=/app
 # poetry run python app/seeders/seed_data.py
 
 import asyncio
-from app.database import engine, AsyncSessionLocal, Base
-from sqlalchemy.future import select
-from app.config.test_data import TestData
-from app.common.common import datetime_now
-from passlib.context import CryptContext   # type: ignore
-import app.models
 
+from passlib.context import CryptContext  # type: ignore
+from sqlalchemy.future import select
+
+import app.models
+from app.common.common import datetime_now
+from app.config.test_data import TestData
+from app.database import AsyncSessionLocal, Base, engine
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def clear_data():
-    """
-    データベースをクリアします。すべてのテーブルを削除し、再作成します。
+    """データベースをクリアします。すべてのテーブルを削除し、再作成します。
     """
     async with engine.begin() as conn:
 
@@ -33,8 +33,7 @@ async def clear_data():
 
 
 async def seed_data():
-    """
-    テーブルへデータを挿入します。
+    """テーブルへデータを挿入します。
     """
     async with AsyncSessionLocal(bind=engine) as session:
         try:
@@ -47,7 +46,7 @@ async def seed_data():
 
             # 1. Userテーブル
             result = await session.execute(
-                select(app.models.User).where(app.models.User.username == TestData.TEST_USERNAME_1)
+                select(app.models.User).where(app.models.User.username == TestData.TEST_USERNAME_1),
             )
             if not result.scalars().first():
                 session.add(
@@ -61,13 +60,13 @@ async def seed_data():
                         user_status=1,
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 1. Userテーブル (target_user_id 用のデータ追加)
             result = await session.execute(
-                select(app.models.User).where(app.models.User.username == TestData.TEST_USERNAME_2)
+                select(app.models.User).where(app.models.User.username == TestData.TEST_USERNAME_2),
             )
             if not result.scalars().first():
                 session.add(
@@ -81,13 +80,13 @@ async def seed_data():
                         user_status=1,
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 2. UserProfileテーブル
             result = await session.execute(
-                select(app.models.UserProfile).where(app.models.UserProfile.display_name == "Test User")
+                select(app.models.UserProfile).where(app.models.UserProfile.display_name == "Test User"),
             )
             if not result.scalars().first():
                 session.add(
@@ -99,13 +98,13 @@ async def seed_data():
                         profile_image_url="http://example.com/image.png",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 3. UserIPAddressテーブル
             result = await session.execute(
-                select(app.models.UserIPAddress).where(app.models.UserIPAddress.ip_address == "192.168.0.1")
+                select(app.models.UserIPAddress).where(app.models.UserIPAddress.ip_address == "192.168.0.1"),
             )
             if not result.scalars().first():
                 session.add(
@@ -115,13 +114,13 @@ async def seed_data():
                         ip_address="192.168.0.1",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 4. UserGroupテーブル
             result = await session.execute(
-                select(app.models.UserGroup).where(app.models.UserGroup.group_name == "Sample Group")
+                select(app.models.UserGroup).where(app.models.UserGroup.group_name == "Sample Group"),
             )
             if not result.scalars().first():
                 session.add(
@@ -130,13 +129,13 @@ async def seed_data():
                         group_name="Sample Group",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 5. GroupProfileテーブル
             result = await session.execute(
-                select(app.models.GroupProfile).where(app.models.GroupProfile.display_name == "Sample Group Display")
+                select(app.models.GroupProfile).where(app.models.GroupProfile.display_name == "Sample Group Display"),
             )
             if not result.scalars().first():
                 session.add(
@@ -148,7 +147,7 @@ async def seed_data():
                         profile_image_url="http://example.com/group_image.png",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
@@ -156,8 +155,8 @@ async def seed_data():
             result = await session.execute(
                 select(app.models.UserGroupMembership).where(
                     (app.models.UserGroupMembership.user_id == user1_id)
-                    & (app.models.UserGroupMembership.group_id == group_id)
-                )
+                    & (app.models.UserGroupMembership.group_id == group_id),
+                ),
             )
             if not result.scalars().first():
                 session.add(
@@ -166,13 +165,13 @@ async def seed_data():
                         group_id=group_id,
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 7. Reportテーブル
             result = await session.execute(
-                select(app.models.Report).where(app.models.Report.title == TestData.TEST_REPORT_TITLE)
+                select(app.models.Report).where(app.models.Report.title == TestData.TEST_REPORT_TITLE),
             )
             if not result.scalars().first():
                 session.add(
@@ -185,14 +184,14 @@ async def seed_data():
                         visibility=3,  # private
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 8. ReportTagテーブル
             result = await session.execute(
-                select(app.models.ReportTag).where(app.models.ReportTag.tag_name == "Sample Tag"
-)
+                select(app.models.ReportTag).where(app.models.ReportTag.tag_name == "Sample Tag",
+),
             )
             if not result.scalars().first():
                 session.add(
@@ -201,12 +200,12 @@ async def seed_data():
                         tag_name="Sample Tag",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
             # 9. ReportTagLinkテーブル
             result = await session.execute(
-                select(app.models.ReportTagLink).where(app.models.ReportTagLink.report_id == report_id)
+                select(app.models.ReportTagLink).where(app.models.ReportTagLink.report_id == report_id),
             )
             if not result.scalars().first():
                 session.add(
@@ -215,13 +214,13 @@ async def seed_data():
                         tag_id=tag_id,
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 10. ReportSupplementテーブル
             result = await session.execute(
-                select(app.models.ReportSupplement).where(app.models.ReportSupplement.report_id == report_id)
+                select(app.models.ReportSupplement).where(app.models.ReportSupplement.report_id == report_id),
             )
             report_supplement = result.scalars().first()
             if not report_supplement:
@@ -236,13 +235,13 @@ async def seed_data():
                         supplement_url="http://example.com/supplement",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
                 await session.commit()
 
             # 11. UserEvaluationHistoryテーブル
             result = await session.execute(
-                select(app.models.UserEvaluationHistory).where(app.models.UserEvaluationHistory.eval_id == 1)
+                select(app.models.UserEvaluationHistory).where(app.models.UserEvaluationHistory.eval_id == 1),
             )
             if not result.scalars().first():
                 session.add(
@@ -254,13 +253,13 @@ async def seed_data():
                         comment="Great user!",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 12. ReportEvaluationHistoryテーブル
             result = await session.execute(
-                select(app.models.ReportEvaluationHistory).where(app.models.ReportEvaluationHistory.eval_id == 1)
+                select(app.models.ReportEvaluationHistory).where(app.models.ReportEvaluationHistory.eval_id == 1),
             )
             if not result.scalars().first():
                 session.add(
@@ -272,13 +271,13 @@ async def seed_data():
                         comment="Great report!",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 13. GroupEvaluationテーブル
             result = await session.execute(
-                select(app.models.GroupEvaluation).where(app.models.GroupEvaluation.eval_id == 1)
+                select(app.models.GroupEvaluation).where(app.models.GroupEvaluation.eval_id == 1),
             )
             if not result.scalars().first():
                 session.add(
@@ -290,32 +289,32 @@ async def seed_data():
                         comment="Good performance",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 14. ReportCommentHistoryテーブル
             result = await session.execute(
-                select(app.models.ReportCommentHistory).where(app.models.ReportCommentHistory.history_id == 1)
+                select(app.models.ReportCommentHistory).where(app.models.ReportCommentHistory.history_id == 1),
             )
             if not result.scalars().first():
                 session.add(
                     app.models.ReportCommentHistory(
                         history_id=1,
-                        report_supplement=1, 
+                        report_supplement=1,
                         user_id=user1_id,
                         report_id=report_id,
                         content="This is a comment",
                         report_supplement_action=1,  # created
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 15. TagViewHistoryテーブル
             result = await session.execute(
-                select(app.models.TagViewHistory).where(app.models.TagViewHistory.user_id == user1_id)
+                select(app.models.TagViewHistory).where(app.models.TagViewHistory.user_id == user1_id),
             )
             if not result.scalars().first():
                 session.add(
@@ -325,13 +324,13 @@ async def seed_data():
                         view_date=datetime_now(),
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 16. ReportViewHistoryテーブル
             result = await session.execute(
-                select(app.models.ReportViewHistory).where(app.models.ReportViewHistory.user_id == user1_id)
+                select(app.models.ReportViewHistory).where(app.models.ReportViewHistory.user_id == user1_id),
             )
             if not result.scalars().first():
                 session.add(
@@ -341,13 +340,13 @@ async def seed_data():
                         view_date=datetime_now(),
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 17. UserViewHistoryテーブル
             result = await session.execute(
-                select(app.models.UserViewHistory).where(app.models.UserViewHistory.viewer_user_id == user1_id)
+                select(app.models.UserViewHistory).where(app.models.UserViewHistory.viewer_user_id == user1_id),
             )
             if not result.scalars().first():
                 session.add(
@@ -357,13 +356,13 @@ async def seed_data():
                         view_date=datetime_now(),
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 18. UserSearchHistoryテーブル
             result = await session.execute(
-                select(app.models.UserSearchHistory).where(app.models.UserSearchHistory.user_id == user1_id)
+                select(app.models.UserSearchHistory).where(app.models.UserSearchHistory.user_id == user1_id),
             )
             if not result.scalars().first():
                 session.add(
@@ -373,13 +372,13 @@ async def seed_data():
                         search_date=datetime_now(),
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 19. GroupSearchHistoryテーブル
             result = await session.execute(
-                select(app.models.GroupSearchHistory).where(app.models.GroupSearchHistory.user_id == user1_id)
+                select(app.models.GroupSearchHistory).where(app.models.GroupSearchHistory.user_id == user1_id),
             )
             if not result.scalars().first():
                 session.add(
@@ -389,13 +388,13 @@ async def seed_data():
                         search_date=datetime_now(),
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 
             # 20. GroupEvaluationHistoryテーブル
             result = await session.execute(
-                select(app.models.GroupEvaluationHistory).where(app.models.GroupEvaluationHistory.eval_id == 1)
+                select(app.models.GroupEvaluationHistory).where(app.models.GroupEvaluationHistory.eval_id == 1),
             )
             if not result.scalars().first():
                 session.add(
@@ -407,7 +406,7 @@ async def seed_data():
                         comment="Excellent group",
                         created_at=datetime_now(),
                         updated_at=datetime_now(),
-                    )
+                    ),
                 )
             await session.commit()
 

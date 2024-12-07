@@ -1,17 +1,18 @@
-from app.schemas.user import UserResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 from uuid import UUID
+
+import structlog
+from fastapi import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models.report import Report
 from app.repositories.report_repository import ReportRepository
 from app.schemas.report import RequestReport, ResponseReport
-import structlog
+from app.schemas.user import UserResponse
 
 logger = structlog.get_logger()
 
 async def create_report(report_data: RequestReport, current_user: UserResponse, db: AsyncSession) -> ResponseReport:
-    """
-    新しいレポートを作成するサービス関数。
+    """新しいレポートを作成するサービス関数。
 
     Args:
         report_data (RequestReport): 作成するレポートのデータ。
@@ -23,6 +24,7 @@ async def create_report(report_data: RequestReport, current_user: UserResponse, 
 
     Raises:
         HTTPException: データベースエラーまたはその他のエラーが発生した場合。
+
     """
     logger.info("create_report - start", report_data=report_data)
 
@@ -42,8 +44,7 @@ async def create_report(report_data: RequestReport, current_user: UserResponse, 
         logger.info("create_report - end")
 
 async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSession) -> ResponseReport:
-    """
-    レポートを更新するサービス関数。
+    """レポートを更新するサービス関数。
 
     Args:
         report_id (str): 更新するレポートのID。
@@ -55,6 +56,7 @@ async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSe
 
     Raises:
         HTTPException: レポートが見つからない場合、またはデータベースエラーが発生した場合。
+
     """
     logger.info("update_report - start", report_id=report_id, updated_data=updated_data)
 
@@ -74,8 +76,7 @@ async def update_report(report_id: str, updated_data: RequestReport, db: AsyncSe
         logger.info("update_report - end")
 
 async def delete_report(report_id: str, db: AsyncSession) -> dict:
-    """
-    レポートを論理削除するサービス関数。
+    """レポートを論理削除するサービス関数。
 
     Args:
         report_id (str): 削除対象のレポートのID。
@@ -86,6 +87,7 @@ async def delete_report(report_id: str, db: AsyncSession) -> dict:
 
     Raises:
         HTTPException: レポートが見つからない場合、またはデータベースエラーが発生した場合。
+
     """
     logger.info("delete_report - start", report_id=report_id)
 
@@ -102,8 +104,7 @@ async def delete_report(report_id: str, db: AsyncSession) -> dict:
         logger.info("delete_report - end")
 
 async def get_report_by_id_service(report_id: str, db: AsyncSession) -> ResponseReport:
-    """
-    指定されたIDのレポートを取得するサービス関数。
+    """指定されたIDのレポートを取得するサービス関数。
 
     Args:
         report_id (str): 取得対象のレポートのID。
@@ -114,6 +115,7 @@ async def get_report_by_id_service(report_id: str, db: AsyncSession) -> Response
 
     Raises:
         HTTPException: レポートが見つからない場合、またはその他のエラーが発生した場合。
+
     """
     logger.info("get_report_by_id_service - start", report_id=report_id)
 

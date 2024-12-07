@@ -1,20 +1,21 @@
+import traceback
+
+from fastapi import HTTPException, Request
 from jose import JWTError
 from pydantic import ValidationError
-from starlette.middleware.base import BaseHTTPMiddleware
-from fastapi import Request, HTTPException
-from starlette.responses import JSONResponse
-from app.core.log_config import logger
-import traceback
 from sqlalchemy.exc import SQLAlchemyError
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
+
+from app.core.log_config import logger
+
 
 class ErrorHandlerMiddleware(BaseHTTPMiddleware):
-    """
-    リクエスト処理中に発生した例外をキャッチし、適切なレスポンスを返すミドルウェア。
+    """リクエスト処理中に発生した例外をキャッチし、適切なレスポンスを返すミドルウェア。
     """
 
     async def dispatch(self, request: Request, call_next):
-        """
-        リクエスト処理中に発生した例外をキャッチし、適切なレスポンスを返します。
+        """リクエスト処理中に発生した例外をキャッチし、適切なレスポンスを返します。
 
         Args:
             request (Request): FastAPIのリクエストオブジェクト。
@@ -22,6 +23,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
 
         Returns:
             Response: エラーレスポンスまたは処理後のレスポンスオブジェクト。
+
         """
         try:
             response = await call_next(request)  # 次の処理を実行

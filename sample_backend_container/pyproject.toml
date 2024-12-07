@@ -69,4 +69,8 @@ indent-width = 4
 target-version = "py313"
 
 # 除外するパスの指定
-exclude = ["**/migrations/**", "**/__pycache__/**"]
+exclude = [
+    "**/migrations/**",
+    "**/__pycache__/**",
+    "alembic/versions/**"
+]

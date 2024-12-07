@@ -8,8 +8,7 @@ from main import app
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
 async def setup_test_db():
-    """
-    テスト環境をセットアップするフィクスチャ。
+    """テスト環境をセットアップするフィクスチャ。
     各テストごとにデータベースを初期化し、必要なシードデータを挿入します。
     """
     print("テスト環境のセットアップを開始")

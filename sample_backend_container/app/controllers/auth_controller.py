@@ -1,14 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.security import OAuth2PasswordRequestForm
-from app.database import get_db
-from app.services.auth_service import create_user, get_current_user, reset_password
-from app.core.security import authenticate_user, create_access_token
-from app.schemas.user import UserCreate, PasswordReset, UserResponse
-from app.core.security import oauth2_scheme
 import structlog
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.security import authenticate_user, create_access_token, oauth2_scheme
+from app.database import get_db
 from app.models.user import User
+from app.schemas.user import PasswordReset, UserCreate, UserResponse
+from app.services.auth_service import create_user, get_current_user, reset_password
 
 # ログの設定
 logger = structlog.get_logger()
@@ -17,8 +16,7 @@ router = APIRouter()
 
 @router.get("/me", response_model=UserResponse)
 async def get_me(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
-    """
-    現在ログインしているユーザーの情報を取得するエンドポイント。
+    """現在ログインしているユーザーの情報を取得するエンドポイント。
 
     Args:
         token (str): OAuth2トークン。
@@ -26,10 +24,11 @@ async def get_me(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends
 
     Returns:
         UserResponse: ログイン中のユーザー情報。
+
     """
     logger.info("get_me - start", token=token)
     try:
-        user = await get_current_user(db, token) 
+        user = await get_current_user(db, token)
         logger.info("get_me - success", user_id=user.user_id)
         return user
     finally:
@@ -37,8 +36,7 @@ async def get_me(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends
 
 @router.post("/register", response_model=dict)
 async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
-    """
-    新しいユーザーを登録するエンドポイント。
+    """新しいユーザーを登録するエンドポイント。
 
     Args:
         user (UserCreate): 新規ユーザーの情報（メール、ユーザー名、パスワード）。
@@ -46,6 +44,7 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
     Returns:
         dict: 登録成功メッセージと新規ユーザーID。
+
     """
     logger.info("register_user - start", email=user.email, username=user.username)
     try:
@@ -57,8 +56,7 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 @router.post("/login", response_model=dict)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
-    """
-    ログイン処理を行うエンドポイント。
+    """ログイン処理を行うエンドポイント。
 
     Args:
         form_data (OAuth2PasswordRequestForm): ユーザー名とパスワード。
@@ -66,6 +64,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
 
     Returns:
         dict: アクセストークンとトークンタイプ。
+
     """
     logger.info("login - start", username=form_data.username)
     try:
@@ -84,15 +83,15 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         logger.info("login - end")
 
 @router.post("/logout")
-async def logout(current_user: User = Depends(get_current_user),):
-    """
-    ログアウト処理を行うエンドポイント。
+async def logout(current_user: User = Depends(get_current_user)):
+    """ログアウト処理を行うエンドポイント。
 
     Args:
         current_user (User): 現在ログイン中のユーザー。
 
     Returns:
         dict: ログアウト成功メッセージ。
+
     """
     logger.info("logout - start", current_user=current_user.user_id)
     try:
@@ -104,8 +103,7 @@ async def logout(current_user: User = Depends(get_current_user),):
 
 @router.post("/reset-password", response_model=dict)
 async def reset_password_endpoint(data: PasswordReset, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """
-    パスワードリセット処理を行うエンドポイント。
+    """パスワードリセット処理を行うエンドポイント。
 
     Args:
         data (PasswordReset): パスワードリセットの情報（メールと新しいパスワード）。
@@ -114,6 +112,7 @@ async def reset_password_endpoint(data: PasswordReset, db: AsyncSession = Depend
 
     Returns:
         dict: パスワードリセット成功メッセージ。
+
     """
     logger.info("reset_password - start", email=data.email)
     try:

@@ -13,13 +13,12 @@ from app.middleware import AddUserIPMiddleware, ErrorHandlerMiddleware
 from app.routes import router
 
 # タイムゾーンをJST（日本標準時）に設定
-os.environ['TZ'] = 'Asia/Tokyo'
+os.environ["TZ"] = "Asia/Tokyo"
 time.tzset()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    アプリケーションのライフサイクル管理を行うコンテキストマネージャ。
+    """アプリケーションのライフサイクル管理を行うコンテキストマネージャ。
     """
     logger.info("Application startup - connecting to database.")
 

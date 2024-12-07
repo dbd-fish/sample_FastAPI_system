@@ -1,10 +1,13 @@
-from sqlalchemy.orm import Mapped, mapped_column
+import uuid
+from datetime import datetime
+
 from sqlalchemy import TIMESTAMP, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column
+
 from app.common.common import datetime_now
 from app.database import Base
-from datetime import datetime
-import uuid
+
 
 # ReportEvaluationHistoryモデル: レポート評価履歴テーブル
 class ReportEvaluationHistory(Base):

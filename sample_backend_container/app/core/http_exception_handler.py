@@ -8,8 +8,7 @@ from fastapi.responses import JSONResponse
 logger = structlog.get_logger()
 
 async def http_exception_handler(request: Request, exc: HTTPException):
-    """
-    HTTPExceptionが発生した際のハンドラ。
+    """HTTPExceptionが発生した際のハンドラ。
 
     Args:
         request (Request): リクエストオブジェクト。
@@ -17,6 +16,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
     Returns:
         JSONResponse: エラーレスポンス。
+
     """
     error_trace = traceback.format_exc()  # スタックトレースを取得
     user_ip = request.client.host if request.client else "unknown"  # クライアントのIPアドレスを取得
@@ -31,7 +31,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         method=request.method,
         stack_trace=error_trace,
     )
-    
+
     # JSONレスポンスを返却
     return JSONResponse(
         status_code=exc.status_code,

@@ -10,9 +10,9 @@ from app.database import Base
 
 
 class User(Base):
+    """Userモデル: ユーザー管理テーブル
     """
-    Userモデル: ユーザー管理テーブル
-    """
+
     __tablename__ = "user"
 
     # ユーザー権限を定数として定義

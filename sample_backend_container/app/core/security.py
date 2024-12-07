@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from zoneinfo import ZoneInfo
 
 import structlog
 from fastapi import HTTPException, status
@@ -7,7 +7,6 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from passlib.context import CryptContext
 from sqlalchemy.future import select
-from zoneinfo import ZoneInfo
 
 from app.config.setting import setting
 from app.database import AsyncSession
@@ -28,14 +27,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 def hash_password(password: str) -> str:
-    """
-    パスワードをハッシュ化する。
+    """パスワードをハッシュ化する。
 
     Args:
         password (str): プレーンパスワード。
 
     Returns:
         str: ハッシュ化されたパスワード。
+
     """
     logger.info("hash_password - start")
     try:
@@ -46,8 +45,7 @@ def hash_password(password: str) -> str:
         logger.info("hash_password - end")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    プレーンパスワードとハッシュ化されたパスワードを比較して検証する。
+    """プレーンパスワードとハッシュ化されたパスワードを比較して検証する。
 
     Args:
         plain_password (str): プレーンパスワード。
@@ -55,6 +53,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
     Returns:
         bool: 検証結果（True: 一致, False: 不一致）。
+
     """
     logger.info("verify_password - start", plain_password=plain_password, hashed_password=hashed_password)
     try:
@@ -64,9 +63,8 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     finally:
         logger.info("verify_password - end")
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """
-    アクセストークンを作成する。
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """アクセストークンを作成する。
 
     Args:
         data (dict): トークンに含めるデータ。
@@ -74,6 +72,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 
     Returns:
         str: 作成されたJWTアクセストークン。
+
     """
     logger.info("create_access_token - start", data=data, expires_delta=expires_delta)
     try:
@@ -87,8 +86,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
         logger.info("create_access_token - end")
 
 def decode_access_token(token: str) -> dict:
-    """
-    アクセストークンをデコードしてペイロードを取得する。
+    """アクセストークンをデコードしてペイロードを取得する。
 
     Args:
         token (str): デコード対象のJWTアクセストークン。
@@ -98,6 +96,7 @@ def decode_access_token(token: str) -> dict:
 
     Raises:
         HTTPException: トークンが無効または不正な場合。
+
     """
     logger.info("decode_access_token - start", token=token)
     try:
@@ -108,8 +107,7 @@ def decode_access_token(token: str) -> dict:
         logger.info("decode_access_token - end")
 
 async def authenticate_user(email: str, password: str, db: AsyncSession) -> User:
-    """
-    メールアドレスとパスワードを使用してユーザー認証を行う。
+    """メールアドレスとパスワードを使用してユーザー認証を行う。
 
     Args:
         email (str): ユーザーのメールアドレス。
@@ -121,12 +119,13 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> User
 
     Raises:
         HTTPException: 認証に失敗した場合。
+
     """
     logger.info("authenticate_user - start", email=email)
     query = select(User).where(
-        User.email == email,          
-        User.user_status == User.STATUS_ACTIVE,        
-        User.deleted_at.is_(None)     
+        User.email == email,
+        User.user_status == User.STATUS_ACTIVE,
+        User.deleted_at.is_(None),
     )
     result = await db.execute(query)
     user = result.scalars().first()  # 検索結果を取得

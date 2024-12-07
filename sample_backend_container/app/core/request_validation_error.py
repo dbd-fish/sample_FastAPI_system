@@ -1,14 +1,13 @@
+import structlog
 from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-import structlog
 
 # ロガーの設定
 logger = structlog.get_logger()
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    """
-    バリデーションエラーが発生した際のハンドラ。
+    """バリデーションエラーが発生した際のハンドラ。
 
     Args:
         request (Request): リクエストオブジェクト。
@@ -16,6 +15,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
     Returns:
         JSONResponse: エラーレスポンス。
+
     """
     # エラーログの記録
     user_ip = request.client.host if request.client else "unknown"  # クライアントのIPアドレスを取得
@@ -27,7 +27,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         url=request.url.path,
         method=request.method,
     )
-    
+
     # JSONレスポンスを返却
     return JSONResponse(
         status_code=422,

@@ -9,15 +9,13 @@ from main import app
 
 @pytest.mark.asyncio
 async def test_create_report(authenticated_client: AsyncClient, login_user_data: User):
+    """レポート作成エンドポイントのテスト。
     """
-    レポート作成エンドポイントのテスト。
-    """
-
     report_data = {
         "title": "test_title",
         "content": "title_content",
         "format": Report.FORMAT_MD,
-        "visibility": Report.VISIBILITY_PUBLIC
+        "visibility": Report.VISIBILITY_PUBLIC,
     }
     response = await authenticated_client.post("/report", json=report_data)
     assert response.status_code == 200
@@ -39,8 +37,7 @@ async def test_create_report(authenticated_client: AsyncClient, login_user_data:
 
 @pytest.mark.asyncio
 async def test_update_report(authenticated_client: AsyncClient, login_user_data: User):
-    """
-    レポート更新エンドポイントのテスト。
+    """レポート更新エンドポイントのテスト。
     """
     # まずレポートを作成
     update_tilte = "Updated title"
@@ -50,7 +47,7 @@ async def test_update_report(authenticated_client: AsyncClient, login_user_data:
         title=update_tilte,
         content=update_content,
         format=Report.FORMAT_MD,
-        visibility=Report.VISIBILITY_PUBLIC
+        visibility=Report.VISIBILITY_PUBLIC,
     )
     async for db_session in get_db():
         db_session.add(report)
@@ -59,7 +56,7 @@ async def test_update_report(authenticated_client: AsyncClient, login_user_data:
 
     updated_data = {
         "title": update_tilte,
-        "content": update_content
+        "content": update_content,
     }
     response = await authenticated_client.put(f"report/{report.report_id}", json=updated_data)
 
@@ -79,8 +76,7 @@ async def test_update_report(authenticated_client: AsyncClient, login_user_data:
 
 @pytest.mark.asyncio
 async def test_get_report_auth(authenticated_client: AsyncClient, login_user_data: User):
-    """
-    認証済みの状態でレポート取得エンドポイントのテスト。
+    """認証済みの状態でレポート取得エンドポイントのテスト。
     """
     # まずレポートを作成
     report = Report(
@@ -88,7 +84,7 @@ async def test_get_report_auth(authenticated_client: AsyncClient, login_user_dat
         title="report tilte",
         content="report content",
         format=Report.FORMAT_MD,
-        visibility=Report.VISIBILITY_PUBLIC
+        visibility=Report.VISIBILITY_PUBLIC,
     )
     async for db_session in get_db():
         db_session.add(report)
@@ -105,8 +101,7 @@ async def test_get_report_auth(authenticated_client: AsyncClient, login_user_dat
 
 @pytest.mark.asyncio
 async def test_get_report_non_auth(login_user_data: User):
-    """
-    未認証の状態でレポート取得エンドポイントのテスト。
+    """未認証の状態でレポート取得エンドポイントのテスト。
     """
     # まずレポートを作成
     report = Report(
@@ -114,7 +109,7 @@ async def test_get_report_non_auth(login_user_data: User):
         title="report tilte",
         content="report content",
         format=Report.FORMAT_MD,
-        visibility=Report.VISIBILITY_PUBLIC
+        visibility=Report.VISIBILITY_PUBLIC,
     )
     async for db_session in get_db():
         db_session.add(report)
@@ -134,8 +129,7 @@ async def test_get_report_non_auth(login_user_data: User):
 
 @pytest.mark.asyncio
 async def test_delete_report(authenticated_client: AsyncClient, login_user_data: User):
-    """
-    レポート削除エンドポイントのテスト。
+    """レポート削除エンドポイントのテスト。
     """
     # まずレポートを作成
     report = Report(

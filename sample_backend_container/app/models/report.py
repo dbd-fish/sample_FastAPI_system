@@ -1,16 +1,19 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Text, SmallInteger, TIMESTAMP, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
-from app.common.common import datetime_now
-from app.database import Base
 import uuid
 from datetime import datetime
 
+from sqlalchemy import TIMESTAMP, ForeignKey, SmallInteger, String, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.common.common import datetime_now
+from app.database import Base
+
+
 # Reportモデル: レポート管理テーブル
 class Report(Base):
+    """Reportモデル: レポート管理テーブル
     """
-    Reportモデル: レポート管理テーブル
-    """
+
     __tablename__ = "report"
 
     # フォーマットを定数として定義

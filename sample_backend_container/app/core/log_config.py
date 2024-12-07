@@ -1,28 +1,27 @@
 import logging
 import os
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import structlog
 from structlog.processors import CallsiteParameter
-from zoneinfo import ZoneInfo
 
 from app.config.setting import setting
 
 
 def create_log_directory(directory: str) -> None:
-    """
-    指定されたログディレクトリを作成します。
+    """指定されたログディレクトリを作成します。
 
     Args:
         directory (str): 作成するログディレクトリのパス。
+
     """
     print(f"Creating log directory at: {directory}")
     os.makedirs(directory, exist_ok=True)
 
 
 def get_log_file_path(directory: str, filename_template: str = "app_{date}.log") -> str:
-    """
-    現在の日付を基にログファイルのパスを生成します。
+    """現在の日付を基にログファイルのパスを生成します。
 
     Args:
         directory (str): ログファイルを保存するディレクトリ。
@@ -30,6 +29,7 @@ def get_log_file_path(directory: str, filename_template: str = "app_{date}.log")
 
     Returns:
         str: 生成されたログファイルのフルパス。
+
     """
     current_date = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d")
     log_file_path = os.path.join(directory, filename_template.format(date=current_date))
@@ -38,8 +38,7 @@ def get_log_file_path(directory: str, filename_template: str = "app_{date}.log")
 
 
 def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
-    """
-    ログ設定を行います。ファイルハンドラーやカスタムフォーマッタの設定、
+    """ログ設定を行います。ファイルハンドラーやカスタムフォーマッタの設定、
     structlog用のプロセッサを含みます。
     Args:
         test_env (int): 環境指定フラグ (0: 本番環境、1: Pytest)。
@@ -55,9 +54,9 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
         app_log_file_path = get_log_file_path(setting.APP_LOG_DIRECTORY)
 
     class JSTFormatter(logging.Formatter):
+        """日本時間（JST）でタイムスタンプをフォーマットするカスタムフォーマッタ。
         """
-        日本時間（JST）でタイムスタンプをフォーマットするカスタムフォーマッタ。
-        """
+
         def formatTime(self, record, datefmt=None):
             dt = datetime.fromtimestamp(record.created, ZoneInfo("Asia/Tokyo"))
             formatted_time = dt.strftime(datefmt) if datefmt else dt.isoformat()
@@ -93,7 +92,7 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
                     # CallsiteParameter.MODULE,  # モジュール名
                     CallsiteParameter.FUNC_NAME,  # 関数名
                     CallsiteParameter.LINENO,  # 行番号
-                ]
+                ],
             ),
             structlog.processors.JSONRenderer(indent=4, sort_keys=True),  # JSON形式で出力
         ],
@@ -105,8 +104,7 @@ def configure_logging(test_env: int = 0) -> structlog.BoundLogger:
 
 
 def configure_sqlalchemy_logging(test_env: int = 0) -> None:
-    """
-    SQLAlchemyのログ設定を行います。
+    """SQLAlchemyのログ設定を行います。
     Args:
         test_env (int): 環境指定フラグ (0: 本番環境、1: Pytest)。
     """
@@ -126,7 +124,7 @@ def configure_sqlalchemy_logging(test_env: int = 0) -> None:
     sqlalchemy_file_handler = logging.FileHandler(sqlalchemy_log_file_path, encoding="utf-8")
     sqlalchemy_file_handler.setLevel(logging.WARNING)  # ハンドラのレベルもWARNINGに設定
     sqlalchemy_formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+        "[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S",
     )
     sqlalchemy_file_handler.setFormatter(sqlalchemy_formatter)
 

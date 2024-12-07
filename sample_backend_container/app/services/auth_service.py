@@ -1,3 +1,4 @@
+
 import structlog
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,16 +8,14 @@ from app.database import get_db
 from app.models.user import User
 from app.repositories.auth_repository import UserRepository
 from app.schemas.user import UserResponse
-from uuid import UUID
 
 logger = structlog.get_logger()
 
 
 async def get_current_user(
-    db: AsyncSession = Depends(get_db), token: str = Depends(oauth2_scheme)
+    db: AsyncSession = Depends(get_db), token: str = Depends(oauth2_scheme),
 ) -> UserResponse:
-    """
-    トークンから現在のユーザーを取得します。
+    """トークンから現在のユーザーを取得します。
 
     トークンをデコードして、その情報をもとにデータベースからユーザーを取得します。
     トークンが無効、またはユーザーが存在しない場合は例外をスローします。
@@ -32,6 +31,7 @@ async def get_current_user(
         HTTPException:
             - 401: トークンが無効または`sub`フィールドが存在しない場合。
             - 404: ユーザーが存在しない場合。
+
     """
     logger.info("get_current_user - start", token=token)
     try:
@@ -51,7 +51,7 @@ async def get_current_user(
         if user is None:
             logger.warning("get_current_user - user not found", email=email)
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="User not found",
             )
 
         logger.info("get_current_user - success", user_id=user.user_id)
@@ -67,10 +67,9 @@ async def get_current_user(
 
 
 async def create_user(
-    email: str, username: str, password: str, db: AsyncSession
+    email: str, username: str, password: str, db: AsyncSession,
 ) -> User:
-    """
-    新しいユーザーを作成します。
+    """新しいユーザーを作成します。
 
     ユーザーの情報をもとに新しいユーザーをデータベースに登録します。
     パスワードはハッシュ化されて保存されます。
@@ -87,6 +86,7 @@ async def create_user(
 
     Raises:
         HTTPException: ユーザー作成中に発生したエラー。
+
     """
     logger.info("create_user - start", email=email, username=username)
     try:
@@ -101,16 +101,16 @@ async def create_user(
             user_role=User.ROLE_FREE,
             user_status=User.STATUS_ACTIVE,
         )
-    
+
         # 既存ユーザーの確認
         existing_user = await UserRepository.get_user_by_email(db, email)
         if existing_user:
             logger.warning("create_user - user already exists", email=email)
             raise HTTPException(
                 status_code=400,
-                detail="User already exists"
+                detail="User already exists",
             )
-        
+
         # データベースにユーザーを保存
         saved_user = await UserRepository.create_user(db, new_user)
         logger.info("create_user - success", user_id=saved_user.user_id)
@@ -120,8 +120,7 @@ async def create_user(
 
 
 async def reset_password(email: str, new_password: str, db: AsyncSession):
-    """
-    パスワードをリセットします。
+    """パスワードをリセットします。
 
     Args:
         email (str): ユーザーのメールアドレス。
@@ -133,6 +132,7 @@ async def reset_password(email: str, new_password: str, db: AsyncSession):
 
     Raises:
         HTTPException: ユーザーが存在しない場合。
+
     """
     logger.info("reset_password - start", email=email)
     user = await UserRepository.get_user_by_email(db, email)
@@ -141,7 +141,7 @@ async def reset_password(email: str, new_password: str, db: AsyncSession):
         logger.info("reset_password - user not found", email=email)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+            detail="User not found",
         )
 
     hashed_password = hash_password(new_password)
