@@ -146,7 +146,7 @@ Docker環境を構築して下記コマンドを実行。
 docker-compose up --build
 ```
 
-下記URLからAPIの動作確認が可能。
+下記URLからAPIの動作確認が可能。  
 http://localhost:8000/docs
 
 # 各種コマンド
@@ -172,7 +172,7 @@ poetry run mypy .
 ```
 
 ## alembic
-下記記事にまとめています
+下記記事にまとめています。  
 https://qiita.com/dbd_fish/items/39f74e7c4c699cc724c3
 
 # 今後の展望
