@@ -3,10 +3,10 @@ version: '3.8'
 services:
   # frontend:
   #   image: node:14
-  #   container_name: react_frontend
+  #   container_name: sample_frontend_container
   #   working_dir: /app
   #   volumes:
-  #     - ./frontend:/app
+  #     - ./sample_frontend_container:/app
   #   ports:
   #     - "3000:3000"
   #   command: ["npm", "start"]
