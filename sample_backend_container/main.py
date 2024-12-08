@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 
+from app.config.setting import setting
 from app.core.http_exception_handler import http_exception_handler
 from app.core.log_config import logger
 from app.core.request_validation_error import validation_exception_handler
@@ -32,7 +33,11 @@ async def lifespan(app: FastAPI):
     await database.disconnect()
 
 # FastAPIアプリケーションのインスタンスを作成し、lifespanを設定
-app = FastAPI(lifespan=lifespan)
+if setting.DEV_MODE:
+    app = FastAPI(lifespan=lifespan)
+else:
+    # 本番環境ではOpenAPIなどを無効化
+    app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
 
 # ミドルウェアの追加 (ユーザーIP記録とエラーハンドリング)
 # NOTE: ミドルウェアを別ファイルにする場合、@app.middleware()が機能しないっぽい。
