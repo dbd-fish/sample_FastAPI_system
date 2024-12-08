@@ -16,8 +16,8 @@ class Setting(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # アクセストークンの有効期限（分）
 
     # ログの保存先
-    APP_LOG_DIRECTORY: str  = "logs/app"
-    SQL_LOG_DIRECTORY: str  = "logs/sql"
+    APP_LOG_DIRECTORY: str  = "logs/server/app"
+    SQL_LOG_DIRECTORY: str  = "logs/server/sql"
     PYTEST_APP_LOG_DIRECTORY: str  = "logs/Pytest/app"
     PYTEST_SQL_LOG_DIRECTORY: str  = "logs/Pytest/sql"
 
