@@ -10,9 +10,9 @@
         "editor.formatOnSave": true, // ファイル保存時にフォーマットを適用
         "editor.codeActionsOnSave": {
             // Ruffを使用してすべての修正を適用
-            "source.fixAll.ruff": true,
+            "source.fixAll.ruff": "explicit",
             // Ruffを使用してインポートを整理
-            "source.organizeImports.ruff": true
+            "source.organizeImports.ruff": "explicit"
         },
         "editor.defaultFormatter": "charliermarsh.ruff" // デフォルトのフォーマッターをRuffに設定
     }
