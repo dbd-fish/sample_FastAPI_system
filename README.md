@@ -180,3 +180,9 @@ https://qiita.com/dbd_fish/items/39f74e7c4c699cc724c3
 - フロントの作成
 - Warnig以上のログを別ファイル化
 - 単体テストの充実化(mockを利用する)
+- ECSなどAWS環境への適用
+
+# おまけ
+本プロジェクトはChatGPTを使いながら作成ました。
+今回の学習で苦戦した点などをまとめています。
+https://qiita.com/dbd_fish/items/d2136052c73b41587b3a
