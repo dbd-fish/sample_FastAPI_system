@@ -49,7 +49,8 @@ app.add_middleware(ErrorHandlerMiddleware)
 # NOTE: 例外ハンドラを別ファイルにする場合、@app.exception_handler()が機能しないっぽい。
 #       そのため、add_exception_handlerでハンドラを登録する方法にするが、mypyエラーが発生する。
 #       とりあえず、type: ignoreで妥協する。
-app.add_exception_handler(RequestValidationError, validation_exception_handler) # type: ignore
+# app.add_exception_handler(RequestValidationError, validation_exception_handler) # type: ignore
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(HTTPException, http_exception_handler) # type: ignore
 
 # ルーターをアプリケーションに追加

@@ -4,15 +4,17 @@
 # export PYTHONPATH=/app
 # poetry run python app/seeders/seed_data.py
 
+
+from app.common.common import datetime_now
+from app.config.test_data import TestData
+from app.database import 
 import asyncio
 
 from passlib.context import CryptContext  # type: ignore
 from sqlalchemy.future import select
 
 import app.models
-from app.common.common import datetime_now
-from app.config.test_data import TestData
-from app.database import AsyncSessionLocal, Base, engine
+AsyncSessionLocal, Base, engine
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
