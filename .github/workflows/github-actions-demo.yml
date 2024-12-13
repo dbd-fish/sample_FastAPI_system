@@ -25,7 +25,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
+        volumes:
+          - ./init-scripts:/docker-entrypoint-initdb.d
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -54,3 +55,8 @@ jobs:
         run: |
           cd sample_backend_container
           $HOME/.local/bin/poetry run mypy .
+
+      - name: Run Pytest
+        run: |
+          cd sample_backend_container
+          $HOME/.local/bin/poetry run pytest
