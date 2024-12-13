@@ -13,10 +13,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: Set up Backend Container
-        uses: ./.github/actions/setup-docker
-        with:
-          db_container_flg: "false"
+        run: |
+          docker-compose -f ./docker-compose.yml up -d backend
 
   run_ruff:
     name: Run Ruff
