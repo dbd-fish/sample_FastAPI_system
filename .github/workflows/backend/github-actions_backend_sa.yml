@@ -18,7 +18,7 @@ jobs:
       - name: Setup Docker Environment
         uses: ./.github/actions/setup-docker/setup-docker-action.yml
         with:
-          setup-db: "true"
+          db_container_flg: "true"
 
   run_ruff:
     name: Run Ruff
