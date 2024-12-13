@@ -1,8 +1,12 @@
 name: Lint and Type Check (Backend Only)
 
 on:
-  # push:
+  push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
   setup_environment:

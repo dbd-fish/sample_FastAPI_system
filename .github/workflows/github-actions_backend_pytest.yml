@@ -1,9 +1,12 @@
 name: Run Pytest with Backend and DB
 
 on:
-  # push:
+  push:
+    branches:
+      - main
   pull_request:
-
+    branches:
+      - main
 jobs:
   setup_environment:
     name: Setup Backend and DB Environment
