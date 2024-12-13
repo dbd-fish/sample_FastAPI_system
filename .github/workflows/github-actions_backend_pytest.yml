@@ -1,7 +1,7 @@
 name: Run Pytest with Backend and DB
 
 on:
-  push:
+  # push:
   pull_request:
 
 jobs:
