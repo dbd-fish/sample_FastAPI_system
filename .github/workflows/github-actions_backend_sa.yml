@@ -1,5 +1,5 @@
 name: Lint and Type Check (mypy, ruff)
-
+ 
 on:
   push:
     branches:
