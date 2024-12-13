@@ -1,5 +1,5 @@
 name: "Setup Docker Environment"
-description: "Setup Docker environment with optional database initialization"
+description: "Sets up Docker containers using docker-compose"
 
 inputs:
   db_container_flg:
@@ -13,10 +13,8 @@ runs:
     - name: Start backend container
       run: |
         docker-compose -f ./docker-compose.yml up -d backend
-        echo "Backend container started."
 
     - name: Start database container (if db_container_flg is true)
       if: ${{ inputs.db_container_flg == 'true' }}
       run: |
         docker-compose -f ./docker-compose.yml up -d db
-        echo "Database container started."

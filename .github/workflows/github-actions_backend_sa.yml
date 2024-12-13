@@ -1,24 +1,22 @@
-name: Lint and Type Check
+name: Lint and Type Check (Backend Only)
 
 on:
   push:
-    # branches:
-    #   - main
   pull_request:
 
 jobs:
   setup_environment:
-    name: Setup Environment with Docker
+    name: Setup Backend Environment
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Docker Environment
-        uses: ./.github/actions/setup-docker-action.yml
+      - name: Set up Backend Container
+        uses: ./.github/actions/setup-docker
         with:
-          db_container_flg: "true"
+          db_container_flg: "false"
 
   run_ruff:
     name: Run Ruff
