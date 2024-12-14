@@ -1,4 +1,4 @@
-name: Lint and Type Check (mypy, ruff)
+name: Lint and Type Check (mypy, ruff)aaaaa
  
 on:
   push:
