@@ -4,36 +4,51 @@ on:
   push:
     branches:
       - main
+    # メインブランチへのプッシュ時にこのワークフローをトリガーします。
   pull_request:
     branches:
       - main
+    # メインブランチに対するプルリクエストでこのワークフローをトリガーします。
 
 jobs:
   lint_and_type_check:
     name: Lint and Type Check
     runs-on: ubuntu-latest
+    # ジョブをUbuntu最新環境で実行します。
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        # リポジトリのコードをチェックアウトします。
+        # 後続のステップでコードベースにアクセスするための準備です。
 
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
+        # Docker Composeをインストールします。
+        # GitHub Actionsの初期設定には含まれていないため、このステップで追加します。
 
       - name: Set up Backend Container
         run: |
           docker-compose up -d backend
+        # docker-compose.ymlを使用して、バックエンドサービスのコンテナを起動します。
+        # -d オプションを使用してバックグラウンドで実行します。
 
       - name: Check Backend Container
         run: |
           docker ps
+        # 起動中のDockerコンテナを一覧表示します。
+        # backendコンテナが正しく起動しているかを確認するためのステップです。
 
       - name: Run Ruff in Backend Container
         run: |
           docker exec sample_backend_container poetry run ruff check
+        # backendコンテナ内でruffを実行します。
+        # RuffはPythonコードのリントツールであり、コードの品質や形式をチェックします。
 
       - name: Run Mypy in Backend Container
         run: |
           docker exec sample_backend_container poetry run mypy .
+        # backendコンテナ内でmypyを実行します。
+        # MypyはPythonの型チェックツールで、型の整合性を確認します。
