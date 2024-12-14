@@ -1,34 +1,47 @@
 name: Pytest
  
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
+  # プルリクエストにプッシュするたびに実行したい場合はtypesをコメントにする
+    # types: 
+    #   - closed
+    # プルリクエストがマージされるときにこのワークフローをトリガーします。
+  workflow_dispatch:
+    # 手動でこのワークフローをトリガーします。
+
 jobs:
   pytest:
     name: Run Pytest
     runs-on: ubuntu-latest
+    # ジョブをUbuntu最新環境で実行します。
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        # リポジトリのコードをチェックアウトします。
+        # これにより、以降のステップでリポジトリの内容にアクセスできます。
 
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
+        # Docker Composeをインストールします。
+        # GitHub Actionsの初期環境には含まれていないため、このステップで追加します。
 
       - name: Set up Backend and DB Containers
         run: |
           docker-compose up -d backend db
+        # docker-compose.ymlを使用して、backendとdbサービスのコンテナを起動します。
+        # -d オプションを使用してバックグラウンドで実行します。
 
       - name: List Running Containers
         run: |
           docker ps
+        # 現在起動中のDockerコンテナを一覧表示します。
+        # backendとdbのコンテナが正常に起動していることを確認するためのステップです。
 
       - name: Run Pytest in Backend Container
         run: |
           docker exec sample_backend_container poetry run pytest
+        # backendコンテナ内でpytestを実行します。
+        # docker execを使用して、コンテナ内部でコマンドを実行しています。
