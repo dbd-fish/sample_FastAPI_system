@@ -1,4 +1,4 @@
-name: Pytestaaaaa
+name: Pytest
  
 on:
   push:
@@ -36,4 +36,4 @@ jobs:
 
       - name: Run Pytest
         run: |
-          poetry run pytest
+          docker exec backend poetry run pytest
