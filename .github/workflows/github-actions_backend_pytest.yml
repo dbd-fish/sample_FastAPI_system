@@ -10,8 +10,8 @@ on:
     # 手動でこのワークフローをトリガーします。
 
 jobs:
-  pytest:
-    name: Run Pytest
+  setup_environment:
+    name: Setup Backend and DB Environment
     runs-on: ubuntu-latest
     # ジョブをUbuntu最新環境で実行します。
 
@@ -30,17 +30,18 @@ jobs:
 
       - name: Set up Backend and DB Containers
         run: |
-          docker-compose up -d backend db
-        # docker-compose.ymlを使用して、backendとdbサービスのコンテナを起動します。
-        # -d オプションを使用してバックグラウンドで実行します。
+          docker-compose -f ./docker-compose.yml up -d backend db
 
-      - name: List Running Containers
-        run: |
-          docker ps
-        # 現在起動中のDockerコンテナを一覧表示します。
-        # backendとdbのコンテナが正常に起動していることを確認するためのステップです。
+  run_pytest:
+    name: Run Pytest
+    runs-on: ubuntu-latest
+    needs: setup_environment
 
-      - name: Run Pytest in Backend Container
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Pytest
         run: |
           docker exec sample_backend_container poetry run pytest
         # backendコンテナ内でpytestを実行します。
