@@ -9,51 +9,31 @@ on:
       - main
 
 jobs:
-  setup_environment:
-    name: Setup Docker Environment
+  lint_and_type_check:
+    name: Lint and Type Check
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
-      
-      - name: Start Backend Container
+
+      - name: Set up Backend Container
         run: |
           docker-compose up -d backend
-      
+
       - name: Check Backend Container
         run: |
           docker ps
-    
-    outputs:
-      container_name: ${{ steps.get_container_name.outputs.container_name }}
-  run_ruff:
-    name: Run Ruff
-    needs: setup_environment
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      
-      - name: List Docker Containers
-        run: |
-          docker ps
-      
+
       - name: Run Ruff in Backend Container
         run: |
           docker exec sample_backend_container poetry run ruff check
-  run_mypy:
-    name: Run Mypy
-    needs: setup_environment
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      
-      - name: Run Mypy
+
+      - name: Run Mypy in Backend Container
         run: |
           docker exec sample_backend_container poetry run mypy .
