@@ -1,45 +1,59 @@
-name: Pytest
+name: mypy, ruff
+
 on:
+  push:
+    branches:
+      - main
   pull_request:
-  # プルリクエストにプッシュするたびに実行したい場合はtypesをコメントにする
-    # types: 
-    #   - closed
-    # mainブランチに対するプルリクエストがマージされるときにこのワークフローをトリガーします。
-  workflow_dispatch:
-    # 手動でこのワークフローをトリガーします。
+    branches:
+      - main
 
 jobs:
-  pytest:
-    name: Run Pytest
+  setup_environment:
+    name: Setup Docker Environment
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        # リポジトリのコードをチェックアウトします。
-        # これにより、以降のステップでリポジトリの内容にアクセスできます。
-
+        uses: actions/checkout@v3
+      
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
-        # Docker Composeをインストールします。
-        # GitHub Actionsの初期環境には含まれていないため、このステップで追加します。
-
-      - name: Set up Backend and DB Containers
+      
+      - name: Start Backend Container
         run: |
-          docker-compose up -d backend db
-        # docker-compose.ymlを使用して、backendとdbサービスのコンテナを起動します。
-        # -d オプションを使用してバックグラウンドで実行します。
-
-      - name: List Running Containers
+          docker-compose up -d backend
+      
+      - name: Check Backend Container
         run: |
           docker ps
-        # 現在起動中のDockerコンテナを一覧表示します。
-        # backendとdbのコンテナが正常に起動していることを確認するためのステップです。
-
-      - name: Run Pytest in Backend Container
+    
+    outputs:
+      container_name: ${{ steps.get_container_name.outputs.container_name }}
+  run_ruff:
+    name: Run Ruff
+    needs: setup_environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: List Docker Containers
         run: |
-          docker exec sample_backend_container poetry run pytest
-        # backendコンテナ内でpytestを実行します。
-        # docker execを使用して、コンテナ内部でコマンドを実行しています。
+          docker ps
+      
+      - name: Run Ruff in Backend Container
+        run: |
+          docker exec sample_backend_container poetry run ruff check
+  run_mypy:
+    name: Run Mypy
+    needs: setup_environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Run Mypy
+        run: |
+          docker exec sample_backend_container poetry run mypy .
