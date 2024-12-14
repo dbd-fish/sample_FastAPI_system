@@ -8,8 +8,8 @@ on:
     branches:
       - main
 jobs:
-  setup_environment:
-    name: Setup Backend and DB Environment
+  pytest:
+    name: Run Pytest
     runs-on: ubuntu-latest
 
     steps:
@@ -23,17 +23,12 @@ jobs:
 
       - name: Set up Backend and DB Containers
         run: |
-          docker-compose -f ./docker-compose.yml up -d backend db
+          docker-compose up -d backend db
 
-  run_pytest:
-    name: Run Pytest
-    runs-on: ubuntu-latest
-    needs: setup_environment
+      - name: List Running Containers
+        run: |
+          docker ps
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Run Pytest
+      - name: Run Pytest in Backend Container
         run: |
           docker exec sample_backend_container poetry run pytest
