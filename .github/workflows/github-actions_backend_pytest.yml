@@ -36,4 +36,4 @@ jobs:
 
       - name: Run Pytest
         run: |
-          docker exec backend poetry run pytest
+          docker exec sample_backend_container poetry run pytest

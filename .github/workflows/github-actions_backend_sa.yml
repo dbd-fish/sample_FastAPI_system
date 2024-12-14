@@ -37,7 +37,7 @@ jobs:
 
       - name: Run Ruff in Backend Container
         run: |
-          docker exec backend poetry run ruff check
+          docker exec sample_backend_container poetry run ruff check
 
   run_mypy:
     name: Run Mypy
@@ -50,4 +50,4 @@ jobs:
 
       - name: Run Mypy
         run: |
-           docker exec backend poetry run mypy .
+           docker exec sample_backend_container poetry run mypy .
