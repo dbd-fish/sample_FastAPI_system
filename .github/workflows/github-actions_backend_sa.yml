@@ -36,6 +36,10 @@ jobs:
     needs: setup_environment
 
     steps:
+      - name: Check Container
+        run: |
+          docker ps
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
