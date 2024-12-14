@@ -1,0 +1,44 @@
+name: Pytest
+ 
+on:
+  pull_request:
+  # プルリクエストにプッシュするたびに実行したい場合はtypesをコメントにする
+    # types: 
+    #   - closed
+    # プルリクエストがマージされるときにこのワークフローをトリガーします。
+  workflow_dispatch:
+    # 手動でこのワークフローをトリガーします。
+
+jobs:
+  pytest:
+    name: Run Pytest
+    runs-on: ubuntu-latest
+    # ジョブをUbuntu最新環境で実行します。
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # リポジトリのコードをチェックアウトします。
+        # これにより、以降のステップでリポジトリの内容にアクセスできます。
+
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+        # Docker Composeをインストール
+
+      - name: Set up Backend and DB Containers
+        run: |
+          docker-compose up -d backend db
+        # docker-compose.ymlを使用して、backendコンテナのみ立ち上げる
+
+      - name: List Running Containers
+        run: |
+          docker ps
+        # 起動中のDockerコンテナを一覧表示します。
+        # backendコンテナが正しく起動しているかを確認
+
+      - name: Run Pytest in Backend Container
+        run: |
+          docker exec sample_backend_container poetry run pytest
+        # backendコンテナ内でpytestを実行

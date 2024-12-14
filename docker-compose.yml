@@ -15,6 +15,7 @@ services:
 
   backend:
     container_name: sample_backend_container
+    image: sample_backend_image
     build:
       context: ./sample_backend_container
       dockerfile: Dockerfile
