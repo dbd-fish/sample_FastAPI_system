@@ -1,8 +1,9 @@
 name: Pytest
 on:
   pull_request:
-    types: # プルリクエストにプッシュするたびに実行したい場合はtypesをコメントにする
-      - closed
+  # プルリクエストにプッシュするたびに実行したい場合はtypesをコメントにする
+    # types: 
+    #   - closed
     # mainブランチに対するプルリクエストがマージされるときにこのワークフローをトリガーします。
   workflow_dispatch:
     # 手動でこのワークフローをトリガーします。
